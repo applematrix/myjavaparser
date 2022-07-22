@@ -2,15 +2,21 @@
 #include "MyVmConfig.h"
 #include "ClassLoader.h"
 #include "classloader/ConstantInfo.h"
+#include "ClassFileInfo.h"
 
 using namespace myvm;
 
-int main(const char* arg[]) {
+int main(int argc, const char* args[]) {
 	printf("hello world, this is a vm toy!\n");
-	testClassLoader();
-
-	ConstantPackage constantPackage;
-	constantPackage.nameIndex = 100;
+	
+	if (argc <= 1) {
+		printf("no class file specified");
+		return -1;
+	}
+	const char* path = args[1];
+	ClassFileInfo* mClasssFile = new ClassFileInfo();
+	mClasssFile->loadFromFile(path);
+	delete mClasssFile;
 
 	return 0;
 }

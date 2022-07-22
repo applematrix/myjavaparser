@@ -1,18 +1,33 @@
 #ifndef _CLASS_FILE_H_
 #define _CLASS_FILE_H_
 
+#include <vector>
+
 #include "types.h"
 #include "ConstantInfo.h"
 #include "FieldInfo.h"
-#include "MethodInfo.h"
 #include "AttributeInfo.h"
+#include "FileReader.h"
+
+using namespace myvm;
 
 namespace myvm {
+
+const uint32_t JAVA_MAGIC = 0xCAFEBABE;
 
 class ClassFileInfo {
 public:
     ClassFileInfo();
     ~ClassFileInfo();
+    void loadFromFile(const char* filePath);
+    ConstantInfo* getConstantAt(uint16_t index) const;
+private:
+    int loadConstants();
+    int loadInterfaces();
+    int loadFields();
+    int loadMethods();
+    int loadAttributes();
+    void release();
 private:
     uint32_t magic;
     uint16_t majorVersion;
@@ -26,10 +41,13 @@ private:
     uint16_t methodsCount;
     uint16_t attributesCount;
 
-    ConstantInfo *mConstantPool;
-    FieldInfo *mFields;
-    MethodInfo *mMethods;
-    AttributeInfo *mAttributes;
+    uint16_t *mInterfaces;
+    std::vector<ConstantInfo*> mConstantPool;
+    std::vector<FieldInfo*> mFields;
+    std::vector<MethodInfo*> mMethods;
+    std::vector<AttributeInfo*> mAttributes;
+
+    FileReader *mFileReader;
 };
 
 
