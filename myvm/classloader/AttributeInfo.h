@@ -3,13 +3,42 @@
 
 #include "common/types.h"
 #include "FileReader.h"
+#include "ClassFileInfo.h"
+#include "AttributeFactory.h"
+
+using namespace myvm;
 
 namespace myvm {
+
+class ClassFileInfo;
 
 enum AttributeType {
     ConstantValue = 1,
     Code,
-    
+    StackMapTable,
+    Exceptions,
+    InnerClasses,
+    EnclosingMethod,
+    Synthetic,
+    Signature,
+    SourceFile,
+    SourceDebugExtension,
+    LineNumberTable,
+    LocalVariableTable,
+    LocalVariableTypeTable,
+    Deprecated,
+    RuntimeVisibleAnnotations,
+    RuntimeInvisibleAnnotations,
+    AnnotationDefault,
+    BootstrapMethods,
+    MethodParameters,
+    Module,
+    ModulePackage,
+    ModuleMainClass,
+    NestHost,
+    NestMember,
+    Record,
+    PermittedSubClass,
 };
 
 struct Attribute {
@@ -28,12 +57,20 @@ struct AttributeInfo {
         fileReader->readUint16(nameIndex);
         fileReader->readUint32(length);
     }
+
+    AttributeInfo(uint16_t name, uint32_t len) : nameIndex(name), length(len) {
+    }
 };
 
 struct ConstantValueAttr: public AttributeInfo {
     uint16_t constantValueIndex;
 
     ConstantValueAttr(FileReader *fileReader) : AttributeInfo(fileReader) {
+        fileReader->readUint16(constantValueIndex);
+    }
+
+    ConstantValueAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+        : AttributeInfo(name, len) {
         fileReader->readUint16(constantValueIndex);
     }
 };
@@ -53,7 +90,16 @@ struct CodeAttr: public AttributeInfo {
     uint16_t attrCounts;
     AttributeInfo **attributes;
 
-    CodeAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
+    CodeAttr(ClassFileInfo *classFileInfo, FileReader* fileReader) : AttributeInfo(fileReader) {
+        initialize(classFileInfo, fileReader);
+    }
+
+    CodeAttr(uint16_t name, uint32_t len, ClassFileInfo *classFileInfo, FileReader *fileReader)
+        : AttributeInfo(name, len) {
+        initialize(classFileInfo, fileReader);
+    }
+
+    void initialize(ClassFileInfo *classFileInfo, FileReader* fileReader) {
         fileReader->readUint16(maxStack);
         fileReader->readUint16(maxStack);
         fileReader->readUint32(codeLength);
@@ -66,7 +112,7 @@ struct CodeAttr: public AttributeInfo {
 
         attributes = new AttributeInfo*[attrCounts];
         for (int i = 0; i < attrCounts; i++) {
-            attributes[i] = AttributeFactory::loadFromFile(fileReader);
+            attributes[i] = AttributeFactory::loadFromFile(classFileInfo, fileReader);
         }
     }
 
@@ -96,13 +142,21 @@ struct ExceptionAttr: public AttributeInfo {
     uint16_t exceptionCount;
     uint16_t *exceptionIndexTable;
 
-    ExceptionAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
+    void loadExceptionIndexTable(FileReader* fileReader) {
         fileReader->readUint16(exceptionCount);
-
         exceptionIndexTable = new uint16_t[exceptionCount];
         for (int i = 0; i < exceptionCount; i++) {
             fileReader->readUint16(exceptionIndexTable[i]);
         }
+    }
+
+    ExceptionAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
+        loadExceptionIndexTable(fileReader);
+    }
+
+    ExceptionAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+        : AttributeInfo(name, len) {
+        loadExceptionIndexTable(fileReader);
     }
 };
 
@@ -115,13 +169,22 @@ struct InnerClassAttr: public AttributeInfo {
         uint16_t innerClassAccessFlags;
     } *classes;
 
-    InnerClassAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
+    void initialize(FileReader* fileReader) {
         fileReader->readUint16(numberOfClasses);
 
         classes = new Clazz[numberOfClasses];
         for (int i = 0; i < numberOfClasses; i++) {
             fileReader->readUint16(classes[i].innerClassAccessFlags);
         }
+    }
+
+    InnerClassAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
+        initialize(fileReader);
+    }
+
+    InnerClassAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+        : AttributeInfo(name, len) {
+        initialize(fileReader);
     }
 };
 
@@ -130,6 +193,12 @@ struct EnclosingMethodAttr: public AttributeInfo {
     uint16_t methodIndex;
 
     EnclosingMethodAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
+        fileReader->readUint16(classIndex);
+        fileReader->readUint16(methodIndex);
+    }
+
+    EnclosingMethodAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+        : AttributeInfo(name, len) {
         fileReader->readUint16(classIndex);
         fileReader->readUint16(methodIndex);
     }
@@ -143,12 +212,22 @@ struct SignatureAttr: public AttributeInfo {
     SignatureAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
         fileReader->readUint16(singatureIndex);
     }
+
+    SignatureAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+        : AttributeInfo(name, len) {
+        fileReader->readUint16(singatureIndex);
+    }
 };
 
 struct SourceFileAttr: public AttributeInfo {
     uint16_t sourceFileIndex;
 
     SourceFileAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
+        fileReader->readUint16(sourceFileIndex);
+    }
+
+    SourceFileAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+        : AttributeInfo(name, len) {
         fileReader->readUint16(sourceFileIndex);
     }
 };
@@ -160,6 +239,11 @@ struct SourceDebugExtensionAttr: public AttributeInfo {
         debugExtension = new uint8_t[length];
         fileReader->read(debugExtension, length);
     }
+
+    SourceDebugExtensionAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+        : AttributeInfo(name, len) {
+        fileReader->read(debugExtension, length);
+    }
 };
 
 struct LineNumberTableAttr: public AttributeInfo {
@@ -169,7 +253,7 @@ struct LineNumberTableAttr: public AttributeInfo {
         uint16_t lineNumber;
     } * lineNumberTable;
 
-    LineNumberTableAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
+    void initialize(FileReader* fileReader) {
         fileReader->readUint16(tableLen);
 
         lineNumberTable = new LineNumber[tableLen];
@@ -177,6 +261,15 @@ struct LineNumberTableAttr: public AttributeInfo {
             fileReader->read(lineNumberTable[i].startPc);
             fileReader->read(lineNumberTable[i].lineNumber);
         }
+    }
+
+    LineNumberTableAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
+        initialize(fileReader);
+    }
+
+    LineNumberTableAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+        : AttributeInfo(name, len) {
+        initialize(fileReader);
     }
 };
 
@@ -190,7 +283,7 @@ struct LocalVariableTableAttr: public AttributeInfo {
         uint16_t index;
     } *localVariableTable;
 
-    LocalVariableTableAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
+    void initialize(FileReader* fileReader) {
         fileReader->readUint16(tableLen);
 
         localVariableTable = new LocalVariable[tableLen];
@@ -201,6 +294,15 @@ struct LocalVariableTableAttr: public AttributeInfo {
             fileReader->read(localVariableTable[i].descriptorIndex);
             fileReader->read(localVariableTable[i].index);
         }
+    }
+
+    LocalVariableTableAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
+        initialize(fileReader);
+    }
+
+    LocalVariableTableAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+        : AttributeInfo(name, len) {
+        initialize(fileReader);
     }
 };
 
@@ -214,7 +316,7 @@ struct LocalVariableTypeTableAttr: public AttributeInfo {
         uint16_t index;
     } *localVariableTypeTable;
 
-    LocalVariableTypeTableAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
+    void initialize(FileReader* fileReader) {
         fileReader->readUint16(tableLen);
 
         localVariableTypeTable = new LocalVariableType[tableLen];
@@ -226,11 +328,20 @@ struct LocalVariableTypeTableAttr: public AttributeInfo {
             fileReader->read(localVariableTypeTable[i].index);
         }
     }
+
+    LocalVariableTypeTableAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
+        initialize(fileReader);
+    }
+
+    LocalVariableTypeTableAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+        : AttributeInfo(name, len) {
+        initialize(fileReader);
+    }
 };
 
 typedef AttributeInfo DeprecatedAttr;
 
-struct RuntimeVisibleAnnotations: public AttributeInfo {
+struct RuntimeVisibleAnnotationsAttr: public AttributeInfo {
     uint16_t annotationNums;
     // TODO:
     // annotation annotations[0];
@@ -244,7 +355,7 @@ struct BootstrapMethodsAttr: public AttributeInfo {
         uint16_t *args;
     } **bootstrapMethods;
 
-    BootstrapMethodsAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
+    void initialize(FileReader* fileReader) {
         fileReader->readUint16(bootstrapMethodNum);
 
         bootstrapMethods = new BootstrapMethod*[bootstrapMethodNum];
@@ -252,6 +363,15 @@ struct BootstrapMethodsAttr: public AttributeInfo {
             fileReader->readUint16(bootstrapMethods[i]->methodRef);
             fileReader->readUint16(bootstrapMethods[i]->argc);
         }
+    }
+
+    BootstrapMethodsAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
+        initialize(fileReader);
+    }
+
+    BootstrapMethodsAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+        : AttributeInfo(name, len) {
+        initialize(fileReader);
     }
 };
 
@@ -262,7 +382,7 @@ struct MethodParametersAttr: public AttributeInfo {
         uint16_t accessFlags;
     } *parameters;
 
-    MethodParametersAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
+    void initialize(FileReader* fileReader) {
         fileReader->readUint8(paramCount);
 
         parameters = new Parameter[paramCount];
@@ -270,6 +390,15 @@ struct MethodParametersAttr: public AttributeInfo {
             fileReader->readUint16(parameters[i].nameIndex);
             fileReader->readUint16(parameters[i].accessFlags);
         }
+    }
+
+    MethodParametersAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
+        initialize(fileReader);
+    }
+
+    MethodParametersAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+        : AttributeInfo(name, len) {
+        initialize(fileReader);
     }
 };
 
@@ -295,7 +424,7 @@ struct ModuleAttr: public AttributeInfo {
     } *exports;
 
     uint16_t opensCount;
-    struct Export {
+    struct Open {
         uint16_t opensIndex;
         uint16_t opensFlags;
         uint16_t opensToIndexCount;
@@ -313,7 +442,7 @@ struct ModuleAttr: public AttributeInfo {
     } *provides;
 
     // constructor
-    ModuleAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
+    void initialize(FileReader* fileReader) {
         fileReader->readUint8(paramCount);
         fileReader->readUint16(moduleNameIndex);
         fileReader->readUint16(moduleFlags);
@@ -348,7 +477,7 @@ struct ModuleAttr: public AttributeInfo {
 
         fileReader->readUint16(opensCount);
         if (opensCount > 0) {
-            opens = new Export[opensCount];
+            opens = new Open[opensCount];
             for (int i = 0; i < opensCount; i++) {
                 fileReader->readUint16(opens[i].opensIndex);
                 fileReader->readUint16(opens[i].opensFlags);
@@ -387,13 +516,22 @@ struct ModuleAttr: public AttributeInfo {
             }
         }
     }
+
+    ModuleAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
+        initialize(fileReader);
+    }
+
+    ModuleAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+        : AttributeInfo(name, len) {
+        initialize(fileReader);
+    }
 };
 
 struct ModulePackageAttr: public AttributeInfo {
     uint16_t packageCount;
     uint16_t *packageIndex;
 
-    ModulePackageAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
+    void initialize(FileReader* fileReader) {
         fileReader->readUint16(packageCount);
 
         if (packageCount > 0) {
@@ -403,6 +541,15 @@ struct ModulePackageAttr: public AttributeInfo {
             }
         }
     }
+
+    ModulePackageAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
+        initialize(fileReader);
+    }
+
+    ModulePackageAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+        : AttributeInfo(name, len) {
+        initialize(fileReader);
+    }
 };
 
 struct ModuleMainClassAttr: public AttributeInfo {
@@ -411,12 +558,22 @@ struct ModuleMainClassAttr: public AttributeInfo {
     ModuleMainClassAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
         fileReader->readUint16(mainClassIndex);
     }
+
+    ModuleMainClassAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+        : AttributeInfo(name, len) {
+        fileReader->readUint16(mainClassIndex);
+    }    
 };
 
 struct NestHostAttr: public AttributeInfo {
     uint16_t hostClassIndex;
 
     NestHostAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
+        fileReader->readUint16(hostClassIndex);
+    }
+
+    NestHostAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+        : AttributeInfo(name, len) {
         fileReader->readUint16(hostClassIndex);
     }
 };
@@ -426,6 +583,14 @@ struct NestMemberAttr: public AttributeInfo {
     uint16_t *classes;
 
     NestMemberAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
+        fileReader->readUint16(classNum);
+        for (int i = 0; i < classNum; i++) {
+            fileReader->readUint16(classes[i]);
+        }
+    }
+
+    NestMemberAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+        : AttributeInfo(name, len) {
         fileReader->readUint16(classNum);
         for (int i = 0; i < classNum; i++) {
             fileReader->readUint16(classes[i]);
@@ -442,7 +607,7 @@ struct RecordAttr: public AttributeInfo {
         AttributeInfo **attributeInfo;
     } *components;
 
-    RecordAttr(FileReader* fileReader) : AttributeInfo(fileReader) {
+    void initialize(ClassFileInfo *classFileInfo, FileReader* fileReader){
         fileReader->readUint16(componentCount);
         for (int i = 0; i < componentCount; i++) {
             fileReader->readUint16(components[i].nameIndex);
@@ -454,9 +619,18 @@ struct RecordAttr: public AttributeInfo {
             }
             components[i].attributeInfo = new AttributeInfo*[components[i].attributeCount];
             for (int j = 0; j < components[i].attributeCount; j++) {
-                components[i].attributeInfo[j] = AttributeFactory::loadFromFile(fileReader);
+                components[i].attributeInfo[j] = AttributeFactory::loadFromFile(classFileInfo, fileReader);
             }
         }
+    }
+
+    RecordAttr(ClassFileInfo *classFileInfo, FileReader* fileReader) : AttributeInfo(fileReader) {
+        initialize(classFileInfo, fileReader);
+    }
+
+    RecordAttr(uint16_t name, uint32_t len, ClassFileInfo *classFileInfo, FileReader *fileReader)
+        : AttributeInfo(name, len) {
+        initialize(classFileInfo, fileReader);
     }
 };
 

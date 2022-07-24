@@ -9,7 +9,6 @@ namespace myvm {
 class AttributeFactory {
 public:
     static AttributeInfo* loadFromFile(ClassFileInfo* classInfo, FileReader* fileReader);
-    static AttributeInfo* loadFromFile(FileReader* fileReader) {/*TODO*/};
 };
 
 }
