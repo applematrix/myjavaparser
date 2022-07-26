@@ -1,4 +1,6 @@
 #include "FieldInfo.h"
+#include "AttributeInfo.h"
+using namespace myvm;
 
 namespace myvm {
 

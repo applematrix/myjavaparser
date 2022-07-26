@@ -4,12 +4,13 @@
 #include <vector>
 
 #include "common/types.h"
-#include "AttributeInfo.h"
+
 #include "FileReader.h"
 
 using namespace myvm;
 
 namespace myvm {
+struct AttributeInfo;
 
 struct FieldInfo {
 public:

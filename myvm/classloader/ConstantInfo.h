@@ -20,7 +20,7 @@ enum ConstantTag {
     MethodType = 16,
     Dynamic = 17,
     InvokeDynamic = 18,
-    Module =19,
+    Constant_Module =19,
     Package = 20,
 };
 
