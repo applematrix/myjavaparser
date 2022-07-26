@@ -2,7 +2,8 @@
 
 namespace myvm {
 
-CodeAttr::CodeAttr(ClassFileInfo *classFileInfo, FileReader* fileReader) : AttributeInfo(fileReader) {
+CodeAttr::CodeAttr(ClassFileInfo *classFileInfo, FileReader* fileReader)
+    : AttributeInfo(fileReader) {
     initialize(classFileInfo, fileReader);
 }
 

@@ -88,16 +88,8 @@ struct CodeAttr: public AttributeInfo {
     uint16_t attrCounts;
     AttributeInfo **attributes;
 
-    CodeAttr::CodeAttr(ClassFileInfo *classFileInfo, FileReader* fileReader) \
-        : AttributeInfo(fileReader) {
-        initialize(classFileInfo, fileReader);
-    }
-
-    CodeAttr::CodeAttr(uint16_t name, uint32_t len, ClassFileInfo *classFileInfo, FileReader *fileReader)
-        : AttributeInfo(name, len) {
-        initialize(classFileInfo, fileReader);
-    }
-
+    CodeAttr(ClassFileInfo *classFileInfo, FileReader* fileReader);
+    CodeAttr(uint16_t name, uint32_t len, ClassFileInfo *classFileInfo, FileReader *fileReader);
     void initialize(ClassFileInfo *classFileInfo, FileReader* fileReader);
     void loadExceptionTable(FileReader* fileReader);
 };

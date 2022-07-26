@@ -46,7 +46,7 @@ public:
             return -1;
         }
         T tmpVal = 0;
-        int readSize = fread(&tmpVal, 1, dataSize, mClassFile);
+        size_t readSize = fread(&tmpVal, 1, dataSize, mClassFile);
         mOffset += dataSize;
         if (readSize != dataSize) return -1;
 

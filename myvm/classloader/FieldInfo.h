@@ -8,15 +8,17 @@
 #include "FileReader.h"
 
 using namespace myvm;
+using namespace std;
 
 namespace myvm {
 struct AttributeInfo;
+class ClassFileInfo;
 
 struct FieldInfo {
 public:
-    FieldInfo();
+    FieldInfo(uint16_t flags, uint16_t name, uint16_t desc, vector<AttributeInfo*> *attrs);
     ~FieldInfo();
-    static FieldInfo* loadFromFile(FileReader *fileReader);
+    static FieldInfo* loadFromFile(ClassFileInfo *classFileInfo, FileReader *fileReader);
 private:
     uint16_t accessFlags;
     uint16_t nameIndex;

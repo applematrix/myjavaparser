@@ -4,15 +4,22 @@ using namespace myvm;
 
 namespace myvm {
 
-FieldInfo::FieldInfo() {
-
+FieldInfo::FieldInfo(uint16_t flags,
+    uint16_t name,
+    uint16_t desc,
+    vector<AttributeInfo*> *attrs) {
+    accessFlags = flags;
+    nameIndex = name;
+    descriptorIndex = desc;
+    attributeCount = attrs->size();
+    mAttributes = *attrs;
 }
 
 FieldInfo::~FieldInfo() {
 
 }
 
-FieldInfo* FieldInfo::loadFromFile(FileReader *fileReader) {
+FieldInfo* FieldInfo::loadFromFile(ClassFileInfo *classFileInfo, FileReader *fileReader) {
     uint16_t accessFlags = 0;
     int status = fileReader->readUint16(accessFlags);
     if (status != 0) {
@@ -37,14 +44,17 @@ FieldInfo* FieldInfo::loadFromFile(FileReader *fileReader) {
         return nullptr;
     }
 
+    auto attributes = new vector<AttributeInfo *>();
     if (attributeCount > 0) {
-        /*mAttributes.reserve(attributeCount);
         for (int i = 0; i < attributeCount; i++) {
-            // TODO:
-            mAttributes.push_back(nullptr);
-        }*/
+            AttributeInfo *attrInfo = AttributeFactory::loadFromFile(classFileInfo, fileReader);
+            if (attrInfo == nullptr) {
+                return nullptr;
+            }
+            attributes->push_back(attrInfo);
+        }
     }
-    return nullptr;
+    return new FieldInfo(accessFlags, nameIndex, descriptorIndex, attributes);
 }
 
 }

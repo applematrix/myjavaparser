@@ -118,7 +118,7 @@ int ClassFileInfo::loadFields() {
     }
     mFields.reserve(fieldsCount);
     for (int i = 0; i < fieldsCount; i++) {
-        FieldInfo* field = FieldInfo::loadFromFile(mFileReader);
+        FieldInfo* field = FieldInfo::loadFromFile(this, mFileReader);
         if (field == nullptr) {
             return -1;
         }
@@ -135,7 +135,7 @@ int ClassFileInfo::loadMethods() {
 
     mMethods.reserve(methodsCount);
     for (int i = 0; i < methodsCount; i++) {
-        MethodInfo* method = MethodInfo::loadFromFile(mFileReader);
+        MethodInfo* method = MethodInfo::loadFromFile(this, mFileReader);
         if (method == nullptr) {
             return -1;
         }
