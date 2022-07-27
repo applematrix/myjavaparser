@@ -49,7 +49,7 @@ static uint8_t getAttributeType(ClassFileInfo* classInfo, uint16_t nameIndex) {
         return -1;
     }
 
-    ConstantUtf8 *utf8Info = (ConstantUtf8 *)classInfo;
+    ConstantUtf8 *utf8Info = (ConstantUtf8 *)constantInfo;
     uint8_t mapSize = sizeof(attrNameMap)/sizeof(AttributeMap);
     for (int i = 0; i < mapSize; i++) {
         if (!strncmp(attrNameMap[i].attributeName, (char*)utf8Info->bytes, utf8Info->length)) {
@@ -67,18 +67,9 @@ AttributeInfo* AttributeFactory::loadFromFile(ClassFileInfo* classInfo, FileRead
         return nullptr;
     }
 
-    uint16_t attrLength = 0;
-    status = fileReader->readUint16(attrLength);
+    uint32_t attrLength = 0;
+    status = fileReader->readUint32(attrLength);
     if (status != 0) {
-        return nullptr;
-    }
-    ConstantInfo* constantInfo = classInfo->getConstantAt(nameIndex);
-    if (constantInfo == nullptr) {
-        return nullptr;
-    }
-
-    uint8_t tag = constantInfo->tag;
-    if (tag !=  ConstantTag::Utf8) {
         return nullptr;
     }
 

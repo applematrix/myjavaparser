@@ -223,8 +223,8 @@ struct LineNumberTableAttr: public AttributeInfo {
 
         lineNumberTable = new LineNumber[tableLen];
         for (int i = 0; i < tableLen; i++) {
-            fileReader->read(lineNumberTable[i].startPc);
-            fileReader->read(lineNumberTable[i].lineNumber);
+            fileReader->readUint16(lineNumberTable[i].startPc);
+            fileReader->readUint16(lineNumberTable[i].lineNumber);
         }
     }
 

@@ -14,7 +14,7 @@ CodeAttr::CodeAttr(uint16_t name, uint32_t len, ClassFileInfo *classFileInfo, Fi
 
 void CodeAttr::initialize(ClassFileInfo *classFileInfo, FileReader* fileReader) {
     fileReader->readUint16(maxStack);
-    fileReader->readUint16(maxStack);
+    fileReader->readUint16(maxLocals);
     fileReader->readUint32(codeLength);
 
     code = new uint8_t[codeLength];

@@ -49,11 +49,8 @@ void ClassFileInfo::loadFromFile(const char* path) {
         return;
     }
 
-    status = mFileReader->readUint16(interfacesCount);
+    status = loadInterfaces();
     if (status != 0) {
-        return;
-    }
-    if (interfacesCount > 0 && loadInterfaces() != 0) {
         return;
     }
 
@@ -79,12 +76,14 @@ void ClassFileInfo::release() {
     }
 }
 
- ConstantInfo* ClassFileInfo::getConstantAt(uint16_t index) const {
-    if (index >= mConstantPool.size()) {
+ConstantInfo* ClassFileInfo::getConstantAt(uint16_t index) const {
+    // jvms: the index begin from 1; so decrement it
+    index--;
+    if (index >= mConstantPool.size() || index < 0) {
         return nullptr;
     }
     return mConstantPool.at(index);
- }
+}
 
 int ClassFileInfo::loadConstants() {
     int status = mFileReader->readUint16(constantPoolSize);
@@ -106,8 +105,15 @@ int ClassFileInfo::loadConstants() {
 }
 
 int ClassFileInfo::loadInterfaces() {
+    int status = mFileReader->readUint16(interfacesCount);
+    if (status != 0) {
+        return -1;
+    }
+    if (interfacesCount <= 0) {
+        return 0;
+    }
     mInterfaces = new uint16_t[interfacesCount];
-    int status = mFileReader->read(mInterfaces, interfacesCount*sizeof(uint16_t));
+    status = mFileReader->read(mInterfaces, interfacesCount*sizeof(uint16_t));
     return status;
 }
 
@@ -139,7 +145,7 @@ int ClassFileInfo::loadMethods() {
         if (method == nullptr) {
             return -1;
         }
-        mFields.push_back(method);
+        mMethods.push_back(method);
     }
     return 0;
 }
