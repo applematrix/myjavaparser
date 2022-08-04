@@ -8,7 +8,8 @@ static ConstantInfo* createConstantUtf8(FileReader* fileReader) {
     if (status != 0) {
         return nullptr;
     }
-    uint8_t* bytes = new uint8_t[length];
+    uint8_t* bytes = new uint8_t[length + 1];
+    memset(bytes, 0, length + 1);
     status = fileReader->read(bytes, length);
     if (status != 0) {
         return nullptr;

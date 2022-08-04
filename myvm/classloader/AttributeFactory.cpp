@@ -1,41 +1,16 @@
+#include <iostream>
+
 #include "AttributeFactory.h"
 #include "AttributeInfo.h"
 
 using namespace myvm;
+using namespace std;
 
 namespace myvm {
 
 struct AttributeMap{
     const char* attributeName;
     uint8_t attributeType;
-} ;
-
-const AttributeMap attrNameMap[] = {
-    {"Code",Code},
-    {"StackMapTable", StackMapTable},
-    {"Exceptions", Exceptions},
-    {"InnerClasses", InnerClasses},
-    {"EnclosingMethod", EnclosingMethod},
-    {"Synthetic", Synthetic},
-    {"Signature", Signature},
-    {"SourceFile", SourceFile},
-    {"SourceDebugExtension", SourceDebugExtension},
-    {"LineNumberTable", LineNumberTable},
-    {"LocalVariableTable", LocalVariableTable},
-    {"LocalVariableTypeTable", LocalVariableTypeTable},
-    {"Deprecated", Deprecated},
-    {"RuntimeVisibleAnnotations", RuntimeVisibleAnnotations},
-    {"RuntimeInvisibleAnnotations", RuntimeInvisibleAnnotations},
-    {"AnnotationDefault", AnnotationDefault},
-    {"BootstrapMethods", BootstrapMethods},
-    {"MethodParameters", MethodParameters},
-    {"Module", Module},
-    {"ModulePackage", ModulePackage},
-    {"ModuleMainClass", ModuleMainClass},
-    {"NestHost", NestHost},
-    {"NestMember", NestMember},
-    {"Record", Record},
-    {"PermittedSubClass", PermittedSubClass},
 };
 
 static uint8_t getAttributeType(ClassFileInfo* classInfo, uint16_t nameIndex) {
@@ -48,16 +23,8 @@ static uint8_t getAttributeType(ClassFileInfo* classInfo, uint16_t nameIndex) {
     if (tag != ConstantTag::Utf8) {
         return -1;
     }
-
     ConstantUtf8 *utf8Info = (ConstantUtf8 *)constantInfo;
-    uint8_t mapSize = sizeof(attrNameMap)/sizeof(AttributeMap);
-    for (int i = 0; i < mapSize; i++) {
-        if (!strncmp(attrNameMap[i].attributeName, (char*)utf8Info->bytes, utf8Info->length)) {
-            return attrNameMap[i].attributeType;
-        }
-    }
-    return -1;
-
+    return getAttributeType(utf8Info->bytes, utf8Info->length);
 }
 
 AttributeInfo* AttributeFactory::loadFromFile(ClassFileInfo* classInfo, FileReader* fileReader) {
@@ -74,6 +41,8 @@ AttributeInfo* AttributeFactory::loadFromFile(ClassFileInfo* classInfo, FileRead
     }
 
     uint8_t type = getAttributeType(classInfo, nameIndex);
+    std::cout << "Load attribute type:" << (int32_t)type << ", name:" << nameOfAttrType(type)
+        << ", attribute length: " << attrLength << endl;
     switch (type)
     {
         case AttributeType::ConstantValue:
@@ -130,8 +99,6 @@ AttributeInfo* AttributeFactory::loadFromFile(ClassFileInfo* classInfo, FileRead
         default:
         break;
     }
-
-
     return nullptr;
 }
 

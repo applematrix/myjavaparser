@@ -21,6 +21,9 @@ public:
     ~ClassFileInfo();
     void loadFromFile(const char* filePath);
     ConstantInfo* getConstantAt(uint16_t index) const;
+    void printConstantInfo(ConstantInfo *constant) const;
+    void printConstantInfo(uint16_t index) const;
+    char* getUtf8ConstantName(uint16_t index) const;
 private:
     int loadConstants();
     int loadInterfaces();

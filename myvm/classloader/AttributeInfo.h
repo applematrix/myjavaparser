@@ -14,7 +14,7 @@ class ClassFileInfo;
 class AttributeFactory;
 
 enum AttributeType {
-    ConstantValue = 1,
+    ConstantValue = 0,
     Code,
     StackMapTable,
     Exceptions,
@@ -41,6 +41,9 @@ enum AttributeType {
     Record,
     PermittedSubClass,
 };
+
+const char* nameOfAttrType(uint8_t type);
+uint8_t getAttributeType(uint8_t *bytes, uint16_t len);
 
 struct AttributeInfo {
     uint16_t nameIndex;

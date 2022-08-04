@@ -1,5 +1,9 @@
 #include "FieldInfo.h"
 #include "AttributeInfo.h"
+
+#include <iostream>
+using namespace std;
+
 using namespace myvm;
 
 namespace myvm {
@@ -31,6 +35,7 @@ FieldInfo* FieldInfo::loadFromFile(ClassFileInfo *classFileInfo, FileReader *fil
     if (status != 0) {
         return nullptr;
     }
+    classFileInfo->printConstantInfo(nameIndex);
 
     uint16_t descriptorIndex = 0;
     status = fileReader->readUint16(descriptorIndex);
@@ -44,14 +49,18 @@ FieldInfo* FieldInfo::loadFromFile(ClassFileInfo *classFileInfo, FileReader *fil
         return nullptr;
     }
 
+    cout << "Have "<< attributeCount <<" attributes!" << endl;
     auto attributes = new vector<AttributeInfo *>();
     if (attributeCount > 0) {
         for (int i = 0; i < attributeCount; i++) {
+            cout << "Load attribute #" << i << endl;
             AttributeInfo *attrInfo = AttributeFactory::loadFromFile(classFileInfo, fileReader);
             if (attrInfo == nullptr) {
+                cout << "Load attribute #" << i << " failed!" << endl;
                 return nullptr;
             }
             attributes->push_back(attrInfo);
+            cout << "Load attribute #" << i << " complete!" << endl;
         }
     }
     return new FieldInfo(accessFlags, nameIndex, descriptorIndex, attributes);
