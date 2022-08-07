@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2022 Huang Dezhi <cshdzxjtu@163.com>
+ * All Rights Reserved
+ *
+ */
+
 #ifndef _FILE_READER_H_
 #define _FILE_READER_H_
 #include <stdio.h>

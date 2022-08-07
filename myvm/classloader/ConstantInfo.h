@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2022 Huang Dezhi <cshdzxjtu@163.com>
+ * All Rights Reserved
+ *
+ */
+
 #ifndef _CONSTANT_INFO_H_
 #define _CONSTANT_INFO_H_
 #include <stdint.h>

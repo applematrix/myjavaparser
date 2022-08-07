@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2022 Huang Dezhi <cshdzxjtu@163.com>
+ * All Rights Reserved
+ *
+ */
+
 #ifndef _FIELD_INFO_H_
 #define _FIELD_INFO_H_
 

@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2022 Huang Dezhi <cshdzxjtu@163.com>
+ * All Rights Reserved
+ *
+ */
+
 #ifndef _INSTRCTIONS_H_
 #define _INSTRCTIONS_H_
 
@@ -54,8 +60,8 @@ enum OpCode {
     ALOAD_1 = 0x2b,
     ALOAD_2 = 0x2c,
     ALOAD_3 = 0x2d,
-    LALOAD = 0x2f, // Load long from array
     IALOAD = 0x2e, // Load int from array 
+    LALOAD = 0x2f, // Load long from array
     FALOAD = 0x30, // Load float from array 
     DALOAD = 0x31, // load double from array
     AALOAD = 0x32, // load reference from array
@@ -63,8 +69,8 @@ enum OpCode {
     CALOAD = 0x34, // load char from array
     SALOAD = 0x35, // Load short from array
     ISTORE = 0x36, // Store int into local variable
-    FSTORE = 0x38, // Store float into local variable
     LSTORE = 0x37, // Store long into local variable
+    FSTORE = 0x38, // Store float into local variable
     DSTORE = 0x39, // store double into local variable
     ASTORE = 0x3a, // store reference into local variable
     ISTORE_0 = 0x3b, // Store int into local variable
@@ -72,6 +78,7 @@ enum OpCode {
     ISTORE_2 = 0x3d,
     ISTORE_3 = 0x3e,
     LSTORE_0 = 0x3f, // Store long into local variable
+
     LSTORE_1 = 0x40,
     LSTORE_2 = 0x41,
     LSTORE_3 = 0x42,
@@ -79,11 +86,16 @@ enum OpCode {
     FSTORE_1 = 0x44,
     FSTORE_2 = 0x45,
     FSTORE_3 = 0x46,
+    DSTORE_0 = 0x47, // store double into local variable
+    DSTORE_1 = 0x48,
+    DSTORE_2 = 0x49,
+    DSTORE_3 = 0x4a,
     ASTORE_0 = 0x4b, // store reference int local variable
     ASTORE_1 = 0x4c, 
     ASTORE_2 = 0x4d, 
     ASTORE_3 = 0x4e, 
     IASTORE = 0x4f, // Store into int array
+
     LASTORE = 0x50, // Store into long array
     FASTORE = 0x51, // store into float array
     DASTORE = 0x52, // store into double array
@@ -117,10 +129,7 @@ enum OpCode {
     LDIV = 0x6d, // Divide long
     FDIV = 0x6e, // Divide float
     DDIV = 0x6f, // divide double
-    DSTORE_0 = 0x47, // store double into local variable
-    DSTORE_1 = 0x48,
-    DSTORE_2 = 0x49,
-    DSTORE_3 = 0x4a,
+
     IREM = 0x70, // Remainder int
     LREM = 0x71, // Remainder long
     FREM = 0x72, // Remainder float
@@ -135,8 +144,9 @@ enum OpCode {
     LSHR = 0x7b, // Arithmetic shift right long
     IUSHR = 0x7c, // Logical shift right int
     LUSHR = 0x7d, // Logical shift right long
-    LAND = 0x7f, // Boolean AND long
     IAND = 0x7e, // Boolean AND int
+    LAND = 0x7f, // Boolean AND long
+
     IOR = 0x80, // Boolean OR int
     LOR = 0x81, // Boolean OR long
     IXOR = 0x82, // Boolean XOR int
@@ -146,9 +156,6 @@ enum OpCode {
     I2F = 0x86, // Convert int to float
     I2D = 0x87, // Convert int to double
     L2I = 0x88, // Convert long to int
-
-
-
     L2F = 0x89, // Convert long to float
     L2D = 0x8a, // Convert long to double
     F2I = 0x8b, // Convert float to int
@@ -156,13 +163,14 @@ enum OpCode {
     F2D = 0x8d, // Convert float to double
     D2I = 0x8e, // convert double to int
     D2L = 0x8f, // convert double to long
+
     D2F = 0x90, // convert double to float
     I2B = 0x91, // Convert int to byte
     I2C = 0x92, // Convert int to char
     I2S = 0x93, // Convert int to short
     LCMP = 0x94, // Compare long
     FCMPL = 0x95, // Compare float
-    FCMPL = 0x96,
+    FCMPG = 0x96,
     DCMPL = 0x97, // compare double
     DCMPG = 0x98,
     IFEQ = 0x99, // Branch if int comparison with zero succeeds
@@ -172,6 +180,7 @@ enum OpCode {
     IFGT = 0x9d,
     IFLE = 0x9e,
     IF_ICMPEQ = 0x9f, // Branch if int comparison succeeds
+
     IF_ICMPNE = 0xa0,
     IF_ICMPLT = 0xa1,
     IF_ICMPGE = 0xa2,
@@ -188,6 +197,7 @@ enum OpCode {
     LRETURN = 0xad, // Return long from method
     FRETURN = 0xae, // Return float from method
     DRETURE = 0xaf, // return double from method
+
     ARETURN = 0xb0, // return reference from method
     RETURN = 0xb1, // Return void from method
     GETSTATIC = 0xb2, // Get static field from class
@@ -205,6 +215,7 @@ enum OpCode {
     ANEWARRAY = 0xbd, // create new array of reference
     ARRAYLENGTH = 0xbe, // get length of array
     ATHROW = 0xbf, // throw exception or error
+
     CHECKCAST = 0xc0, // check whether object is of given type
     INSTANCEOF = 0xc1, // Determine if object is of given type
     MONITORENTER = 0xc2, // Enter monitor for object
@@ -215,13 +226,9 @@ enum OpCode {
     IFNONNULL = 0xc7, // Branch if reference not null
     GOTO_W = 0xc8, // Branch always (wide index)
     JSR_W = 0xc9, // Jump subroutine (wide index)
-
 };
 
-struct Instruction {
-    uint8_t opcode;
-    string description;
-};
+string& getOpCodeDesc(uint8_t opCode);
 
 }
 

@@ -2,6 +2,7 @@
 aux_source_directory(. SRC_LIST)
 
 list(APPEND EXTRA_INCLUDES "${PROJECT_SOURCE_DIR}/common")
+list(APPEND EXTRA_INCLUDES "${PROJECT_SOURCE_DIR}/instructions")
 
 # add the library
 add_library(classloader ${SRC_LIST})

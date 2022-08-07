@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2022 Huang Dezhi <cshdzxjtu@163.com>
+ * All Rights Reserved
+ *
+ */
+
 #include "ClassFileInfo.h"
 #include "FileReader.h"
 #include "ConstantFactory.h"

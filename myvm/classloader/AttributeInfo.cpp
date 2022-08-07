@@ -1,4 +1,11 @@
+/*
+ * Copyright (c) 2022 Huang Dezhi <cshdzxjtu@163.com>
+ * All Rights Reserved
+ *
+ */
+
 #include "AttributeInfo.h"
+#include "Instructions.h"
 
 #include <iostream>
 using namespace std;
@@ -79,6 +86,10 @@ void CodeAttr::initialize(ClassFileInfo *classFileInfo, FileReader* fileReader) 
         attributes[i] = AttributeFactory::loadFromFile(classFileInfo, fileReader);
     }
     cout << "Code attributes end!" << endl;
+
+    cout << "Code instructions:" << endl;
+    dumpCode();
+    cout << endl;
 }
 
 void CodeAttr::loadExceptionTable(FileReader* fileReader) {
@@ -95,7 +106,9 @@ void CodeAttr::loadExceptionTable(FileReader* fileReader) {
 
 void CodeAttr::dumpCode() {
     uint8_t *opcode = code;
-    
+    for (uint32_t i = 0; i < codeLength; i++) {
+        cout << getOpCodeDesc(opcode[i]) << endl;
+    }
 }
 
 

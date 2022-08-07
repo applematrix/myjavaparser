@@ -1,0 +1,10 @@
+.vs/
+.vscode/
+CMakeFiles/
+myvm.dir/
+**/Debug/
+**/*.vcxproj*
+*.sln
+**/*.proj*
+**/cmake_install.cmake
+**/CMakeCache.txt

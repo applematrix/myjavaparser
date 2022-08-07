@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2022 Huang Dezhi <cshdzxjtu@163.com>
+ * All Rights Reserved
+ *
+ */
+
 #ifndef _ATTRIBUTE_INFO_H_
 #define _ATTRIBUTE_INFO_H_
 

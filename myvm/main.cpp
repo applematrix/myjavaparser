@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2022 Huang Dezhi <cshdzxjtu@163.com>
+ * All Rights Reserved
+ *
+ */
+
 #include <stdio.h>
 #include "MyVmConfig.h"
 #include "ClassLoader.h"

@@ -1,6 +1,12 @@
 #ifndef _ACCESS_FLAG_H_
 #define _ACCESS_FLAG_H_
 
+/*
+ * Copyright (c) 2022 Huang Dezhi <cshdzxjtu@163.com>
+ * All Rights Reserved
+ *
+ */
+
 #include <stdint.h>
 #include <string>
 using namespace std;
