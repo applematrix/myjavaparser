@@ -93,6 +93,12 @@ void CodeAttr::loadExceptionTable(FileReader* fileReader) {
     }        
 }
 
+void CodeAttr::dumpCode() {
+    uint8_t *opcode = code;
+    
+}
+
+
 void RecordAttr::initialize(ClassFileInfo *classFileInfo, FileReader* fileReader){
     fileReader->readUint16(componentCount);
     for (int i = 0; i < componentCount; i++) {

@@ -95,6 +95,7 @@ struct CodeAttr: public AttributeInfo {
     CodeAttr(uint16_t name, uint32_t len, ClassFileInfo *classFileInfo, FileReader *fileReader);
     void initialize(ClassFileInfo *classFileInfo, FileReader* fileReader);
     void loadExceptionTable(FileReader* fileReader);
+    void dumpCode();
 };
 
 struct StackMapTableAttr: public AttributeInfo {
