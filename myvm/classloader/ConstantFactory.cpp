@@ -122,25 +122,25 @@ ConstantInfo* ConstantFactory::loadFromFile(FileReader* fileReader) {
         return nullptr;
     }
     switch(tag) {
-        case ConstantTag::Utf8:
+        case CONSTANT_UTF8:
             return createConstantUtf8(fileReader);
-        case ConstantTag::Integer:
-        case ConstantTag::Float:
+        case CONSTANT_INTEGER:
+        case CONSTANT_FLOAT:
             return createConstantIntegerOrFloat(tag, fileReader);
-        case ConstantTag::Long:
-        case ConstantTag::Double:
+        case CONSTANT_LONG:
+        case CONSTANT_DOUBLE:
             return createConstantLongOrDouble(tag, fileReader);
-        case ConstantTag::String:
+        case CONSTANT_STRING:
             return createConstantString(fileReader);
-        case ConstantTag::FieldRef:
-        case ConstantTag::MethodRef:
-        case ConstantTag::InterfaceMethodRef:
+        case CONSTANT_FIELDREF:
+        case CONSTANT_METHODREF:
+        case CONSTANT_INTERFACE_METHODREF:
             return createConstantRef(tag, fileReader);
-        case ConstantTag::MethodHandle:
+        case CONSTANT_METHODHANDLE:
             return createMethodHandle(tag, fileReader);
-        case ConstantTag::Class:
+        case CONSTANT_CLASS:
             return createClass(tag, fileReader);
-        case ConstantTag::NameAndType:
+        case CONSTANT_NAMEANDTYPE:
             return createNameAndType(fileReader);
         default:break;
     }

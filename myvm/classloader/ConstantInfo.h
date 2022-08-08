@@ -11,23 +11,23 @@
 namespace myvm {
 
 enum ConstantTag {
-    Utf8 = 1,
-    Integer = 3,
-    Float = 4,
-    Long = 5,
-    Double = 6,
-    Class = 7,
-    String = 8,
-    FieldRef = 9,
-    MethodRef = 10,
-    InterfaceMethodRef = 11,
-    NameAndType = 12,
-    MethodHandle = 15,
-    MethodType = 16,
-    Dynamic = 17,
-    InvokeDynamic = 18,
-    Constant_Module =19,
-    Package = 20,
+    CONSTANT_UTF8 = 1,
+    CONSTANT_INTEGER = 3,
+    CONSTANT_FLOAT = 4,
+    CONSTANT_LONG = 5,
+    CONSTANT_DOUBLE = 6,
+    CONSTANT_CLASS = 7,
+    CONSTANT_STRING = 8,
+    CONSTANT_FIELDREF = 9,
+    CONSTANT_METHODREF = 10,
+    CONSTANT_INTERFACE_METHODREF = 11,
+    CONSTANT_NAMEANDTYPE = 12,
+    CONSTANT_METHODHANDLE = 15,
+    CONSTANT_METHODTYPE = 16,
+    CONSTANT_DYNAMIC = 17,
+    CONSTANT_INVOKEDYNAMIC = 18,
+    CONSTANT_CONSTANT_MODULE =19,
+    CONSTANT_PACKAGE = 20,
 };
 
 struct ConstantInfo {
@@ -58,13 +58,13 @@ typedef ConstantFieldRef ConstantInterfaceMethodRef;
 struct ConstantString: public ConstantInfo {
     uint16_t stringIndex;
     ConstantString(uint16_t index) : 
-        ConstantInfo(ConstantTag::String), stringIndex(index) {}
+        ConstantInfo(CONSTANT_STRING), stringIndex(index) {}
 };
 
 struct ConstantInteger: public ConstantInfo {
     uint32_t bytes;
     ConstantInteger(uint32_t _bytes) : 
-        ConstantInfo(ConstantTag::Integer), bytes(_bytes) {}
+        ConstantInfo(CONSTANT_INTEGER), bytes(_bytes) {}
     
     ConstantInteger(uint8_t tag, uint32_t _bytes) : 
         ConstantInfo(tag), bytes(_bytes) {}
@@ -86,7 +86,7 @@ struct ConstantNameAndType: public ConstantInfo {
     uint16_t descriptorIndex;
 
     ConstantNameAndType(uint16_t name, uint16_t desc) :
-        ConstantInfo(ConstantTag::NameAndType),
+        ConstantInfo(CONSTANT_NAMEANDTYPE),
         nameIndex(name), descriptorIndex(desc) {}
 };
 
@@ -95,7 +95,7 @@ struct ConstantUtf8: public ConstantInfo {
     uint8_t *bytes;
 
     ConstantUtf8(uint16_t len, uint8_t* _bytes) :
-        ConstantInfo(ConstantTag::Utf8),
+        ConstantInfo(CONSTANT_UTF8),
         length(len), bytes(_bytes) {
     }
 };
@@ -105,7 +105,7 @@ struct ConstantMethodHandle: public ConstantInfo {
     uint16_t refIndex;
 
     ConstantMethodHandle(uint8_t kind, uint16_t index) :
-        ConstantInfo(ConstantTag::MethodHandle),
+        ConstantInfo(CONSTANT_METHODHANDLE),
         refKind(kind), refIndex(index) {
     }
 };

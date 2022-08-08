@@ -99,7 +99,7 @@ ConstantInfo* ClassFileInfo::getConstantAt(uint16_t index) const {
 }
 
 void ClassFileInfo::printConstantInfo(ConstantInfo *constant) const {
-    if (constant == nullptr || constant->tag != ConstantTag::Utf8) {
+    if (constant == nullptr || constant->tag != CONSTANT_UTF8) {
         return;
     }
     ConstantUtf8 *utf8Info = (ConstantUtf8*)constant;
@@ -112,7 +112,7 @@ void ClassFileInfo::printConstantInfo(uint16_t index) const {
 
 char* ClassFileInfo::getUtf8ConstantName(uint16_t index) const {
     ConstantInfo* constant = getConstantAt(index);
-    if (constant == nullptr || constant->tag != ConstantTag::Utf8) {
+    if (constant == nullptr || constant->tag != CONSTANT_UTF8) {
         return nullptr;
     }
     return (char*)((ConstantUtf8*)constant)->bytes;

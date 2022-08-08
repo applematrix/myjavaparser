@@ -26,7 +26,7 @@ static uint8_t getAttributeType(ClassFileInfo* classInfo, uint16_t nameIndex) {
     }
 
     uint8_t tag = constantInfo->tag;
-    if (tag != ConstantTag::Utf8) {
+    if (tag != CONSTANT_UTF8) {
         return -1;
     }
     ConstantUtf8 *utf8Info = (ConstantUtf8 *)constantInfo;
