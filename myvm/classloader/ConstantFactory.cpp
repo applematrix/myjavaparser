@@ -5,6 +5,9 @@
  */
 
 #include "ConstantFactory.h"
+#include "ConstantFieldRef.h"
+#include "ConstantInterfaceMethodRef.h"
+#include "ConstantMethodRef.h"
 
 namespace myvm {
 
@@ -72,6 +75,51 @@ static ConstantInfo* createConstantRef(uint8_t tag, FileReader* fileReader) {
     return new ConstantRef(tag, classIndex, nameAndTypeIndex);
 }
 
+static ConstantInfo* createConstantMethodRef(uint8_t tag, FileReader* fileReader) {
+    uint16_t classIndex;
+    int status = fileReader->readUint16(classIndex);
+    if (status != 0) {
+        return nullptr;
+    }
+
+    uint16_t nameAndTypeIndex;
+    status = fileReader->readUint16(nameAndTypeIndex);
+    if (status != 0) {
+        return nullptr;
+    }
+    return new ConstantMethodRef(tag, classIndex, nameAndTypeIndex);
+}
+
+static ConstantInfo* createConstantFieldRef(uint8_t tag, FileReader* fileReader) {
+    uint16_t classIndex;
+    int status = fileReader->readUint16(classIndex);
+    if (status != 0) {
+        return nullptr;
+    }
+
+    uint16_t nameAndTypeIndex;
+    status = fileReader->readUint16(nameAndTypeIndex);
+    if (status != 0) {
+        return nullptr;
+    }
+    return new ConstantFieldRef(tag, classIndex, nameAndTypeIndex);
+}
+
+static ConstantInfo* createConstantInterfaceMethodRef(uint8_t tag, FileReader* fileReader) {
+    uint16_t classIndex;
+    int status = fileReader->readUint16(classIndex);
+    if (status != 0) {
+        return nullptr;
+    }
+
+    uint16_t nameAndTypeIndex;
+    status = fileReader->readUint16(nameAndTypeIndex);
+    if (status != 0) {
+        return nullptr;
+    }
+    return new ConstantInterfaceMethodRef(tag, classIndex, nameAndTypeIndex);
+}
+
 static ConstantInfo* createMethodHandle(uint8_t tag, FileReader* fileReader) {
     uint16_t kind;
     int status = fileReader->readUint16(kind);
@@ -133,9 +181,11 @@ ConstantInfo* ConstantFactory::loadFromFile(FileReader* fileReader) {
         case CONSTANT_STRING:
             return createConstantString(fileReader);
         case CONSTANT_FIELDREF:
+            return createConstantFieldRef(tag, fileReader);
         case CONSTANT_METHODREF:
+            return createConstantMethodRef(tag, fileReader);
         case CONSTANT_INTERFACE_METHODREF:
-            return createConstantRef(tag, fileReader);
+            return createConstantInterfaceMethodRef(tag, fileReader);
         case CONSTANT_METHODHANDLE:
             return createMethodHandle(tag, fileReader);
         case CONSTANT_CLASS:

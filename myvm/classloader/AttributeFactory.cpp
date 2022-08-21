@@ -51,56 +51,56 @@ AttributeInfo* AttributeFactory::loadFromFile(ClassFileInfo* classInfo, FileRead
         << ", attribute length: " << attrLength << endl;
     switch (type)
     {
-        case AttributeType::ConstantValue:
+        case ATTR_CONSTANT_VALUE:
             return new ConstantValueAttr(nameIndex, attrLength, fileReader);
-        case AttributeType::Code:
+        case ATTR_CODE:
             return new CodeAttr(nameIndex, attrLength, classInfo, fileReader);
-        case AttributeType::StackMapTable:
+        case ATTR_STACK_MAP_TABLE:
             // TODO:return new StackMapTableAttr()
-        case AttributeType::Exceptions:
+        case ATTR_EXCEPTIONS:
             return new ExceptionAttr(nameIndex, attrLength, fileReader);
-        case AttributeType::InnerClasses:
+        case ATTR_INNER_CLASSES:
             return new InnerClassAttr(nameIndex, attrLength, fileReader);
-        case AttributeType::EnclosingMethod:
+        case ATTR_ENCLOSING_METHOD:
             return new EnclosingMethodAttr(nameIndex, attrLength, fileReader);
-        case AttributeType::Synthetic:
-            return new SyntheticAttr(fileReader);
-        case AttributeType::Signature:
+        case ATTR_SYNTHETIC:
+            return new SyntheticAttr(fileReader, ATTR_SYNTHETIC);
+        case ATTR_SIGNATURE:
             return new SignatureAttr(nameIndex, attrLength, fileReader);
-        case AttributeType::SourceFile:
+        case ATTR_SOURCE_FILE:
             return new SourceFileAttr(nameIndex, attrLength, fileReader);
-        case AttributeType::SourceDebugExtension:
+        case ATTR_SOURCE_DEBUG_EXTENSION:
             return new SourceDebugExtensionAttr(nameIndex, attrLength, fileReader);
-        case AttributeType::LineNumberTable:
+        case ATTR_LINE_NUMBER_TABLE:
             return new LineNumberTableAttr(nameIndex, attrLength, fileReader);
-        case AttributeType::LocalVariableTable:
+        case ATTR_LOCAL_VARIABLE_TABLE:
             return new LocalVariableTableAttr(nameIndex, attrLength, fileReader);
-        case AttributeType::LocalVariableTypeTable:
+        case ATTR_LOCAL_VARIABLE_TYPE_TABLE:
             return new LocalVariableTypeTableAttr(nameIndex, attrLength, fileReader);
-        case AttributeType::Deprecated:
+        case ATTR_DEPRECATED:
             //return new DeprecatedAttr(nameIndex, attrLength, fileReader);
-        case AttributeType::RuntimeVisibleAnnotations:
+        case ATTR_RUNTIME_VISIBLE_ANNOTATIONS:
             //return new RuntimeVisibleAnnotationsAttr(nameIndex, attrLength, fileReader);
-        case AttributeType::RuntimeInvisibleAnnotations:
+        case ATTR_RUNTIME_INVISIBLE_ANNOTATIONS:
             //return new RuntimeVisibleAnnotations(nameIndex, attrLength, fileReader);
-        case AttributeType::AnnotationDefault:
-        case AttributeType::BootstrapMethods:
+        case ATTR_ANNOTATION_DEFAULT:
+        case ATTR_BOOTSTRAP_METHODS:
             return new BootstrapMethodsAttr(nameIndex, attrLength, fileReader);
-        case AttributeType::MethodParameters:
+        case ATTR_METHOD_PARAMETERS:
             return new MethodParametersAttr(nameIndex, attrLength, fileReader);
-        case AttributeType::Module:
+        case ATTR_MODULE:
             return new ModuleAttr(nameIndex, attrLength, fileReader);
-        case AttributeType::ModulePackage:
+        case ATTR_MODULE_PACKAGE:
             return new ModulePackageAttr(nameIndex, attrLength, fileReader);
-        case AttributeType::ModuleMainClass:
+        case ATTR_MODULE_MAIN_CLASS:
             return new ModuleMainClassAttr(nameIndex, attrLength, fileReader);
-        case AttributeType::NestHost:
+        case ATTR_NEST_HOST:
             return new NestHostAttr(nameIndex, attrLength, fileReader);
-        case AttributeType::NestMember:
+        case ATTR_NEST_MEMBER:
             return new NestMemberAttr(nameIndex, attrLength, fileReader);
-        case AttributeType::Record:
+        case ATTR_RECORD:
             return new RecordAttr(nameIndex, attrLength, classInfo, fileReader);
-        case AttributeType::PermittedSubClass:
+        case ATTR_PERMITTED_SUBCLASS:
             return new PermittedSubClassAttr(nameIndex, attrLength, fileReader);
         default:
         break;

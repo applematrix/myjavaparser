@@ -14,6 +14,7 @@
 #include "FieldInfo.h"
 #include "AttributeInfo.h"
 #include "FileReader.h"
+#include "Method.h"
 
 using namespace myvm;
 
@@ -53,7 +54,7 @@ private:
     uint16_t *mInterfaces;
     std::vector<ConstantInfo*> mConstantPool;
     std::vector<FieldInfo*> mFields;
-    std::vector<MethodInfo*> mMethods;
+    std::vector<Method*> mMethods;
     std::vector<AttributeInfo*> mAttributes;
 
     FileReader *mFileReader;

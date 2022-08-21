@@ -42,7 +42,7 @@ const char* attrNames[] = {
 };
 
 const char* nameOfAttrType(uint8_t type) {
-    if (type < 0 || type > PermittedSubClass) {
+    if (type < 0 || type > ATTR_PERMITTED_SUBCLASS) {
         return "Unknown attribute";
     }
     return attrNames[type];
@@ -59,12 +59,12 @@ uint8_t getAttributeType(uint8_t *bytes, uint16_t len) {
 }
 
 CodeAttr::CodeAttr(ClassFileInfo *classFileInfo, FileReader* fileReader)
-    : AttributeInfo(fileReader) {
+    : AttributeInfo(fileReader, ATTR_CODE) {
     initialize(classFileInfo, fileReader);
 }
 
 CodeAttr::CodeAttr(uint16_t name, uint32_t len, ClassFileInfo *classFileInfo, FileReader *fileReader)
-    : AttributeInfo(name, len) {
+    : AttributeInfo(name, len, ATTR_CODE) {
     initialize(classFileInfo, fileReader);
 }
 

@@ -5,6 +5,7 @@
  */
 
 #include "Instructions.h"
+#include "LoadInstructions.h"
 
 namespace myvm {
 
@@ -16,7 +17,7 @@ struct InstructionDesc {
 static string instructionDescs[] = {
     "nop", 
     "aconst_null",
-    "iconst_ml",
+    "iconst_m1",
     "iconst_0",
     "iconst_1",
     "iconst_2",
@@ -223,6 +224,16 @@ string& getOpCodeDesc(uint8_t opCode) {
         return string("Invalid code");
     }
     return instructionDescs[opCode];
+}
+
+Instruction* Instruction::interpreteCode(uint8_t *code) {
+    uint8_t opCode = *code;
+    switch (opCode) {
+        //TODO: 
+        case ALOAD:
+            return new AloadInstruction(code);
+    }
+    return nullptr;
 }
 
 }

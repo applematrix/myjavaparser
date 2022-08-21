@@ -10,6 +10,8 @@
 
 namespace myvm {
 
+class ClassFileInfo;
+
 enum ConstantTag {
     CONSTANT_UTF8 = 1,
     CONSTANT_INTEGER = 3,
@@ -34,6 +36,9 @@ struct ConstantInfo {
     uint8_t tag;
 
     ConstantInfo(uint8_t _tag): tag(_tag) {}
+    const char* typeString();
+    virtual void dump(const ClassFileInfo* classInfo) {}
+    virtual void resolve() {}
 };
 
 struct ConstantClass: public ConstantInfo {
@@ -41,19 +46,16 @@ struct ConstantClass: public ConstantInfo {
 
     ConstantClass(uint8_t tag, uint16_t index) :
         ConstantInfo(tag), nameIndex(index) {}
+    virtual void dump(const ClassFileInfo* classInfo);
 };
 
-struct ConstantRef: public ConstantInfo {
+class ConstantRef: public ConstantInfo {
+public:
     uint16_t classIndex;
     uint16_t nameAndTypeIndex;
-
     ConstantRef(uint8_t tag, uint16_t index, uint16_t nameAndType) : 
         ConstantInfo(tag), classIndex(index), nameAndTypeIndex(nameAndType) {}
 };
-
-typedef ConstantRef ConstantFieldRef;
-typedef ConstantFieldRef ConstantMethodRef;
-typedef ConstantFieldRef ConstantInterfaceMethodRef;
 
 struct ConstantString: public ConstantInfo {
     uint16_t stringIndex;

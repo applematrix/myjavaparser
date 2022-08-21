@@ -1,5 +1,6 @@
 #ifndef _TYPES_H_
 #define _TYPES_H_
+#include "stdint.h"
 // typedef char int8_t;
 // typedef unsigned char uint8_t;
 // typedef short int int16_t;

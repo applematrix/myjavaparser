@@ -15,7 +15,6 @@ using namespace std;
 namespace myvm {
 
 ClassFileInfo::ClassFileInfo() {
-
 }
 
 ClassFileInfo::~ClassFileInfo() {
@@ -132,6 +131,8 @@ int ClassFileInfo::loadConstants() {
         if (constant == nullptr) {
             return -1;
         }
+        cout << "Load constant #" << i << ": " << constant->typeString() << endl;
+        constant->dump(this);
         mConstantPool.push_back(constant);
     }
     return 0;
@@ -176,7 +177,7 @@ int ClassFileInfo::loadMethods() {
     for (int i = 0; i < methodsCount; i++) {
         
         cout << "Load method:" << i << endl;
-        MethodInfo* method = MethodInfo::loadFromFile(this, mFileReader);
+        Method* method = Method::loadFromFile(this, mFileReader);
         if (method == nullptr) {
             cout << "Load method:" << i << " failed! " << endl;
             return -1;

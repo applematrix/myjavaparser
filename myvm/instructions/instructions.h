@@ -16,7 +16,7 @@ namespace myvm {
 enum OpCode {
     NOP = 0x0, // Do nothing
     ACONST_NULL = 0x01, // push null
-    ICONST_ML = 0x02, // Push int constant
+    ICONST_M1 = 0x02, // Push int constant
     ICONST_0 = 0x03, 
     ICONST_1 = 0x04, 
     ICONST_2 = 0x05, 
@@ -30,6 +30,7 @@ enum OpCode {
     FCONST_2 = 0xd,
     DCONST_0 = 0xe, // push double
     DCONST_1 = 0xf,
+
     BIPUSH = 0x10, // push byte
     SIPUSH = 0x11, // Push short
     LDC = 0x12, // Push item from run-time constant pool
@@ -46,6 +47,7 @@ enum OpCode {
     ILOAD_3 = 0x1d,
     LLOAD_0 = 0x1e, //load long from local variable
     LLOAD_1 = 0x1f,
+
     LLOAD_2 = 0x20,
     LLOAD_3 = 0x21,
     FLOAD_0 = 0x22, // Load float from local variable
@@ -62,6 +64,7 @@ enum OpCode {
     ALOAD_3 = 0x2d,
     IALOAD = 0x2e, // Load int from array 
     LALOAD = 0x2f, // Load long from array
+
     FALOAD = 0x30, // Load float from array 
     DALOAD = 0x31, // load double from array
     AALOAD = 0x32, // load reference from array
@@ -229,6 +232,25 @@ enum OpCode {
 };
 
 string& getOpCodeDesc(uint8_t opCode);
+
+class Method;
+class Instruction {
+public:
+    Instruction() {};
+    virtual ~Instruction(){};
+    virtual void run(Method *context) = 0;
+    virtual uint8_t codeLen() = 0;
+
+    static Instruction* interpreteCode(uint8_t *code);
+};
+
+class NopInstruction : public Instruction {
+    public:
+    NopInstruction() {}
+    virtual ~NopInstruction() {}
+    virtual void run(Method *context) {}
+    virtual uint8_t codeLen() { return 1;}
+};
 
 }
 
