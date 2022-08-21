@@ -231,7 +231,9 @@ void ClassFileInfo::createInstance() {
 
 Method* ClassFileInfo::findMainMethod() {
     for (auto method : mMethods) {
-        //method->
+        if (method->isMainEntry()) {
+            return method;
+        }
     }
     return nullptr;
 }

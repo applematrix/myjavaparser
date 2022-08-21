@@ -58,6 +58,7 @@ private:
     std::string mName;
     std::string mDescriptor;
     bool mMainMethod;
+    bool mConstructor;
 };
 
 }

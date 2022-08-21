@@ -135,7 +135,7 @@ Method* Method::loadFromFile(ClassFileInfo *classFileInfo, FileReader *fileReade
 }
 
 bool Method::isMainEntry() {
-    return false;
+    return mMainMethod;
 }
 
 void Method::resolve(ClassFileInfo *clazz) {
@@ -146,11 +146,12 @@ void Method::resolve(ClassFileInfo *clazz) {
     mDescriptor = std::move(std::string(desc));
 
     if (strncmp(name, "main", 4) == 0) {
+        const char* mainMethodArgs = "([Ljava/lang/String;)V";
         mMainMethod = isPublic() && isStatic()
-            && strncmp(desc, "([Ljava/lang/String;)V", strlen("([Ljava / lang / String;)V")) == 0;
+            && strncmp(desc, mainMethodArgs, strlen(mainMethodArgs)) == 0;
     }
-    else if (strncmp(name, "init", 4) == 0) {
-
+    else if (strncmp(name, "<init>", 6) == 0) {
+        mConstructor = true;
     }
 
     if (desc == nullptr) {

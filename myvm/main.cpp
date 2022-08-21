@@ -27,6 +27,15 @@ int main(int argc, const char* args[]) {
 
 	mClasssFile->resolve();
 
+	Method *mainMethod = mClasssFile->findMainMethod();
+	if (mainMethod == nullptr) {
+		cout << "No main entry method in the class" << endl;
+	} else {
+		cout << "Invoke the main method!" << endl;
+		mainMethod->invoke();
+	}
+
+
 	delete mClasssFile;
 
 	return 0;
