@@ -9,8 +9,6 @@
 
 #include <vector>
 
-#include "common/types.h"
-
 #include "FileReader.h"
 
 using namespace myvm;

@@ -29,46 +29,34 @@ Method::~Method() {
     mAttributes.clear();
 }
 
-void Method::invoke() {
+void Method::invoke(ClassFileInfo *clazz) {
     if (isAbstract()) {
         cout << "Can't invoe abstract method!"<< endl;
         return;
     }
-    //mOperandStack = new OperandStack();
-    CodeAttr *codeInfo = nullptr;
-    for (auto attr : mAttributes) {
-        if (attr->attrType == ATTR_CODE) {
-            codeInfo = (CodeAttr* )attr;
-            break;
-        }
-    }
-    if (codeInfo == nullptr) {
+    if (mCodeAttr == nullptr) {
         cout << "No code for this method!" << endl;
         return;
     }
 
-    if (mOperandStack == nullptr) {
-        mOperandStack = new OperandStack(codeInfo->maxStack);
-    } else {
-        mOperandStack->reset();
-    }
-    
-    if (mLocalVariables == nullptr) {
-        mLocalVariables = new LocalVariableTable(codeInfo->maxLocals);
-    }
+    OperandStack* stack = new OperandStack(mCodeAttr->maxStack);
+    LocalVariableTable * localVariableTable = new LocalVariableTable(mCodeAttr->maxLocals);
 
     // interprete the code
-    uint8_t *code = codeInfo->code;
-    uint8_t *codeEnd = code + codeInfo->codeLength;
+    uint8_t *code = mCodeAttr->code;
+    uint8_t *codeEnd = code + mCodeAttr->codeLength;
     while (code < codeEnd) {
         auto instruction = Instruction::interpreteCode(code);
-        instruction->run(this);
+        if (instruction == nullptr) {
+            cout << "Invalid instruction!" << endl;
+        }
+        instruction->run(clazz, this);
         code += instruction->codeLen();
     }
 
     // release
-    delete mOperandStack;
-    delete mLocalVariables;
+    delete stack;
+    delete localVariableTable;
 }
 
 bool Method::isAbstract() {
@@ -152,6 +140,13 @@ void Method::resolve(ClassFileInfo *clazz) {
     }
     else if (strncmp(name, "<init>", 6) == 0) {
         mConstructor = true;
+    }
+
+    CodeAttr *codeInfo = nullptr;
+    for (auto attr : mAttributes) {
+        if (attr->attrType == ATTR_CODE) {
+            mCodeAttr = (CodeAttr* )attr;
+        }
     }
 
     if (desc == nullptr) {

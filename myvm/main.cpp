@@ -32,7 +32,7 @@ int main(int argc, const char* args[]) {
 		cout << "No main entry method in the class" << endl;
 	} else {
 		cout << "Invoke the main method!" << endl;
-		mainMethod->invoke();
+		mainMethod->invoke(mClasssFile);
 	}
 
 

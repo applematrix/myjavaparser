@@ -6,6 +6,7 @@
 
 #include "Instructions.h"
 #include "LoadInstructions.h"
+#include "NewInstruction.h"
 
 namespace myvm {
 
@@ -232,6 +233,8 @@ Instruction* Instruction::interpreteCode(uint8_t *code) {
         //TODO: 
         case ALOAD:
             return new AloadInstruction(code);
+        case NEW:
+            return new NewInstruction(code);
     }
     return nullptr;
 }

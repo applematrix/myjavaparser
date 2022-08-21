@@ -10,6 +10,7 @@ using namespace std;
 namespace myvm {
 
 struct AttributeInfo;
+struct CodeAttr;
 class ClassFileInfo;
 class FileReader;
 class OperandStack;
@@ -36,7 +37,7 @@ public:
     
     Method(uint16_t flags, uint16_t name, uint16_t desc, vector<AttributeInfo*> *attrs);
     ~Method();
-    void invoke();
+    void invoke(ClassFileInfo *clazz);
     bool isAbstract();
     bool isStatic();
     bool isPublic();
@@ -59,6 +60,8 @@ private:
     std::string mDescriptor;
     bool mMainMethod;
     bool mConstructor;
+    CodeAttr* mCodeAttr;
+    uint16_t mStackSize;
 };
 
 }

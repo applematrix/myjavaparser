@@ -9,7 +9,6 @@
 
 #include <vector>
 
-#include "types.h"
 #include "ConstantInfo.h"
 #include "FieldInfo.h"
 #include "AttributeInfo.h"

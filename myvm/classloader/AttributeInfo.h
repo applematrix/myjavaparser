@@ -7,7 +7,6 @@
 #ifndef _ATTRIBUTE_INFO_H_
 #define _ATTRIBUTE_INFO_H_
 
-#include "common/types.h"
 #include "FileReader.h"
 #include "ClassFileInfo.h"
 #include "AttributeFactory.h"

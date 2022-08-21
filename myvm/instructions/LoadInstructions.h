@@ -20,7 +20,7 @@ public:
     IloadInstruction() {};
     virtual ~IloadInstruction() {};
     virtual uint8_t codeLen() { return 2;}
-    virtual void run(Method *context);
+    virtual void run(ClassFileInfo* clazz, Method *context);
 private:
     uint8_t mIndex;
 };
@@ -30,7 +30,7 @@ public:
     Iload0Instruction() {};
     virtual ~Iload0Instruction() {};
     virtual uint8_t codeLen() { return 1;}
-    virtual void run(Method *context);
+    virtual void run(ClassFileInfo* clazz, Method *context);
 };
 
 class Iload1Instruction : public Instruction {
@@ -38,7 +38,7 @@ public:
     Iload1Instruction() {};
     virtual ~Iload1Instruction() {};
     virtual uint8_t codeLen() { return 1;}
-    virtual void run(Method *context);
+    virtual void run(ClassFileInfo* clazz, Method *context);
 };
 
 class AloadInstruction : public Instruction {
@@ -46,7 +46,7 @@ public:
     AloadInstruction(uint8_t *code);
     virtual ~AloadInstruction() {};
     virtual uint8_t codeLen() { return 2;}
-    virtual void run(Method *context);
+    virtual void run(ClassFileInfo* clazz, Method *context);
 private:
     uint8_t index;
 };
