@@ -21,6 +21,8 @@ Method::Method(uint16_t flags,
     descriptorIndex = desc;
     attributeCount = attrs->size();
     mAttributes = *attrs;
+
+    mMainMethod = false;
 }
 
 Method::~Method() {
@@ -32,11 +34,6 @@ void Method::invoke() {
         cout << "Can't invoe abstract method!"<< endl;
         return;
     }
-    if (isInterface()) {
-        cout << "Can't invoke inteface method!"<< endl;
-        return;
-    }
-
     //mOperandStack = new OperandStack();
     CodeAttr *codeInfo = nullptr;
     for (auto attr : mAttributes) {
@@ -75,11 +72,23 @@ void Method::invoke() {
 }
 
 bool Method::isAbstract() {
-    return (accessFlags & ACC_ABSTRACT) != 0;
+    return (accessFlags & METHOD_ACC_ABSTRACT) != 0;
 }
 
-bool Method::isInterface() {
-    return (accessFlags & ACC_INTERFACE) != 0;
+bool Method::isStatic() {
+    return (accessFlags & METHOD_ACC_STATIC) != 0;
+}
+
+bool Method::isPublic() {
+    return (accessFlags & METHOD_ACC_PUBLIC) != 0;
+}
+
+bool Method::isPrivate() {
+    return (accessFlags & METHOD_ACC_PRIVATE) != 0;
+}
+
+bool Method::isProtected() {
+    return (accessFlags & METHOD_ACC_PROTECTED) != 0;
 }
 
 Method* Method::loadFromFile(ClassFileInfo *classFileInfo, FileReader *fileReader) {
@@ -125,5 +134,28 @@ Method* Method::loadFromFile(ClassFileInfo *classFileInfo, FileReader *fileReade
     return new Method(accessFlags, nameIndex, descriptorIndex, attributes);
 }
 
+bool Method::isMainEntry() {
+    return false;
+}
+
+void Method::resolve(ClassFileInfo *clazz) {
+    const char* name = clazz->getUtf8ConstantName(nameIndex);
+    mName = std::move(std::string(name));
+
+    const char* desc = clazz->getUtf8ConstantName(descriptorIndex);
+    mDescriptor = std::move(std::string(desc));
+
+    if (strncmp(name, "main", 4) == 0) {
+        mMainMethod = isPublic() && isStatic()
+            && strncmp(desc, "([Ljava/lang/String;)V", strlen("([Ljava / lang / String;)V")) == 0;
+    }
+    else if (strncmp(name, "init", 4) == 0) {
+
+    }
+
+    if (desc == nullptr) {
+        return;
+    }
+}
 
 }

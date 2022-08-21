@@ -31,6 +31,7 @@ public:
     void printConstantInfo(ConstantInfo *constant) const;
     void printConstantInfo(uint16_t index) const;
     char* getUtf8ConstantName(uint16_t index) const;
+    void resolve();
 private:
     int loadConstants();
     int loadInterfaces();
@@ -38,6 +39,12 @@ private:
     int loadMethods();
     int loadAttributes();
     void release();
+
+    void createInstance();
+    Method* findMainMethod();
+
+    // test code
+    void invokeMethod();
 private:
     uint32_t magic;
     uint16_t majorVersion;

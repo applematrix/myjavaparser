@@ -38,11 +38,14 @@ void ClassFileInfo::loadFromFile(const char* path) {
         return;
     }
 
+    cout << "--------Constants------" << endl;
     status = loadConstants();
     if (status != 0) {
         return;
     }
+    cout << "----------------------" << endl << endl;
 
+    cout << "-----Access Flags-----" << endl;
     status = mFileReader->readUint16(accessFlags);
     if (status != 0) {
         return;
@@ -50,36 +53,46 @@ void ClassFileInfo::loadFromFile(const char* path) {
     string strAccessFlags;
     accessFlagToString(accessFlags, strAccessFlags);
     cout << "Access flags("<< accessFlags << "): " << strAccessFlags << endl;
+    cout << "----------------------" << endl << endl;
 
+    cout << "----this&superClass----" << endl << endl;
     status = mFileReader->readUint16(thisClass);
     if (status != 0) {
         return;
     }
-
     status = mFileReader->readUint16(superClass);
     if (status != 0) {
         return;
     }
+    cout << "----------------------" << endl << endl;
 
+    cout << "------Interfaces------" << endl << endl;
     status = loadInterfaces();
     if (status != 0) {
         return;
     }
+    cout << "----------------------" << endl << endl;
 
+    cout << "--------Fields--------" << endl;
     status = loadFields();
     if (status != 0) {
         return;
     }
+    cout << "----------------------" << endl << endl;
 
+    cout << "--------Methods--------" << endl;
     status = loadMethods();
     if (status != 0) {
         return;
     }
+    cout << "----------------------" << endl << endl;
 
+    cout << "--------Attributes--------" << endl;
     status = loadAttributes();
     if (status != 0) {
         return;
     }
+    cout << "----------------------" << endl << endl;
 }
 
 void ClassFileInfo::release() {
@@ -135,6 +148,7 @@ int ClassFileInfo::loadConstants() {
         constant->dump(this);
         mConstantPool.push_back(constant);
     }
+    cout << "Load constants complete!" << endl << endl;
     return 0;
 }
 
@@ -201,6 +215,25 @@ int ClassFileInfo::loadAttributes() {
         mAttributes.push_back(attr);
     }
     return 0;
+}
+
+void ClassFileInfo::resolve() {
+    for (auto method : mMethods) {
+        method->resolve(this);
+    }
+}
+
+void ClassFileInfo::invokeMethod() {
+}
+
+void ClassFileInfo::createInstance() {
+}
+
+Method* ClassFileInfo::findMainMethod() {
+    for (auto method : mMethods) {
+        //method->
+    }
+    return nullptr;
 }
 
 }

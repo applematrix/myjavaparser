@@ -24,6 +24,9 @@ int main(int argc, const char* args[]) {
 	const char* path = args[1];
 	ClassFileInfo* mClasssFile = new ClassFileInfo();
 	mClasssFile->loadFromFile(path);
+
+	mClasssFile->resolve();
+
 	delete mClasssFile;
 
 	return 0;
