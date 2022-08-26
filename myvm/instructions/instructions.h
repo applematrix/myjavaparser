@@ -13,6 +13,8 @@ using namespace std;
 
 namespace myvm {
 
+class OperandStack;
+
 enum OpCode {
     NOP = 0x0, // Do nothing
     ACONST_NULL = 0x01, // push null
@@ -239,7 +241,7 @@ class Instruction {
 public:
     Instruction() {};
     virtual ~Instruction(){};
-    virtual void run(ClassFileInfo* clazz, Method *context) = 0;
+    virtual void run(ClassFileInfo* clazz, Method *context, OperandStack *stack) = 0;
     virtual uint8_t codeLen() = 0;
 
     static Instruction* interpreteCode(uint8_t *code);
@@ -249,7 +251,7 @@ class NopInstruction : public Instruction {
     public:
     NopInstruction() {}
     virtual ~NopInstruction() {}
-    virtual void run(ClassFileInfo* clazz, Method *context) {}
+    virtual void run(ClassFileInfo* clazz, Method *context, OperandStack *stack) {}
     virtual uint8_t codeLen() { return 1;}
 };
 

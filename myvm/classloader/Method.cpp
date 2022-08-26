@@ -7,6 +7,7 @@
 #include "OperandStack.h"
 #include "LocalVariableTable.h"
 #include "Instructions.h"
+#include "DupInstruction.h"
 
 using namespace std;
 
@@ -50,7 +51,7 @@ void Method::invoke(ClassFileInfo *clazz) {
         if (instruction == nullptr) {
             cout << "Invalid instruction!" << endl;
         }
-        instruction->run(clazz, this);
+        instruction->run(clazz, this, stack);
         code += instruction->codeLen();
     }
 

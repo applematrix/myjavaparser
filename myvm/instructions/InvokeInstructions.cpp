@@ -1,8 +1,7 @@
-#include "NewInstruction.h"
-#include "../classloader/ClassFileInfo.h"
+#include "InvokeInstructions.h"
 #include "../classloader/OperandStack.h"
-#include "../classloader/ObjectRef.h"
 #include "../classloader/Heap.h"
+#include "../classloader/ClassFileInfo.h"
 #include <iostream>
 
 using namespace std;
@@ -10,14 +9,14 @@ using namespace myvm;
 
 namespace myvm {
 
-NewInstruction::NewInstruction(uint8_t *code) {
+InvokeSpecialInstruction::InvokeSpecialInstruction(uint8_t *code) {
     uint8_t highByte = *(code+1);
     uint8_t lowByte = *(code+2);
 
     mIndex = (highByte<<8) | lowByte;
 }
 
-void NewInstruction::run(ClassFileInfo* clazz, Method *context, OperandStack *stack) {
+void InvokeSpecialInstruction::run(ClassFileInfo* clazz, Method *context, OperandStack *stack) {
     ConstantClass*constantInfo = (ConstantClass*)clazz->getConstantAt(mIndex);
 
     const char* constantName = constantInfo->typeString();

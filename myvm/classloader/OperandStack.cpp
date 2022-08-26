@@ -4,9 +4,12 @@
 namespace myvm {
 
 const uint32_t GROW_STEP = 64;
+const uint8_t STACK_UNIT_SIZE = sizeof(uint32_t);
 
 OperandStack::OperandStack(uint32_t stackSize) {
-    mBuffer = (uint8_t *)malloc(stackSize);
+    mBuffer = (uint8_t *)malloc(stackSize * STACK_UNIT_SIZE);
+    mSize = stackSize;
+    mCurPos = 0;
 }
 
 OperandStack::~OperandStack() {
@@ -26,6 +29,11 @@ void OperandStack::pushUint16(uint16_t val) {
 }
 
 void OperandStack::pushUint32(uint32_t val) {
+    *mBuffer = val;
+    mCurPos += sizeof(val);
+}
+
+void OperandStack::push(uint32_t val) {
     *mBuffer = val;
     mCurPos += sizeof(val);
 }
@@ -51,11 +59,33 @@ uint32_t OperandStack::popUint32() {
         return 0; // TODO:
     }
     mCurPos -= sizeof(uint32_t);
-    return *((uint32_t *)mCurPos);
+    return *((uint32_t *)(mBuffer + mCurPos));
+}
+
+uint32_t OperandStack::pop() {
+    if (mCurPos < sizeof(uint32_t)) {
+        return 0; // TODO:
+    }
+    mCurPos -= sizeof(uint32_t);
+    return *((uint32_t*)(mBuffer + mCurPos));
 }
 
 void OperandStack::reset() {
     mCurPos = 0;
+}
+
+void OperandStack::pushObjecRef(ObjectRef *reference) {
+    memcpy(mBuffer, &reference, sizeof(ObjectRef*));
+    mCurPos += sizeof(ObjectRef*);
+}
+
+ObjectRef* OperandStack::popObjecRef() {
+    if (mCurPos < sizeof(ObjectRef*)) {
+        return nullptr; // TODO:
+    }
+    mCurPos -= sizeof(ObjectRef*);
+    ObjectRef* reference = (ObjectRef*)(*mBuffer);
+    return reference;
 }
 
 }

@@ -31,7 +31,7 @@ enum MethodAccessFlag {
     METHOD_ACC_SYNTHETIC = 0x1000,
 };
 
-struct Method {
+class Method {
 public:
     static Method* loadFromFile(ClassFileInfo *classFileInfo, FileReader *fileReader);
     
@@ -45,6 +45,7 @@ public:
     bool isProtected();
     bool isMainEntry();
     void resolve(ClassFileInfo *clazz);
+    OperandStack* getOperandStack();
 private:
     uint16_t accessFlags;
     uint16_t nameIndex;

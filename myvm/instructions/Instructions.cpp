@@ -7,6 +7,8 @@
 #include "Instructions.h"
 #include "LoadInstructions.h"
 #include "NewInstruction.h"
+#include "DupInstruction.h"
+#include "FieldInstructions.h"
 
 namespace myvm {
 
@@ -235,6 +237,10 @@ Instruction* Instruction::interpreteCode(uint8_t *code) {
             return new AloadInstruction(code);
         case NEW:
             return new NewInstruction(code);
+        case DUP:
+            return new DupInstruction();
+        case PUTFIELD:
+            return new PutFieldInstruction(code);
     }
     return nullptr;
 }
