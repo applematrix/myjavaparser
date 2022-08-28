@@ -1,5 +1,13 @@
+/*
+ * Copyright (c) 2022 Huang Dezhi <cshdzxjtu@163.com>
+ * All Rights Reserved
+ *
+ */
+
 #ifndef _HEAP_H_
 #define _HEAP_H_
+
+#define FIRST_HANDLE 0x10
 
 #include <map>
 using namespace std;
@@ -16,7 +24,7 @@ public:
     uint32_t allocateObject(const char* name);
 private:
     Heap() {
-        mNextHandle = 0;
+        mNextHandle = FIRST_HANDLE;
     }
     static Heap* sInstance;
 private:

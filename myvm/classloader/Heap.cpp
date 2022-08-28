@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2022 Huang Dezhi <cshdzxjtu@163.com>
+ * All Rights Reserved
+ *
+ */
+
 #include "Heap.h"
 #include "ObjectRef.h"
 
@@ -26,6 +32,9 @@ uint32_t Heap::allocateObject(const char* name) {
     mObjectRefs[mNextHandle] = object;
     // TODO: multi thread
     mNextHandle++;
+    if (mNextHandle == -1) {
+        mNextHandle = FIRST_HANDLE;
+    }
     return mNextHandle-1;
 }
 

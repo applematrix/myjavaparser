@@ -4,11 +4,10 @@
 namespace myvm {
 
 const uint32_t GROW_STEP = 64;
-const uint8_t STACK_UNIT_SIZE = sizeof(uint32_t);
 
-OperandStack::OperandStack(uint32_t stackSize) {
-    mBuffer = (uint8_t *)malloc(stackSize * STACK_UNIT_SIZE);
-    mSize = stackSize;
+OperandStack::OperandStack(uint32_t maxDepth) {
+    mBuffer = (uint8_t *)malloc(maxDepth * STACK_UNIT_SIZE);
+    mMaxDepth = maxDepth;
     mCurPos = 0;
 }
 

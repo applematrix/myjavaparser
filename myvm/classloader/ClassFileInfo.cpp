@@ -238,4 +238,13 @@ Method* ClassFileInfo::findMainMethod() {
     return nullptr;
 }
 
+Method* ClassFileInfo::findMethod(const ConstantNameAndType* nameAndType) {
+    for (auto method : mMethods) {
+        if (method->match(nameAndType)) {
+            return method;
+        }
+    }
+    return nullptr;
+}
+
 }

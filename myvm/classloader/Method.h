@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2022 Huang Dezhi <cshdzxjtu@163.com>
+ * All Rights Reserved
+ *
+ */
+
 #ifndef _METHOD_H_
 #define _METHOD_H_
 
@@ -11,6 +17,7 @@ namespace myvm {
 
 struct AttributeInfo;
 struct CodeAttr;
+struct ConstantNameAndType;
 class ClassFileInfo;
 class FileReader;
 class OperandStack;
@@ -44,6 +51,7 @@ public:
     bool isPrivate();
     bool isProtected();
     bool isMainEntry();
+    bool match(const ConstantNameAndType* nameAndType);
     void resolve(ClassFileInfo *clazz);
     OperandStack* getOperandStack();
     LocalVariableTable* getLocalVariableTable();

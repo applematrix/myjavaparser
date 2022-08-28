@@ -7,6 +7,8 @@
 #ifndef _OPERAND_STACK_H_
 #define _OPERAND_STACK_H_
 
+#define STACK_UNIT_SIZE sizeof(uint32_t)
+
 #include <stack>
 
 using namespace std;
@@ -17,7 +19,7 @@ class ObjectRef;
 
 class OperandStack {
 public:
-    OperandStack(uint32_t stackSize);
+    OperandStack(uint32_t maxDepth);
     virtual ~OperandStack();
     void pushUint8(uint8_t val);
     void pushUint16(uint16_t val);
@@ -34,7 +36,7 @@ public:
     void reset();
 private:
     uint8_t *mBuffer;
-    uint32_t mSize;
+    uint32_t mMaxDepth;
     uint32_t mCurPos;
     uint32_t mDepth;
 };

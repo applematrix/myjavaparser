@@ -32,6 +32,7 @@ public:
     char* getUtf8ConstantName(uint16_t index) const;
     void resolve();
     Method* findMainMethod();
+    Method* findMethod(const ConstantNameAndType *methodInfo);
 private:
     int loadConstants();
     int loadInterfaces();

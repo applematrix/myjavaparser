@@ -1,5 +1,10 @@
+/*
+ * Copyright (c) 2022 Huang Dezhi <cshdzxjtu@163.com>
+ * All Rights Reserved
+ *
+ */
+
 #include "Method.h"
-#include <iostream>
 #include "ClassFileInfo.h"
 #include "FileReader.h"
 #include "AttributeInfo.h"
@@ -8,6 +13,10 @@
 #include "LocalVariableTable.h"
 #include "Instructions.h"
 #include "DupInstruction.h"
+#include "ConstantInfo.h"
+#include "Frame.h"
+
+#include <iostream>
 
 using namespace std;
 
@@ -43,6 +52,8 @@ void Method::invoke(ClassFileInfo *clazz) {
     OperandStack* stack = new OperandStack(mCodeAttr->maxStack);
     LocalVariableTable * localVariableTable = new LocalVariableTable(mCodeAttr->maxLocals);
 
+    Frame * frame = new Frame(mCodeAttr->maxStack, mCodeAttr->maxLocals);
+
     // interprete the code
     uint8_t *code = mCodeAttr->code;
     uint8_t *codeEnd = code + mCodeAttr->codeLength;
@@ -54,8 +65,9 @@ void Method::invoke(ClassFileInfo *clazz) {
         instruction->run(clazz, this, stack);
         code += instruction->codeLen();
     }
-
+    
     // release
+    delete frame;
     delete stack;
     delete localVariableTable;
 }
@@ -121,6 +133,12 @@ Method* Method::loadFromFile(ClassFileInfo *classFileInfo, FileReader *fileReade
         }
     }
     return new Method(accessFlags, nameIndex, descriptorIndex, attributes);
+}
+
+bool Method::match(const ConstantNameAndType* nameAndType) {
+    // TODO: check the same class
+    return nameIndex == nameAndType->nameIndex
+        && descriptorIndex == nameAndType->descriptorIndex;
 }
 
 bool Method::isMainEntry() {
