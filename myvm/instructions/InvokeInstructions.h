@@ -11,7 +11,18 @@ class InvokeSpecialInstruction : public Instruction {
 public:
     InvokeSpecialInstruction(uint8_t *code);
     virtual ~InvokeSpecialInstruction() {};
-    virtual uint8_t codeLen() { return 2;}
+    virtual uint8_t codeLen() { return 3;}
+    virtual void run(ClassFileInfo* clazz, Method *context, OperandStack *stack);
+private:
+    uint8_t mIndex;
+};
+
+
+class InvokeVirtualInstruction : public Instruction {
+public:
+    InvokeVirtualInstruction(uint8_t *code);
+    virtual ~InvokeVirtualInstruction() {};
+    virtual uint8_t codeLen() { return 3;}
     virtual void run(ClassFileInfo* clazz, Method *context, OperandStack *stack);
 private:
     uint8_t mIndex;

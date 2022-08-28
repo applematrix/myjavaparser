@@ -46,6 +46,7 @@ public:
     bool isMainEntry();
     void resolve(ClassFileInfo *clazz);
     OperandStack* getOperandStack();
+    LocalVariableTable* getLocalVariableTable();
 private:
     uint16_t accessFlags;
     uint16_t nameIndex;

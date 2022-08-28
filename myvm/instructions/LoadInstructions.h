@@ -43,12 +43,15 @@ public:
 
 class AloadInstruction : public Instruction {
 public:
+    AloadInstruction() {};
     AloadInstruction(uint8_t *code);
+    AloadInstruction(uint8_t *code, uint8_t index);
     virtual ~AloadInstruction() {};
-    virtual uint8_t codeLen() { return 2;}
+    virtual uint8_t codeLen() { return mOpCode == ALOAD ? 2 : 1;}
     virtual void run(ClassFileInfo* clazz, Method *context, OperandStack *stack);
 private:
-    uint8_t index;
+    uint8_t mOpCode;
+    uint8_t mLocalVariableTableIndex;
 };
 
 }

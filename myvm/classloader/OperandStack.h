@@ -22,11 +22,13 @@ public:
     void pushUint8(uint8_t val);
     void pushUint16(uint16_t val);
     void pushUint32(uint32_t val);
+    void pushInt32(int32_t val);
     void pushObjecRef(ObjectRef *reference);
     void push(uint32_t val);
     uint8_t popUint8();
     uint16_t popUint16();
     uint32_t popUint32();
+    int32_t popInt32();
     ObjectRef *popObjecRef();
     uint32_t pop();
     void reset();

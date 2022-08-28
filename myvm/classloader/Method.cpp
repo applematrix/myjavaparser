@@ -155,4 +155,14 @@ void Method::resolve(ClassFileInfo *clazz) {
     }
 }
 
+LocalVariableTable* Method::getLocalVariableTable() {
+    // TODO:
+    return nullptr;
+}
+
+OperandStack* Method::getOperandStack() {
+    // TODO:
+    return nullptr;
+}
+
 }

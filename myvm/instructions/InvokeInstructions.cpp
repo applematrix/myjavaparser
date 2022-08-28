@@ -2,6 +2,7 @@
 #include "../classloader/OperandStack.h"
 #include "../classloader/Heap.h"
 #include "../classloader/ClassFileInfo.h"
+#include "../classloader/ConstantMethodRef.h"
 #include <iostream>
 
 using namespace std;
@@ -17,18 +18,57 @@ InvokeSpecialInstruction::InvokeSpecialInstruction(uint8_t *code) {
 }
 
 void InvokeSpecialInstruction::run(ClassFileInfo* clazz, Method *context, OperandStack *stack) {
-    ConstantClass*constantInfo = (ConstantClass*)clazz->getConstantAt(mIndex);
+    ConstantMethodRef* methodRef = (ConstantMethodRef*)clazz->getConstantAt(mIndex);
 
-    const char* constantName = constantInfo->typeString();
+    uint16_t classIndex = methodRef->classIndex;
+    // TODO: check the class is a inteface
+    uint16_t nameAndTypeIndex = methodRef->nameAndTypeIndex;
+
+    ConstantNameAndType* nameAndTypeRef = (ConstantNameAndType*)clazz->getConstantAt(nameAndTypeIndex);
+    nameAndTypeRef->descriptorIndex;
+
+    ConstantUtf8* method = (ConstantUtf8*)clazz->getConstantAt(nameAndTypeRef->nameIndex);
+    const char* methodName = method->typeString();
+
+    ConstantUtf8* methodDesc = (ConstantUtf8*)clazz->getConstantAt(nameAndTypeRef->descriptorIndex);
     
-    ConstantUtf8* constantUtf8 = (ConstantUtf8*)clazz->getConstantAt(constantInfo->nameIndex);
-    cout << "new Instance, type:" << constantInfo->typeString()
-        << ", binary name:" << constantUtf8->bytes << endl;
+    cout << "InvokeSpecialInstruction, method:" << method->bytes
+         << ", description:" << methodDesc->bytes << endl;
 
-    // TODO: release the memory
-    const char* className = (const char*)constantUtf8->bytes;
-    uint32_t handle = Heap::getInstance()->allocateObject(className);
-    stack->pushUint32(handle);
+    // TODO:
+}
+
+/////////////////////////////////////////////////////////////////
+
+InvokeVirtualInstruction::InvokeVirtualInstruction(uint8_t *code) {
+    uint8_t highByte = *(code+1);
+    uint8_t lowByte = *(code+2);
+
+    mIndex = (highByte<<8) | lowByte;
+}
+
+void InvokeVirtualInstruction::run(ClassFileInfo* clazz, Method *context, OperandStack *stack) {
+
+    cout << "InvokeVirtualInstruction, index:" << (uint32_t)mIndex << endl;
+
+    // ConstantMethodRef* methodRef = (ConstantMethodRef*)clazz->getConstantAt(mIndex);
+
+    // uint16_t classIndex = methodRef->classIndex;
+    // // TODO: check the class is a inteface
+    // uint16_t nameAndTypeIndex = methodRef->nameAndTypeIndex;
+
+    // ConstantNameAndType* nameAndTypeRef = (ConstantNameAndType*)clazz->getConstantAt(nameAndTypeIndex);
+    // nameAndTypeRef->descriptorIndex;
+
+    // ConstantUtf8* method = (ConstantUtf8*)clazz->getConstantAt(nameAndTypeRef->nameIndex);
+    // const char* methodName = method->typeString();
+
+    // ConstantUtf8* methodDesc = (ConstantUtf8*)clazz->getConstantAt(nameAndTypeRef->descriptorIndex);
+    
+    // cout << "InvokeSpecialInstruction, method:" << method->bytes
+    //      << ", description:" << methodDesc->bytes << endl;
+
+    // TODO:
 }
 
 }

@@ -21,6 +21,9 @@ public:
         }
         variable = *(mLocalVariableArray + index);
     }
+
+    void store(uint16_t index, uint32_t value);
+    uint32_t variableAt(uint16_t index);
 private:
     uint8_t *mLocalVariableArray;
     uint16_t mLocalVariableSize;

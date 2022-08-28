@@ -33,6 +33,11 @@ void OperandStack::pushUint32(uint32_t val) {
     mCurPos += sizeof(val);
 }
 
+void OperandStack::pushInt32(int32_t val) {
+    *mBuffer = val;
+    mCurPos += sizeof(val);
+}
+
 void OperandStack::push(uint32_t val) {
     *mBuffer = val;
     mCurPos += sizeof(val);
@@ -60,6 +65,14 @@ uint32_t OperandStack::popUint32() {
     }
     mCurPos -= sizeof(uint32_t);
     return *((uint32_t *)(mBuffer + mCurPos));
+}
+
+int32_t OperandStack::popInt32() {
+    if (mCurPos < sizeof(int32_t)) {
+        return 0; // TODO:
+    }
+    mCurPos -= sizeof(int32_t);
+    return *((int32_t *)(mBuffer + mCurPos));
 }
 
 uint32_t OperandStack::pop() {

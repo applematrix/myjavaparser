@@ -9,6 +9,14 @@
 #include "NewInstruction.h"
 #include "DupInstruction.h"
 #include "FieldInstructions.h"
+#include "InvokeInstructions.h"
+#include "ReturnInstruction.h"
+#include "ConstantInstructions.h"
+#include "StoreInstructions.h"
+#include "PopInstructions.h"
+#include <iostream>
+
+using namespace std;
 
 namespace myvm {
 
@@ -231,16 +239,50 @@ string& getOpCodeDesc(uint8_t opCode) {
 
 Instruction* Instruction::interpreteCode(uint8_t *code) {
     uint8_t opCode = *code;
+    cout << "interprete code:" << (uint32_t)opCode << endl;
     switch (opCode) {
         //TODO: 
         case ALOAD:
             return new AloadInstruction(code);
+        case ALOAD_0:
+        case ALOAD_1:
+        case ALOAD_2:
+        case ALOAD_3:
+            return new AloadInstruction(code, opCode - ALOAD_0);
+            break;
         case NEW:
             return new NewInstruction(code);
         case DUP:
             return new DupInstruction();
         case PUTFIELD:
             return new PutFieldInstruction(code);
+        case INVOKESPECIAL:
+            return new InvokeSpecialInstruction(code);
+        case INVOKEVIRTUAL:
+            return new InvokeVirtualInstruction(code);
+        case ICONST_M1:
+        case ICONST_0:
+        case ICONST_1:
+        case ICONST_2:
+        case ICONST_3:
+        case ICONST_4:
+        case ICONST_5:
+            return new IConstantInstruction(code, opCode - ICONST_0);
+        case ASTORE:
+            return new AStoreInstruction(code);
+        case ASTORE_0:
+        case ASTORE_1:
+        case ASTORE_2:
+        case ASTORE_3:
+            return new AStoreInstruction(code, opCode - ASTORE_0);
+        case POP:
+            return new PopInstruction();
+        case POP2:
+            return new PopInstruction(true);
+        case RETURN:
+            return new ReturnInstruction(code);
+        default:
+            cout << "Unknown op code" << endl;
     }
     return nullptr;
 }
