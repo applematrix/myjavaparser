@@ -35,6 +35,11 @@ int FileReader::read(void *buffer, int32_t dataSize) {
     return readSize == dataSize ? 0 : -1;
 }
 
+void FileReader::skip(uint32_t bytes) {
+    mOffset += bytes;
+    int64_t fileSize = fseek(mClassFile, mOffset, SEEK_SET);
+}
+
 // private functions
 void FileReader::loadFile() {
     mClassFile = fopen(mClassFilePath.c_str(), "rb");

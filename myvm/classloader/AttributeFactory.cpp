@@ -56,7 +56,7 @@ AttributeInfo* AttributeFactory::loadFromFile(ClassFileInfo* classInfo, FileRead
         case ATTR_CODE:
             return new CodeAttr(nameIndex, attrLength, classInfo, fileReader);
         case ATTR_STACK_MAP_TABLE:
-            // TODO:return new StackMapTableAttr()
+            return new StackMapTableAttr(nameIndex, attrLength, fileReader);
         case ATTR_EXCEPTIONS:
             return new ExceptionAttr(nameIndex, attrLength, fileReader);
         case ATTR_INNER_CLASSES:

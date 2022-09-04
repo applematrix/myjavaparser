@@ -22,6 +22,7 @@ public:
     inline uint64_t getSize() {return mSize;}
     inline void markPosition() {mMarkPosition = mOffset;}
     inline void unmarkPosition() {mMarkPosition = 0;}
+    void skip(uint32_t bytes);
     void close();
 
     int readInt32(int32_t &val) {

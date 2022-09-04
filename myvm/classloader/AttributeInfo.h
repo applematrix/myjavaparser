@@ -112,7 +112,10 @@ struct StackMapTableAttr: public AttributeInfo {
     // TODO:
     uint8_t entries = 0;
 
-    StackMapTableAttr(FileReader* fileReader) : AttributeInfo(fileReader, ATTR_STACK_MAP_TABLE) {
+    StackMapTableAttr(uint16_t name, uint32_t len, FileReader* fileReader)
+        : AttributeInfo(name, len, ATTR_STACK_MAP_TABLE) {
+        // TODO:
+        fileReader->skip(this->length);
     }
 };
 
