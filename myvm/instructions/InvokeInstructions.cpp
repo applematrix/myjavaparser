@@ -3,6 +3,7 @@
 #include "../classloader/Heap.h"
 #include "../classloader/ClassFileInfo.h"
 #include "../classloader/ConstantMethodRef.h"
+#include "../classloader/BootstrapClassLoader.h"
 #include <iostream>
 
 using namespace std;
@@ -73,7 +74,14 @@ void InvokeSpecialInstruction::run(Frame *frame) {
          << " method:" << methodUtf8->bytes
          << ", description:" << methodDesc->bytes << endl;
 
-    method->invoke(clazz);
+    // TODO: must use the class' loader to load the class
+    ClassFileInfo* invokedClazz = BootstrapClassLoader::getInstance()->getClassByName(string((const char*)classNameUtf8->bytes));
+    if (invokedClazz == nullptr) {
+        cout << "Class not load, we must load it first!" << endl;
+        // TODO:
+    }
+
+    method->invoke(invokedClazz);
 }
 
 /////////////////////////////////////////////////////////////////
