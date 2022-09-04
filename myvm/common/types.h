@@ -13,6 +13,7 @@
 //typedef int32_t status_t;
 
 #define CLASS_SUFFIX ".class"
+#define OBJECT_CLASS "java/lang/Object"
 #ifdef WIN32
 #define FILE_SPERATOR '\\'
 #else

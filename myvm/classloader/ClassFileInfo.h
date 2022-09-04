@@ -30,8 +30,8 @@ public:
     void printConstantInfo(ConstantInfo *constant) const;
     void printConstantInfo(uint16_t index) const;
     char* getUtf8ConstantName(uint16_t index) const;
-    char* getClassName() {
-        return nullptr;//TODO:
+    const char* getClassName() {
+        return mClassName.c_str();
     };
     void resolve();
     Method* findMainMethod();

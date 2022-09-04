@@ -9,6 +9,7 @@
 #include "ConstantFactory.h"
 #include "AccessFlag.h"
 #include "../classloader/BootstrapClassLoader.h"
+#include "../common/types.h"
 #include <iostream>
 
 using namespace std;
@@ -236,6 +237,13 @@ void ClassFileInfo::resolve() {
     mClassName = std::string((const char*)classNameUtf8->bytes);
 
     
+    if (superClass == 0) {
+        // only the Object class' super class is 0
+        if (mClassName.compare(OBJECT_CLASS) != 0) {
+            cout << "Error: the class "<< mClassName << "has no parent" << endl;
+        }
+        return;
+    }
     ConstantClass* superClazz = (ConstantClass*)getConstantAt(superClass);
     ConstantUtf8* superClassNameUtf8 = (ConstantUtf8*)getConstantAt(superClazz->nameIndex);
     mSuperClassName = std::string((const char*)superClassNameUtf8->bytes);
