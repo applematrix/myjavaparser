@@ -8,6 +8,7 @@
 #include "FileReader.h"
 #include "ConstantFactory.h"
 #include "AccessFlag.h"
+#include "../classloader/BootstrapClassLoader.h"
 #include <iostream>
 
 using namespace std;
@@ -69,6 +70,7 @@ void ClassFileInfo::loadFromFile(const char* path) {
     cout << "------Interfaces------" << endl << endl;
     status = loadInterfaces();
     if (status != 0) {
+        cout << "Load interfaces failed" << endl;
         return;
     }
     cout << "----------------------" << endl << endl;
@@ -76,6 +78,7 @@ void ClassFileInfo::loadFromFile(const char* path) {
     cout << "--------Fields--------" << endl;
     status = loadFields();
     if (status != 0) {
+        cout << "Load fields failed" << endl;
         return;
     }
     cout << "----------------------" << endl << endl;
@@ -83,6 +86,7 @@ void ClassFileInfo::loadFromFile(const char* path) {
     cout << "--------Methods--------" << endl;
     status = loadMethods();
     if (status != 0) {
+        cout << "Load methods failed" << endl;
         return;
     }
     cout << "----------------------" << endl << endl;
@@ -90,9 +94,14 @@ void ClassFileInfo::loadFromFile(const char* path) {
     cout << "--------Attributes--------" << endl;
     status = loadAttributes();
     if (status != 0) {
+        cout << "Load attributes failed" << endl;
         return;
     }
     cout << "----------------------" << endl << endl;
+    mFileReader->close();
+
+    // resolve the class's runtime data
+    resolve();
 }
 
 void ClassFileInfo::release() {
@@ -187,9 +196,9 @@ int ClassFileInfo::loadMethods() {
         return status;
     }
 
+    cout << "Loading "<< methodsCount <<" method ..."<< endl;
     mMethods.reserve(methodsCount);
     for (int i = 0; i < methodsCount; i++) {
-        
         cout << "Load method:" << i << endl;
         Method* method = Method::loadFromFile(this, mFileReader);
         if (method == nullptr) {
@@ -221,6 +230,18 @@ void ClassFileInfo::resolve() {
     for (auto method : mMethods) {
         method->resolve(this);
     }
+
+    ConstantClass* thisClazz = (ConstantClass*)getConstantAt(thisClass);
+    ConstantUtf8* classNameUtf8 = (ConstantUtf8*)getConstantAt(thisClazz->nameIndex);
+    mClassName = std::string((const char*)classNameUtf8->bytes);
+
+    
+    ConstantClass* superClazz = (ConstantClass*)getConstantAt(superClass);
+    ConstantUtf8* superClassNameUtf8 = (ConstantUtf8*)getConstantAt(superClazz->nameIndex);
+    mSuperClassName = std::string((const char*)superClassNameUtf8->bytes);
+
+    cout << "Resolve " << mClassName << "\'s super class" << mSuperClassName << endl;
+    BootstrapClassLoader::getInstance()->loadClassFromClassPath(mSuperClassName);
 }
 
 void ClassFileInfo::invokeMethod() {

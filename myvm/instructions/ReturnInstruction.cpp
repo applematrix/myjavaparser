@@ -6,4 +6,8 @@ void ReturnInstruction::run(ClassFileInfo* clazz, Method *context, OperandStack 
     cout << "ReturnInstruction run: clear the stack! " << endl;
 }
 
+void ReturnInstruction::run(Frame* frame) {
+    cout << "ReturnInstruction run: clear the stack! " << endl;
+}
+
 }

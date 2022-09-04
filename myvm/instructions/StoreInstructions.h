@@ -13,6 +13,7 @@ public:
     virtual ~AStoreInstruction() {};
     virtual uint8_t codeLen() { return mOpCode == ASTORE ? 2 : 1;}
     virtual void run(ClassFileInfo* clazz, Method *context, OperandStack *stack);
+    virtual void run(Frame* frame);
 private:
     uint8_t mOpCode;
     uint8_t mLocalVariableTableIndex;

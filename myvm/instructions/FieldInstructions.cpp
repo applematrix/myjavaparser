@@ -17,6 +17,10 @@ void GetFieldInstruction::run(ClassFileInfo* clazz, Method *context, OperandStac
     cout << "get field" << endl;
 }
 
+void GetFieldInstruction::run(Frame *frame) {
+    cout << "get field" << endl;
+}
+
 
 /////////////////////////////////////////////////////////
 PutFieldInstruction::PutFieldInstruction(uint8_t *code) {
@@ -26,6 +30,10 @@ PutFieldInstruction::PutFieldInstruction(uint8_t *code) {
 }
 
 void PutFieldInstruction::run(ClassFileInfo* clazz, Method *context, OperandStack *stack) {
+    cout << "put field" << endl;
+}
+
+void PutFieldInstruction::run(Frame *frame) {
     cout << "put field" << endl;
 }
 

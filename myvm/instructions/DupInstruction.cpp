@@ -15,4 +15,13 @@ void DupInstruction::run(ClassFileInfo* clazz, Method *context, OperandStack *st
     stack->pushUint32(handle);
 }
 
+void DupInstruction::run(Frame* frame) {
+    cout << "Duplicate instance"<< endl;
+
+    OperandStack *stack = frame->getStack();
+    uint32_t handle = stack->popUint32();
+    stack->pushUint32(handle);
+    stack->pushUint32(handle);
+}
+
 }

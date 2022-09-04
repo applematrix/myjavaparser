@@ -2,6 +2,7 @@
 #include "../classloader/OperandStack.h"
 #include "../classloader/LocalVariableTable.h"
 #include "../classloader/Method.h"
+#include "../classloader/Frame.h"
 
 using namespace myvm;
 
@@ -27,6 +28,11 @@ void AStoreInstruction::run(ClassFileInfo* clazz, Method *context, OperandStack 
         return;
     }
     lvt->store(mLocalVariableTableIndex, (uint32_t)objectRef);
+}
+
+void AStoreInstruction::run(Frame* frame) {
+    OperandStack *stack = frame->getStack();
+    LocalVariableTable* lvt = frame->getLocalVariableTable();
 }
 
 }

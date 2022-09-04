@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include <string>
 #include <iostream>
+#include "../classloader/Frame.h"
 using namespace std;
 
 namespace myvm {
@@ -238,11 +239,13 @@ string& getOpCodeDesc(uint8_t opCode);
 
 class Method;
 class ClassFileInfo;
+class Frame;
 class Instruction {
 public:
     Instruction() {};
     virtual ~Instruction(){};
-    virtual void run(ClassFileInfo* clazz, Method *context, OperandStack *stack) = 0;
+    virtual void run(ClassFileInfo *clazz, Method *context, OperandStack *stack) = 0;
+    virtual void run(Frame* frame) = 0;
     virtual uint8_t codeLen() = 0;
 
     static Instruction* interpreteCode(uint8_t *code);
@@ -253,6 +256,7 @@ class NopInstruction : public Instruction {
     NopInstruction() {}
     virtual ~NopInstruction() {}
     virtual void run(ClassFileInfo* clazz, Method *context, OperandStack *stack) {}
+    virtual void run(Frame* frame) {}
     virtual uint8_t codeLen() { return 1;}
 };
 

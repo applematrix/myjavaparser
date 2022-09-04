@@ -30,6 +30,9 @@ public:
     void printConstantInfo(ConstantInfo *constant) const;
     void printConstantInfo(uint16_t index) const;
     char* getUtf8ConstantName(uint16_t index) const;
+    char* getClassName() {
+        return nullptr;//TODO:
+    };
     void resolve();
     Method* findMainMethod();
     Method* findMethod(const ConstantNameAndType *methodInfo);
@@ -45,6 +48,7 @@ private:
     // test code
     void invokeMethod();
 private:
+    // JVMS properties
     uint32_t magic;
     uint16_t majorVersion;
     uint16_t minorVersion;
@@ -57,11 +61,14 @@ private:
     uint16_t methodsCount;
     uint16_t attributesCount;
 
+    // runtime properties
     uint16_t *mInterfaces;
     std::vector<ConstantInfo*> mConstantPool;
     std::vector<FieldInfo*> mFields;
     std::vector<Method*> mMethods;
     std::vector<AttributeInfo*> mAttributes;
+    std::string mClassName;
+    std::string mSuperClassName;
 
     FileReader *mFileReader;
 };

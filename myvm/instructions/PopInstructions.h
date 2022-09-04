@@ -12,6 +12,7 @@ public:
     virtual ~PopInstruction() {};
     virtual uint8_t codeLen() { return 1;}
     virtual void run(ClassFileInfo* clazz, Method *context, OperandStack *stack);
+    virtual void run(Frame* frame);
 private:
     bool mPop2 = false;
 };

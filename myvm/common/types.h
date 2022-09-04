@@ -11,4 +11,12 @@
 // typedef unsigned long uint64_t;
 
 //typedef int32_t status_t;
+
+#define CLASS_SUFFIX ".class"
+#ifdef WIN32
+#define FILE_SPERATOR '\\'
+#else
+#define FILE_SPERATOR '/'
+#endif
+
 #endif

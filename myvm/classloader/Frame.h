@@ -10,13 +10,20 @@ using namespace std;
 namespace myvm {
 
 class ConstantInfo;
+class ClassFileInfo;
+class Method;
 
 class Frame {
 public:
-    Frame(uint32_t stackSize, uint32_t localVariableSize);
+    Frame(ClassFileInfo *clazz, Method *method, uint32_t stackSize, uint32_t localVariableSize);
     virtual ~Frame();
+    LocalVariableTable* getLocalVariableTable() { return mLocalVariableTable;}
+    OperandStack* getStack() { return mStack;}
+    ClassFileInfo *getClass() { return mClazz;}
 
 private:
+    ClassFileInfo* mClazz;
+    Method* mMethod;
     LocalVariableTable *mLocalVariableTable;
     OperandStack *mStack;
     std::vector<ConstantInfo*> *mClassConstantPool;

@@ -32,4 +32,20 @@ void NewInstruction::run(ClassFileInfo* clazz, Method *context, OperandStack *st
     stack->pushUint32(handle);
 }
 
+void NewInstruction::run(Frame *frame) {
+    ClassFileInfo *clazz = frame->getClass();
+    ConstantClass*constantInfo = (ConstantClass*)clazz->getConstantAt(mIndex);
+    const char* constantName = constantInfo->typeString();
+    
+    ConstantUtf8* constantUtf8 = (ConstantUtf8*)clazz->getConstantAt(constantInfo->nameIndex);
+    cout << "new Instance, type:" << constantInfo->typeString()
+        << ", binary name:" << constantUtf8->bytes << endl;
+
+    // TODO: release the memory
+    const char* className = (const char*)constantUtf8->bytes;
+    uint32_t handle = Heap::getInstance()->allocateObject(className);
+    OperandStack *stack = frame->getStack();
+    stack->pushUint32(handle);
+}
+
 }

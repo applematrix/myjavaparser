@@ -39,5 +39,18 @@ void AloadInstruction::run(ClassFileInfo* clazz, Method *context, OperandStack *
     stack->pushUint32(objectRef);
 }
 
+void AloadInstruction::run(Frame* frame) {
+    cout << "AloadInstruction run: load " << (uint32_t)mLocalVariableTableIndex << " into the stack! " << endl;
+    LocalVariableTable* lvt = frame->getLocalVariableTable();
+    if (lvt == nullptr) {
+        cout << "No local variable table" << endl;
+        return;
+    }
+    uint32_t objectRef = lvt->variableAt(mLocalVariableTableIndex);
+
+    OperandStack *stack = frame->getStack();
+    stack->pushUint32(objectRef);
+}
+
 
 }

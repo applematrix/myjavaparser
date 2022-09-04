@@ -41,7 +41,7 @@ Method::~Method() {
 
 void Method::invoke(ClassFileInfo *clazz) {
     if (isAbstract()) {
-        cout << "Can't invoe abstract method!"<< endl;
+        cout << "Can't invoke abstract method!"<< endl;
         return;
     }
     if (mCodeAttr == nullptr) {
@@ -49,10 +49,7 @@ void Method::invoke(ClassFileInfo *clazz) {
         return;
     }
 
-    OperandStack* stack = new OperandStack(mCodeAttr->maxStack);
-    LocalVariableTable * localVariableTable = new LocalVariableTable(mCodeAttr->maxLocals);
-
-    Frame * frame = new Frame(mCodeAttr->maxStack, mCodeAttr->maxLocals);
+    Frame *frame = new Frame(clazz, this, mCodeAttr->maxStack, mCodeAttr->maxLocals);
 
     // interprete the code
     uint8_t *code = mCodeAttr->code;
@@ -62,14 +59,12 @@ void Method::invoke(ClassFileInfo *clazz) {
         if (instruction == nullptr) {
             cout << "Invalid instruction!" << endl;
         }
-        instruction->run(clazz, this, stack);
+        instruction->run(frame);
         code += instruction->codeLen();
     }
     
     // release
     delete frame;
-    delete stack;
-    delete localVariableTable;
 }
 
 bool Method::isAbstract() {

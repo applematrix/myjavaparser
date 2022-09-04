@@ -56,4 +56,8 @@ bool FileReader::valid() {
     return true;
 }
 
+void FileReader::close() {
+    fclose(mClassFile);
+}
+
 }

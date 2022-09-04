@@ -13,6 +13,7 @@ public:
     virtual ~InvokeSpecialInstruction() {};
     virtual uint8_t codeLen() { return 3;}
     virtual void run(ClassFileInfo* clazz, Method *context, OperandStack *stack);
+    virtual void run(Frame *frame);
 private:
     uint8_t mIndex;
 };
@@ -24,6 +25,7 @@ public:
     virtual ~InvokeVirtualInstruction() {};
     virtual uint8_t codeLen() { return 3;}
     virtual void run(ClassFileInfo* clazz, Method *context, OperandStack *stack);
+    virtual void run(Frame *frame);
 private:
     uint8_t mIndex;
 };

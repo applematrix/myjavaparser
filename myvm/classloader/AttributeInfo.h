@@ -58,6 +58,7 @@ struct AttributeInfo {
     AttributeInfo() {
         nameIndex = 0;
         length = 0;
+        attrType = 0;
     }
 
     AttributeInfo(FileReader* fileReader, uint8_t type) {
@@ -107,9 +108,9 @@ struct CodeAttr: public AttributeInfo {
 };
 
 struct StackMapTableAttr: public AttributeInfo {
-    uint16_t entryCount;
+    uint16_t entryCount = 0;
     // TODO:
-    uint8_t entries;
+    uint8_t entries = 0;
 
     StackMapTableAttr(FileReader* fileReader) : AttributeInfo(fileReader, ATTR_STACK_MAP_TABLE) {
     }

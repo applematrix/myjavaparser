@@ -16,4 +16,15 @@ void PopInstruction::run(ClassFileInfo* clazz, Method *context, OperandStack *st
     }
 }
 
+void PopInstruction::run(Frame* frame) {
+    cout << "PopInstruction run: pop " << (mPop2 ? 2 : 1) << " items from the stack! " << endl;
+
+    OperandStack *stack = frame->getStack();
+    // TODO:
+    stack->popUint32();
+    if (mPop2) {
+        stack->popUint32();
+    }
+}
+
 }
