@@ -10,9 +10,11 @@
 #include "AccessFlag.h"
 #include "../classloader/BootstrapClassLoader.h"
 #include "../common/types.h"
+#include "../classloader/Method.h"
 #include <iostream>
 
 using namespace std;
+using namespace myvm;
 
 namespace myvm {
 
@@ -270,6 +272,15 @@ Method* ClassFileInfo::findMainMethod() {
 Method* ClassFileInfo::findMethod(const ConstantNameAndType* nameAndType) {
     for (auto method : mMethods) {
         if (method->match(nameAndType)) {
+            return method;
+        }
+    }
+    return nullptr;
+}
+
+Method* ClassFileInfo::findMethod(const ConstantUtf8* methodName, const ConstantUtf8* methodDesc) {
+    for (auto method : mMethods) {
+        if (method->match(methodName, methodDesc)) {
             return method;
         }
     }

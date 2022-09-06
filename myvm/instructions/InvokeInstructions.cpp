@@ -47,15 +47,9 @@ void InvokeSpecialInstruction::run(ClassFileInfo* clazz, Method *context, Operan
 
 void InvokeSpecialInstruction::run(Frame *frame) {
     ClassFileInfo *clazz = frame->getClass();
+
     ConstantMethodRef* methodRef = (ConstantMethodRef*)clazz->getConstantAt(mIndex);
-
-    uint16_t classIndex = methodRef->classIndex;
-    ConstantClass* constantClass = (ConstantClass*)clazz->getConstantAt(classIndex);
-
-    // TODO: find the correct class
-    // TODO: check the class is a inteface
-    uint16_t nameAndTypeIndex = methodRef->nameAndTypeIndex;
-    ConstantNameAndType* nameAndTypeRef = (ConstantNameAndType*)clazz->getConstantAt(nameAndTypeIndex);
+    ConstantNameAndType* nameAndTypeRef = (ConstantNameAndType*)clazz->getConstantAt(methodRef->nameAndTypeIndex);
     Method* method = clazz->findMethod(nameAndTypeRef);
 
     
@@ -64,24 +58,24 @@ void InvokeSpecialInstruction::run(Frame *frame) {
     }
 
     // test code
-    ConstantClass* methodClass = (ConstantClass*)clazz->getConstantAt(classIndex);
-    ConstantUtf8* classNameUtf8 = (ConstantUtf8*)clazz->getConstantAt(methodClass->nameIndex);
-    
-    ConstantUtf8* methodUtf8 = (ConstantUtf8*)clazz->getConstantAt(nameAndTypeRef->nameIndex);
-    const char* methodName = methodUtf8->typeString();
-    ConstantUtf8* methodDesc = (ConstantUtf8*)clazz->getConstantAt(nameAndTypeRef->descriptorIndex);
-    cout << "InvokeSpecialInstruction, class:" << classNameUtf8->bytes
-         << " method:" << methodUtf8->bytes
-         << ", description:" << methodDesc->bytes << endl;
+    ConstantClass* targetClassInfo = (ConstantClass*)clazz->getConstantAt(methodRef->classIndex);
+    ConstantUtf8* targetClassName = (ConstantUtf8*)clazz->getConstantAt(targetClassInfo->nameIndex);
 
     // TODO: must use the class' loader to load the class
-    ClassFileInfo* invokedClazz = BootstrapClassLoader::getInstance()->getClassByName(string((const char*)classNameUtf8->bytes));
-    if (invokedClazz == nullptr) {
+    ClassFileInfo* targetClazz = BootstrapClassLoader::getInstance()->getClassByName(string((const char*)targetClassName->bytes));
+    if (targetClazz == nullptr) {
         cout << "Class not load, we must load it first!" << endl;
         // TODO:
     }
+    
+    ConstantUtf8* targetMethodName = (ConstantUtf8*)clazz->getConstantAt(nameAndTypeRef->nameIndex);
+    ConstantUtf8* targetMethodDesc = (ConstantUtf8*)clazz->getConstantAt(nameAndTypeRef->descriptorIndex);
+    cout << "InvokeSpecialInstruction, target class:" << targetClassName->bytes
+         << ", target method:" << targetMethodName->bytes
+         << ", description:" << targetMethodDesc->bytes << endl;
 
-    method->invoke(invokedClazz);
+    Method* targetMethod = targetClazz->findMethod(targetMethodName, targetMethodDesc);
+    targetMethod->invoke(targetClazz);
 }
 
 /////////////////////////////////////////////////////////////////

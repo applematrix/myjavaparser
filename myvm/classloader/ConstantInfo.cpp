@@ -37,4 +37,8 @@ void ConstantClass::dump(const ClassFileInfo* classInfo) {
     //cout << "ConstantClass:" << classInfo->getUtf8ConstantName(nameIndex) << endl;
 }
 
+bool ConstantUtf8::equals(string& str) const {
+    return length == str.length() && strncmp((const char*)bytes, str.c_str(), length) == 0;
+}
+
 }

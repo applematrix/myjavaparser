@@ -19,6 +19,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace myvm;
 
 namespace myvm {
 
@@ -134,6 +135,10 @@ bool Method::match(const ConstantNameAndType* nameAndType) {
     // TODO: check the same class
     return nameIndex == nameAndType->nameIndex
         && descriptorIndex == nameAndType->descriptorIndex;
+}
+
+bool Method::match(const ConstantUtf8* methodName, const ConstantUtf8* methodDesc) {
+    return methodName->equals(mName) && methodDesc->equals(mDescriptor);
 }
 
 bool Method::isMainEntry() {

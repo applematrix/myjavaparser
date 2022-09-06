@@ -7,6 +7,9 @@
 #ifndef _CONSTANT_INFO_H_
 #define _CONSTANT_INFO_H_
 #include <stdint.h>
+#include <string>
+
+using namespace std;
 
 namespace myvm {
 
@@ -32,7 +35,8 @@ enum ConstantTag {
     CONSTANT_PACKAGE = 20,
 };
 
-struct ConstantInfo {
+class ConstantInfo {
+public:
     uint8_t tag;
 
     ConstantInfo(uint8_t _tag): tag(_tag) {}
@@ -41,7 +45,8 @@ struct ConstantInfo {
     virtual void resolve() {}
 };
 
-struct ConstantClass: public ConstantInfo {
+class ConstantClass: public ConstantInfo {
+public:
     uint16_t nameIndex;
 
     ConstantClass(uint8_t tag, uint16_t index) :
@@ -57,13 +62,15 @@ public:
         ConstantInfo(tag), classIndex(index), nameAndTypeIndex(nameAndType) {}
 };
 
-struct ConstantString: public ConstantInfo {
+class ConstantString: public ConstantInfo {
+public:
     uint16_t stringIndex;
     ConstantString(uint16_t index) : 
         ConstantInfo(CONSTANT_STRING), stringIndex(index) {}
 };
 
-struct ConstantInteger: public ConstantInfo {
+class ConstantInteger: public ConstantInfo {
+public:
     uint32_t bytes;
     ConstantInteger(uint32_t _bytes) : 
         ConstantInfo(CONSTANT_INTEGER), bytes(_bytes) {}
@@ -73,7 +80,8 @@ struct ConstantInteger: public ConstantInfo {
 };
 typedef ConstantInteger ConstantFloat;
 
-struct ConstantLong: public ConstantInfo {
+class ConstantLong: public ConstantInfo {
+public:
     uint32_t highBytes;
     uint32_t lowBytes;
 
@@ -83,7 +91,8 @@ struct ConstantLong: public ConstantInfo {
 typedef ConstantLong ConstantDouble;
 
 
-struct ConstantNameAndType: public ConstantInfo {
+class ConstantNameAndType: public ConstantInfo {
+public:
     uint16_t nameIndex;
     uint16_t descriptorIndex;
 
@@ -92,7 +101,8 @@ struct ConstantNameAndType: public ConstantInfo {
         nameIndex(name), descriptorIndex(desc) {}
 };
 
-struct ConstantUtf8: public ConstantInfo {
+class ConstantUtf8: public ConstantInfo {
+public:
     uint16_t length;
     uint8_t *bytes;
 
@@ -100,9 +110,12 @@ struct ConstantUtf8: public ConstantInfo {
         ConstantInfo(CONSTANT_UTF8),
         length(len), bytes(_bytes) {
     }
+
+    bool equals(string& str) const;
 };
 
-struct ConstantMethodHandle: public ConstantInfo {
+class ConstantMethodHandle: public ConstantInfo {
+public:
     uint8_t refKind;
     uint16_t refIndex;
 
@@ -112,11 +125,13 @@ struct ConstantMethodHandle: public ConstantInfo {
     }
 };
 
-struct ConstantMethodType: public ConstantInfo {
+class ConstantMethodType: public ConstantInfo {
+public:
     uint16_t descriptorIndex;
 };
 
-struct ConstantDynamic: public ConstantInfo {
+class ConstantDynamic: public ConstantInfo {
+public:
     uint16_t bootstrapMethodAttrIndex;
     uint16_t nameAndTypeIndex;
 };

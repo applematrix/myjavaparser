@@ -36,6 +36,7 @@ public:
     void resolve();
     Method* findMainMethod();
     Method* findMethod(const ConstantNameAndType *methodInfo);
+    Method* findMethod(const ConstantUtf8* methodName, const ConstantUtf8 *methodDesc);
 private:
     int loadConstants();
     int loadInterfaces();

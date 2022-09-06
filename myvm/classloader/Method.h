@@ -17,11 +17,12 @@ namespace myvm {
 
 struct AttributeInfo;
 struct CodeAttr;
-struct ConstantNameAndType;
+class ConstantNameAndType;
 class ClassFileInfo;
 class FileReader;
 class OperandStack;
 class LocalVariableTable;
+class ConstantUtf8;
 
 enum MethodAccessFlag {
     METHOD_ACC_PUBLIC = 0x0001,
@@ -52,6 +53,7 @@ public:
     bool isProtected();
     bool isMainEntry();
     bool match(const ConstantNameAndType* nameAndType);
+    bool match(const ConstantUtf8* methodName, const ConstantUtf8* methodDesc);
     void resolve(ClassFileInfo *clazz);
     OperandStack* getOperandStack();
     LocalVariableTable* getLocalVariableTable();
