@@ -9,7 +9,7 @@
 #include "ConstantFactory.h"
 #include "AccessFlag.h"
 #include "../classloader/BootstrapClassLoader.h"
-#include "../common/types.h"
+#include "../common/utils.h"
 #include "../classloader/Method.h"
 #include <iostream>
 

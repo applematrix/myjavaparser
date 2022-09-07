@@ -42,7 +42,7 @@ void InvokeSpecialInstruction::run(ClassFileInfo* clazz, Method *context, Operan
     cout << "InvokeSpecialInstruction, method:" << methodUtf8->bytes
          << ", description:" << methodDesc->bytes << endl;
 
-    method->invoke(clazz);
+   // method->invoke(clazz);
 }
 
 void InvokeSpecialInstruction::run(Frame *frame) {
@@ -70,12 +70,14 @@ void InvokeSpecialInstruction::run(Frame *frame) {
     
     ConstantUtf8* targetMethodName = (ConstantUtf8*)clazz->getConstantAt(nameAndTypeRef->nameIndex);
     ConstantUtf8* targetMethodDesc = (ConstantUtf8*)clazz->getConstantAt(nameAndTypeRef->descriptorIndex);
-    cout << "InvokeSpecialInstruction, target class:" << targetClassName->bytes
+    cout << INDENTS[frame->getDepth()] << "InvokeSpecialInstruction, target class:" << targetClassName->bytes
          << ", target method:" << targetMethodName->bytes
          << ", description:" << targetMethodDesc->bytes << endl;
 
     Method* targetMethod = targetClazz->findMethod(targetMethodName, targetMethodDesc);
-    targetMethod->invoke(targetClazz);
+    cout << INDENTS[frame->getDepth()] << "{" << endl;
+    targetMethod->invoke(targetClazz, frame->getDepth()+1);
+    cout << INDENTS[frame->getDepth()] << "}" << endl;
 }
 
 /////////////////////////////////////////////////////////////////

@@ -239,7 +239,7 @@ string& getOpCodeDesc(uint8_t opCode) {
 
 Instruction* Instruction::interpreteCode(uint8_t *code) {
     uint8_t opCode = *code;
-    cout << "interprete code:" << (uint32_t)opCode << endl;
+    
     switch (opCode) {
         //TODO: 
         case ALOAD:

@@ -12,6 +12,7 @@
 #include "ClassFileInfo.h"
 #include "windows/Environment.h"
 #include "classloader/BootstrapClassLoader.h"
+#include "common/utils.h"
 
 using namespace myvm;
 using namespace std;
@@ -38,7 +39,9 @@ int main(int argc, const char* args[]) {
 		cout << "No main entry method in the class" << endl;
 	} else {
 		cout << "Invoke the main method!" << endl;
-		mainMethod->invoke(mClasssFile);
+		cout << INDENTS[0] << "{" << endl;
+		mainMethod->invoke(mClasssFile, 1);
+		cout << INDENTS[0] << "}" << endl;
 	}
 
 

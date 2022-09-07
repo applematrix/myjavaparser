@@ -15,6 +15,7 @@
 #include "DupInstruction.h"
 #include "ConstantInfo.h"
 #include "Frame.h"
+#include "../common/utils.h"
 
 #include <iostream>
 
@@ -40,7 +41,7 @@ Method::~Method() {
     mAttributes.clear();
 }
 
-void Method::invoke(ClassFileInfo *clazz) {
+void Method::invoke(ClassFileInfo *clazz, uint16_t depth) {
     if (isAbstract()) {
         cout << "Can't invoke abstract method!"<< endl;
         return;
@@ -50,12 +51,13 @@ void Method::invoke(ClassFileInfo *clazz) {
         return;
     }
 
-    Frame *frame = new Frame(clazz, this, mCodeAttr->maxStack, mCodeAttr->maxLocals);
+    Frame *frame = new Frame(clazz, this, mCodeAttr->maxStack, mCodeAttr->maxLocals, depth);
 
     // interprete the code
     uint8_t *code = mCodeAttr->code;
     uint8_t *codeEnd = code + mCodeAttr->codeLength;
     while (code < codeEnd) {
+        cout << indent(depth) << "interprete code:" << (int32_t)*code << endl;
         auto instruction = Instruction::interpreteCode(code);
         if (instruction == nullptr) {
             cout << "Invalid instruction!" << endl;
@@ -63,7 +65,7 @@ void Method::invoke(ClassFileInfo *clazz) {
         instruction->run(frame);
         code += instruction->codeLen();
     }
-    
+
     // release
     delete frame;
 }

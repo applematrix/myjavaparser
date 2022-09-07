@@ -16,7 +16,7 @@ void DupInstruction::run(ClassFileInfo* clazz, Method *context, OperandStack *st
 }
 
 void DupInstruction::run(Frame* frame) {
-    cout << "Duplicate instance"<< endl;
+    cout << INDENTS[frame->getDepth()] << "Duplicate instance"<< endl;
 
     OperandStack *stack = frame->getStack();
     uint32_t handle = stack->popUint32();

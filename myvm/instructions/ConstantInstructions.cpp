@@ -16,7 +16,7 @@ void IConstantInstruction::run(ClassFileInfo* clazz, Method *context, OperandSta
 }
 
 void IConstantInstruction::run(Frame* frame) {
-    cout << "IConstant run push " << mValue << " into the stack! " << endl;
+    cout << INDENTS[frame->getDepth()] << "IConstant run push " << mValue << " into the stack! " << endl;
 
     OperandStack *stack = frame->getStack();
     stack->pushInt32(mValue);

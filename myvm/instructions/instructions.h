@@ -11,6 +11,7 @@
 #include <string>
 #include <iostream>
 #include "../classloader/Frame.h"
+#include "../common/utils.h"
 using namespace std;
 
 namespace myvm {

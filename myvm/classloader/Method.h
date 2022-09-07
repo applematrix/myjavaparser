@@ -45,7 +45,7 @@ public:
     
     Method(uint16_t flags, uint16_t name, uint16_t desc, vector<AttributeInfo*> *attrs);
     ~Method();
-    void invoke(ClassFileInfo *clazz);
+    void invoke(ClassFileInfo *clazz, uint16_t depth);
     bool isAbstract();
     bool isStatic();
     bool isPublic();

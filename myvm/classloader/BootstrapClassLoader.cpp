@@ -1,6 +1,6 @@
 #include "BootstrapClassLoader.h"
 #include "ClassFileInfo.h"
-#include "types.h"
+#include "utils.h"
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>

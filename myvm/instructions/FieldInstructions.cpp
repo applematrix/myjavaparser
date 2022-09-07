@@ -34,7 +34,7 @@ void PutFieldInstruction::run(ClassFileInfo* clazz, Method *context, OperandStac
 }
 
 void PutFieldInstruction::run(Frame *frame) {
-    cout << "put field" << endl;
+    cout << INDENTS[frame->getDepth()] << "put field" << endl;
 }
 
 }

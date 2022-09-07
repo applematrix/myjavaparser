@@ -7,7 +7,7 @@ void ReturnInstruction::run(ClassFileInfo* clazz, Method *context, OperandStack 
 }
 
 void ReturnInstruction::run(Frame* frame) {
-    cout << "ReturnInstruction run: clear the stack! " << endl;
+    cout << INDENTS[frame->getDepth()] << "ReturnInstruction run: clear the stack! " << endl;
 }
 
 }

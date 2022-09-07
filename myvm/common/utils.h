@@ -1,5 +1,5 @@
-#ifndef _TYPES_H_
-#define _TYPES_H_
+#ifndef _UTILS_H_
+#define _UTILS_H_
 #include "stdint.h"
 // typedef char int8_t;
 // typedef unsigned char uint8_t;
@@ -19,5 +19,8 @@
 #else
 #define FILE_SPERATOR '/'
 #endif
+
+const char* indent(uint16_t depth);
+extern const char* INDENTS[];
 
 #endif

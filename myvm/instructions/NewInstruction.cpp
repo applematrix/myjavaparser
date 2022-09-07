@@ -38,7 +38,7 @@ void NewInstruction::run(Frame *frame) {
     const char* constantName = constantInfo->typeString();
     
     ConstantUtf8* constantUtf8 = (ConstantUtf8*)clazz->getConstantAt(constantInfo->nameIndex);
-    cout << "new Instance, type:" << constantInfo->typeString()
+    cout << INDENTS[frame->getDepth()] << "new Instance, type:" << constantInfo->typeString()
         << ", binary name:" << constantUtf8->bytes << endl;
 
     // TODO: release the memory
