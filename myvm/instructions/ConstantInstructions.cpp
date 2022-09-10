@@ -1,5 +1,6 @@
 #include "ConstantInstructions.h"
 #include "..\classloader\OperandStack.h"
+#include "..\classloader\ThreadLocalStorage.h"
 #include <iostream>
 using namespace std;
 using namespace myvm;
@@ -18,7 +19,7 @@ void IConstantInstruction::run(ClassFileInfo* clazz, Method *context, OperandSta
 void IConstantInstruction::run(Frame* frame) {
     cout << INDENTS[frame->getDepth()] << "IConstant run push " << mValue << " into the stack! " << endl;
 
-    OperandStack *stack = frame->getStack();
+    shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
     stack->pushInt32(mValue);
 }
 

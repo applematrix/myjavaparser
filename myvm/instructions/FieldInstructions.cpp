@@ -1,5 +1,10 @@
 #include "FieldInstructions.h"
 #include "../classloader/Method.h"
+#include "../classloader/ClassFileInfo.h"
+#include "../classloader/ConstantInfo.h"
+#include "../classloader/ConstantFieldRef.h"
+#include "../classloader/BootstrapClassLoader.h"
+
 #include <iostream>
 
 using namespace std;
@@ -34,7 +39,17 @@ void PutFieldInstruction::run(ClassFileInfo* clazz, Method *context, OperandStac
 }
 
 void PutFieldInstruction::run(Frame *frame) {
-    cout << INDENTS[frame->getDepth()] << "put field" << endl;
+    ClassFileInfo *clazz = frame->getClass();
+    ConstantFieldRef *fieldRef = (ConstantFieldRef *)clazz->getConstantAt(mIndex);
+
+    ConstantClass *classInfo = (ConstantClass*)clazz->getConstantAt(fieldRef->classIndex);
+    ConstantNameAndType *typeInfo = (ConstantNameAndType*)clazz->getConstantAt(fieldRef->nameAndTypeIndex);
+
+    ConstantUtf8 *name = (ConstantUtf8*)clazz->getConstantAt(typeInfo->nameIndex);
+    ConstantUtf8 *desc = (ConstantUtf8*)clazz->getConstantAt(typeInfo->descriptorIndex);
+
+    cout << INDENTS[frame->getDepth()] << "put field, index:"
+        << mIndex << ", name:" << name->bytes << ", description:" << desc->bytes << endl;
 }
 
 }

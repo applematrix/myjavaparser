@@ -52,12 +52,10 @@ void InvokeSpecialInstruction::run(Frame *frame) {
     ConstantNameAndType* nameAndTypeRef = (ConstantNameAndType*)clazz->getConstantAt(methodRef->nameAndTypeIndex);
     Method* method = clazz->findMethod(nameAndTypeRef);
 
-    
     if (method == nullptr) {
         cout << "InvokeSpecialInstruction error: no method found!" << endl;
     }
 
-    // test code
     ConstantClass* targetClassInfo = (ConstantClass*)clazz->getConstantAt(methodRef->classIndex);
     ConstantUtf8* targetClassName = (ConstantUtf8*)clazz->getConstantAt(targetClassInfo->nameIndex);
 
@@ -76,7 +74,7 @@ void InvokeSpecialInstruction::run(Frame *frame) {
 
     Method* targetMethod = targetClazz->findMethod(targetMethodName, targetMethodDesc);
     cout << INDENTS[frame->getDepth()] << "{" << endl;
-    targetMethod->invoke(targetClazz, frame->getDepth()+1);
+    targetMethod->invoke(frame->getDepth()+1);
     cout << INDENTS[frame->getDepth()] << "}" << endl;
 }
 

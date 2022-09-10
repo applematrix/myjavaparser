@@ -8,6 +8,7 @@
 
 #include "AttributeFactory.h"
 #include "AttributeInfo.h"
+#include "CodeAttr.h"
 
 using namespace myvm;
 using namespace std;

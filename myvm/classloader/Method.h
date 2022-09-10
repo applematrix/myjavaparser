@@ -43,9 +43,9 @@ class Method {
 public:
     static Method* loadFromFile(ClassFileInfo *classFileInfo, FileReader *fileReader);
     
-    Method(uint16_t flags, uint16_t name, uint16_t desc, vector<AttributeInfo*> *attrs);
+    Method(ClassFileInfo* owner, uint16_t flags, uint16_t name, uint16_t desc, vector<AttributeInfo*> *attrs);
     ~Method();
-    void invoke(ClassFileInfo *clazz, uint16_t depth);
+    void invoke(uint16_t depth);
     bool isAbstract();
     bool isStatic();
     bool isPublic();
@@ -57,6 +57,7 @@ public:
     void resolve(ClassFileInfo *clazz);
     OperandStack* getOperandStack();
     LocalVariableTable* getLocalVariableTable();
+    ClassFileInfo* getClass();
 private:
     uint16_t accessFlags;
     uint16_t nameIndex;
@@ -66,6 +67,7 @@ private:
 
     OperandStack* mOperandStack;
     LocalVariableTable *mLocalVariables;
+    ClassFileInfo* mOwnerClazz;
 
     // resolved info
     std::string mName;

@@ -15,19 +15,24 @@
 #include "DupInstruction.h"
 #include "ConstantInfo.h"
 #include "Frame.h"
+#include "CodeAttr.h"
 #include "../common/utils.h"
+#include "ThreadLocalStorage.h"
 
 #include <iostream>
+#include <memory>
 
 using namespace std;
 using namespace myvm;
 
 namespace myvm {
 
-Method::Method(uint16_t flags,
+Method::Method(ClassFileInfo* owner,
+    uint16_t flags,
     uint16_t name,
     uint16_t desc,
     vector<AttributeInfo*> *attrs) {
+    mOwnerClazz = owner;
     accessFlags = flags;
     nameIndex = name;
     descriptorIndex = desc;
@@ -41,7 +46,7 @@ Method::~Method() {
     mAttributes.clear();
 }
 
-void Method::invoke(ClassFileInfo *clazz, uint16_t depth) {
+void Method::invoke(uint16_t depth) {
     if (isAbstract()) {
         cout << "Can't invoke abstract method!"<< endl;
         return;
@@ -51,7 +56,9 @@ void Method::invoke(ClassFileInfo *clazz, uint16_t depth) {
         return;
     }
 
-    Frame *frame = new Frame(clazz, this, mCodeAttr->maxStack, mCodeAttr->maxLocals, depth);
+    shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
+    stack->grow(mCodeAttr->maxStack);
+    unique_ptr<Frame> frame = make_unique<Frame>(this, mCodeAttr->maxLocals, depth);
 
     // interprete the code
     uint8_t *code = mCodeAttr->code;
@@ -62,12 +69,9 @@ void Method::invoke(ClassFileInfo *clazz, uint16_t depth) {
         if (instruction == nullptr) {
             cout << "Invalid instruction!" << endl;
         }
-        instruction->run(frame);
+        instruction->run(frame.get());
         code += instruction->codeLen();
     }
-
-    // release
-    delete frame;
 }
 
 bool Method::isAbstract() {
@@ -130,7 +134,7 @@ Method* Method::loadFromFile(ClassFileInfo *classFileInfo, FileReader *fileReade
             cout << "Load attribute #" << i << " complete!" << endl;
         }
     }
-    return new Method(accessFlags, nameIndex, descriptorIndex, attributes);
+    return new Method(classFileInfo, accessFlags, nameIndex, descriptorIndex, attributes);
 }
 
 bool Method::match(const ConstantNameAndType* nameAndType) {
@@ -173,6 +177,10 @@ void Method::resolve(ClassFileInfo *clazz) {
     if (desc == nullptr) {
         return;
     }
+}
+
+ClassFileInfo* Method::getClass() {
+    return mOwnerClazz;
 }
 
 LocalVariableTable* Method::getLocalVariableTable() {

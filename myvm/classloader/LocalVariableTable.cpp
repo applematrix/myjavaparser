@@ -1,9 +1,15 @@
 #include "LocalVariableTable.h"
+#include "AttributeInfo.h"
 
 namespace myvm {
 
-LocalVariableTable::LocalVariableTable(uint16_t size) {
+LocalVariableTable::LocalVariableTable(Method* method, uint16_t size) {
     mLocalVariableArray = new uint8_t[size];
+
+    ClassFileInfo *clazz = method->getClass();
+    
+    CodeAttr* mCodeAttr = nullptr;
+    //mCodeAttr->
 }
 
 void LocalVariableTable::store(uint16_t index, uint32_t value) {

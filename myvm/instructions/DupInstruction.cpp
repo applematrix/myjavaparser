@@ -1,5 +1,6 @@
 #include "DupInstruction.h"
 #include "../classloader/OperandStack.h"
+#include "../classloader/ThreadLocalStorage.h"
 #include <iostream>
 
 using namespace std;
@@ -16,10 +17,10 @@ void DupInstruction::run(ClassFileInfo* clazz, Method *context, OperandStack *st
 }
 
 void DupInstruction::run(Frame* frame) {
-    cout << INDENTS[frame->getDepth()] << "Duplicate instance"<< endl;
-
-    OperandStack *stack = frame->getStack();
+    shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
     uint32_t handle = stack->popUint32();
+
+    cout << INDENTS[frame->getDepth()] << "Duplicate stack top instance=" << handle << endl;
     stack->pushUint32(handle);
     stack->pushUint32(handle);
 }

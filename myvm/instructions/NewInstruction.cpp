@@ -38,13 +38,16 @@ void NewInstruction::run(Frame *frame) {
     const char* constantName = constantInfo->typeString();
     
     ConstantUtf8* constantUtf8 = (ConstantUtf8*)clazz->getConstantAt(constantInfo->nameIndex);
-    cout << INDENTS[frame->getDepth()] << "new Instance, type:" << constantInfo->typeString()
-        << ", binary name:" << constantUtf8->bytes << endl;
 
     // TODO: release the memory
     const char* className = (const char*)constantUtf8->bytes;
     uint32_t handle = Heap::getInstance()->allocateObject(className);
-    OperandStack *stack = frame->getStack();
+    shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
+
+    cout << INDENTS[frame->getDepth()] << "new Instance, type:" << constantInfo->typeString()
+        << ", binary name:" << constantUtf8->bytes
+        << ", push handle=" << handle << " into the stack "<< endl;
+
     stack->pushUint32(handle);
 }
 

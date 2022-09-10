@@ -13,7 +13,9 @@
 #include "windows/Environment.h"
 #include "classloader/BootstrapClassLoader.h"
 #include "common/utils.h"
+#include "classloader/ThreadLocalStorage.h"
 
+#include <thread>
 using namespace myvm;
 using namespace std;
 
@@ -31,20 +33,20 @@ int main(int argc, const char* args[]) {
 	ClassFileInfo* mClasssFile = new ClassFileInfo();
 	mClasssFile->loadFromFile(path);
 
-	//wstring javaHomePath = getJavaHomePath();
-	testWin();
-
 	Method *mainMethod = mClasssFile->findMainMethod();
 	if (mainMethod == nullptr) {
 		cout << "No main entry method in the class" << endl;
 	} else {
-		cout << "Invoke the main method!" << endl;
-		cout << INDENTS[0] << "{" << endl;
-		mainMethod->invoke(mClasssFile, 1);
-		cout << INDENTS[0] << "}" << endl;
+		std::thread mainThread([](Method *method){
+			ThreadLocalStorage::getInstance()->intialize();
+			cout << "Invoke the main method!" << endl;
+			cout << INDENTS[0] << "{" << endl;
+			method->invoke(1);
+			cout << INDENTS[0] << "}" << endl;
+			}, mainMethod);
+
+		mainThread.join();
 	}
-
-
 	delete mClasssFile;
 
 	return 0;

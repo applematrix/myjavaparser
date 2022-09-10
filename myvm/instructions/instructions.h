@@ -11,6 +11,7 @@
 #include <string>
 #include <iostream>
 #include "../classloader/Frame.h"
+#include "../classloader/ThreadLocalStorage.h"
 #include "../common/utils.h"
 using namespace std;
 
@@ -236,8 +237,6 @@ enum OpCode {
     JSR_W = 0xc9, // Jump subroutine (wide index)
 };
 
-string& getOpCodeDesc(uint8_t opCode);
-
 class Method;
 class ClassFileInfo;
 class Frame;
@@ -249,6 +248,7 @@ public:
     virtual void run(Frame* frame) = 0;
     virtual uint8_t codeLen() = 0;
 
+    static const char* getOpCodeDesc(uint8_t opCode);
     static Instruction* interpreteCode(uint8_t *code);
 };
 

@@ -25,7 +25,7 @@ struct InstructionDesc {
     string description;
 };
 
-static string instructionDescs[] = {
+static const char* instructionDescs[] = {
     "nop", 
     "aconst_null",
     "iconst_m1",
@@ -230,9 +230,9 @@ static string instructionDescs[] = {
     "jsr_w",
 };
 
-string& getOpCodeDesc(uint8_t opCode) {
+const char* Instruction::getOpCodeDesc(uint8_t opCode) {
     if (opCode > JSR_W) {
-        return string("Invalid code");
+        return "Invalid code";
     }
     return instructionDescs[opCode];
 }

@@ -1,13 +1,15 @@
 #ifndef _LOCAL_VARIABLE_TABLE_H_
 #define _LOCAL_VARIABLE_TABLE_H_
 
+#include "Method.h"
+
 #include <stdint.h>
 
 namespace myvm {
 
 class LocalVariableTable {
 public:
-    LocalVariableTable(uint16_t size);
+    LocalVariableTable(Method* method, uint16_t size);
     ~LocalVariableTable() {
         if (mLocalVariableArray != nullptr) {
             delete[] mLocalVariableArray;

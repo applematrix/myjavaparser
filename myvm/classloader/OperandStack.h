@@ -19,19 +19,17 @@ class ObjectRef;
 
 class OperandStack {
 public:
+    OperandStack();
     OperandStack(uint32_t maxDepth);
     virtual ~OperandStack();
-    void pushUint8(uint8_t val);
-    void pushUint16(uint16_t val);
+    void grow(uint16_t growSize);
+
     void pushUint32(uint32_t val);
+    void pushUint64(uint64_t val);
     void pushInt32(int32_t val);
-    void pushObjecRef(ObjectRef *reference);
-    void push(uint32_t val);
-    uint8_t popUint8();
-    uint16_t popUint16();
     uint32_t popUint32();
     int32_t popInt32();
-    ObjectRef *popObjecRef();
+    uint64_t popUint64();
     uint32_t pop();
     void reset();
 private:
@@ -39,6 +37,7 @@ private:
     uint32_t mMaxDepth;
     uint32_t mCurPos;
     uint32_t mDepth;
+    stack<uint32_t> mStack;
 };
 
 }
