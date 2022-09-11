@@ -64,6 +64,9 @@ struct AttributeInfo {
         attrType = 0;
     }
 
+    virtual ~AttributeInfo() {
+    }
+
     AttributeInfo(FileReader* fileReader, uint8_t type) {
         fileReader->readUint16(nameIndex);
         fileReader->readUint32(length);
@@ -231,39 +234,6 @@ struct LineNumberTableAttr: public AttributeInfo {
 
     LineNumberTableAttr(uint16_t name, uint32_t len, FileReader *fileReader)
         : AttributeInfo(name, len, ATTR_LINE_NUMBER_TABLE) {
-        initialize(fileReader);
-    }
-};
-
-struct LocalVariableTableAttr: public AttributeInfo {
-    uint16_t tableLen;
-    struct LocalVariable {
-        uint16_t startPc;
-        uint16_t length;
-        uint16_t nameIndex;
-        uint16_t descriptorIndex;
-        uint16_t index;
-    } *localVariableTable;
-
-    void initialize(FileReader* fileReader) {
-        fileReader->readUint16(tableLen);
-
-        localVariableTable = new LocalVariable[tableLen];
-        for (int i = 0; i < tableLen; i++) {
-            fileReader->read(localVariableTable[i].startPc);
-            fileReader->read(localVariableTable[i].length);
-            fileReader->read(localVariableTable[i].nameIndex);
-            fileReader->read(localVariableTable[i].descriptorIndex);
-            fileReader->read(localVariableTable[i].index);
-        }
-    }
-
-    LocalVariableTableAttr(FileReader* fileReader) : AttributeInfo(fileReader, ATTR_LOCAL_VARIABLE_TABLE) {
-        initialize(fileReader);
-    }
-
-    LocalVariableTableAttr(uint16_t name, uint32_t len, FileReader *fileReader)
-        : AttributeInfo(name, len, ATTR_LOCAL_VARIABLE_TABLE) {
         initialize(fileReader);
     }
 };

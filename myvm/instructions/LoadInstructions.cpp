@@ -1,6 +1,7 @@
 #include "LoadInstructions.h"
 #include "../classloader/LocalVariableTable.h"
 #include "../classloader/OperandStack.h"
+#include "../classloader/CodeAttr.h"
 
 using namespace myvm;
 
@@ -40,7 +41,12 @@ void AloadInstruction::run(ClassFileInfo* clazz, Method *context, OperandStack *
 }
 
 void AloadInstruction::run(Frame* frame) {
-    LocalVariableTable* lvt = frame->getLocalVariableTable();
+    // test code
+    Method *method = frame->getMethod();
+    CodeAttr* codeAttr = method->getCodeAttr();
+    auto attr = codeAttr->getAttributeByType(ATTR_LOCAL_VARIABLE_TABLE);
+
+    shared_ptr<LocalVariableTable> lvt = frame->getLocalVariableTable();
     if (lvt == nullptr) {
         cout << "No local variable table" << endl;
         return;

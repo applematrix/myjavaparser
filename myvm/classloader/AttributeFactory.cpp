@@ -9,6 +9,7 @@
 #include "AttributeFactory.h"
 #include "AttributeInfo.h"
 #include "CodeAttr.h"
+#include "LocalVariableTable.h"
 
 using namespace myvm;
 using namespace std;

@@ -183,6 +183,10 @@ ClassFileInfo* Method::getClass() {
     return mOwnerClazz;
 }
 
+CodeAttr* Method::getCodeAttr() {
+    return mCodeAttr;
+}
+
 LocalVariableTable* Method::getLocalVariableTable() {
     // TODO:
     return nullptr;
@@ -191,6 +195,25 @@ LocalVariableTable* Method::getLocalVariableTable() {
 OperandStack* Method::getOperandStack() {
     // TODO:
     return nullptr;
+}
+
+void Method::resolveParaListAndType() {
+    size_t splitPos = mDescriptor.find_last_of(')');
+    size_t paraListStart = mDescriptor.find_first_of('(');
+    string paraList = mDescriptor.substr(paraListStart, splitPos);
+    string returnType = mDescriptor.substr(splitPos);
+
+    for (uint16_t offset = 0; offset < paraList.size();) {
+        shared_ptr<TypeInfo> paraType = TypeInfo::parseFrom(paraList, offset);
+        if (paraType == nullptr) {
+            // ERROR
+            return;
+        }
+        mArgsList.push_back(paraType);
+        offset += paraType->descLength();
+    }
+
+    mReturnType = TypeInfo::parseFrom(returnType, 0);
 }
 
 }

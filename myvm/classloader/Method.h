@@ -7,11 +7,15 @@
 #ifndef _METHOD_H_
 #define _METHOD_H_
 
+#include "TypeInfo.h"
+
 #include <stdint.h>
 #include <vector>
+#include <memory>
 #include <string>
 
 using namespace std;
+using namespace myvm;
 
 namespace myvm {
 
@@ -58,12 +62,18 @@ public:
     OperandStack* getOperandStack();
     LocalVariableTable* getLocalVariableTable();
     ClassFileInfo* getClass();
+    CodeAttr* getCodeAttr();
+    vector<shared_ptr<TypeInfo>> getArgs() {return mArgsList;}
+private:
+    void resolveParaListAndType();
 private:
     uint16_t accessFlags;
     uint16_t nameIndex;
     uint16_t descriptorIndex;
     uint16_t attributeCount;
     vector<AttributeInfo*> mAttributes;
+    vector<shared_ptr<TypeInfo>> mArgsList;
+    shared_ptr<TypeInfo> mReturnType;
 
     OperandStack* mOperandStack;
     LocalVariableTable *mLocalVariables;

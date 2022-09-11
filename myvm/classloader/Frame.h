@@ -4,6 +4,7 @@
 #include "LocalVariableTable.h"
 #include "OperandStack.h"
 #include <vector>
+#include <memory>
 
 using namespace std;
 
@@ -17,14 +18,15 @@ class Frame {
 public:
     Frame(Method *method, uint32_t localVariableSize, uint16_t depth);
     virtual ~Frame();
-    LocalVariableTable* getLocalVariableTable() { return mLocalVariableTable;}
+    shared_ptr<LocalVariableTable> getLocalVariableTable() { return mLocalVariableTable;}
     ClassFileInfo *getClass() { return mClazz;}
+    Method* getMethod() { return mMethod; }
     uint16_t getDepth() { return mCallDepth; }
 
 private:
     ClassFileInfo* mClazz;
     Method* mMethod;
-    LocalVariableTable *mLocalVariableTable;
+    shared_ptr<LocalVariableTable> mLocalVariableTable;
     std::vector<ConstantInfo*> *mClassConstantPool;
     uint16_t mCallDepth;
 };
