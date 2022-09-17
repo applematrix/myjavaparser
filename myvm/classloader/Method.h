@@ -27,6 +27,7 @@ class FileReader;
 class OperandStack;
 class LocalVariableTable;
 class ConstantUtf8;
+class Frame;
 
 enum MethodAccessFlag {
     METHOD_ACC_PUBLIC = 0x0001,
@@ -49,7 +50,7 @@ public:
     
     Method(ClassFileInfo* owner, uint16_t flags, uint16_t name, uint16_t desc, vector<AttributeInfo*> *attrs);
     ~Method();
-    void invoke(uint16_t depth);
+    void invoke(shared_ptr<Frame> frame);
     bool isAbstract();
     bool isStatic();
     bool isPublic();

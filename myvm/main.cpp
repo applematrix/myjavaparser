@@ -14,6 +14,8 @@
 #include "classloader/BootstrapClassLoader.h"
 #include "common/utils.h"
 #include "classloader/ThreadLocalStorage.h"
+#include "classloader/Frame.h"
+#include "classloader/CodeAttr.h"
 
 #include <thread>
 using namespace myvm;
@@ -37,11 +39,14 @@ int main(int argc, const char* args[]) {
 	if (mainMethod == nullptr) {
 		cout << "No main entry method in the class" << endl;
 	} else {
-		std::thread mainThread([](Method *method){
+		std::thread mainThread([](Method *method) {
 			ThreadLocalStorage::getInstance()->intialize();
+			CodeAttr* codeAttr = method->getCodeAttr();
+
+			shared_ptr<Frame> frame = make_shared<Frame>(method, codeAttr->maxLocals, 0);
 			cout << "Invoke the main method!" << endl;
 			cout << INDENTS[0] << "{" << endl;
-			method->invoke(1);
+			method->invoke(frame);
 			cout << INDENTS[0] << "}" << endl;
 			}, mainMethod);
 

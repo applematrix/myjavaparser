@@ -31,11 +31,9 @@ public:
     int32_t popInt32();
     uint64_t popUint64();
     uint32_t pop();
-    void reset();
+    uint32_t getSize();
+    void trimSize(uint32_t size);
 private:
-    uint8_t *mBuffer;
-    uint32_t mMaxDepth;
-    uint32_t mCurPos;
     uint32_t mDepth;
     stack<uint32_t> mStack;
 };

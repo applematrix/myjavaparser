@@ -5,6 +5,7 @@
 #include "../classloader/ConstantMethodRef.h"
 #include "../classloader/BootstrapClassLoader.h"
 #include "../classloader/CodeAttr.h"
+#include "../classloader/Frame.h"
 #include <iostream>
 #include <memory>
 
@@ -74,18 +75,20 @@ void InvokeSpecialInstruction::run(Frame *frame) {
          << ", target method:" << targetMethodName->bytes
          << ", description:" << targetMethodDesc->bytes << endl;
 
-    Method* targetMethod = targetClazz->findMethod(targetMethodName, targetMethodDesc);
-    
-    vector<shared_ptr<TypeInfo>> args = targetMethod->getArgs();
-    shared_ptr<LocalVariableTable> localVariableTable = frame->getLocalVariableTable();
+
     shared_ptr<OperandStack> curStack = ThreadLocalStorage::getInstance()->getStack();
 
+    Method* targetMethod = targetClazz->findMethod(targetMethodName, targetMethodDesc);
+    vector<shared_ptr<TypeInfo>> args = targetMethod->getArgs();
+    
     CodeAttr* codeAttr = targetMethod->getCodeAttr();
+    shared_ptr<Frame> newFrame = make_shared<Frame>(targetMethod, codeAttr->maxLocals, frame->getDepth() + 1);
     auto attr = codeAttr->getAttributeByType(ATTR_LOCAL_VARIABLE_TABLE);
     if (attr == nullptr) {
         // Error?!
     }
 
+    shared_ptr<LocalVariableTable> localVariableTable = newFrame->getLocalVariableTable();
     shared_ptr<LocalVariableTableAttr> lvtAttr = dynamic_pointer_cast<LocalVariableTableAttr>(attr);
     for (int i = args.size() - 1; i > 0; i--) {
         shared_ptr<TypeInfo> type = args.at(i);
@@ -104,7 +107,7 @@ void InvokeSpecialInstruction::run(Frame *frame) {
     }
 
     cout << INDENTS[frame->getDepth()] << "{" << endl;
-    targetMethod->invoke(frame->getDepth()+1);
+    targetMethod->invoke(newFrame);
     cout << INDENTS[frame->getDepth()] << "}" << endl;
 }
 

@@ -46,7 +46,7 @@ Method::~Method() {
     mAttributes.clear();
 }
 
-void Method::invoke(uint16_t depth) {
+void Method::invoke(shared_ptr<Frame> frame) {
     if (isAbstract()) {
         cout << "Can't invoke abstract method!"<< endl;
         return;
@@ -58,9 +58,9 @@ void Method::invoke(uint16_t depth) {
 
     shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
     stack->grow(mCodeAttr->maxStack);
-    unique_ptr<Frame> frame = make_unique<Frame>(this, mCodeAttr->maxLocals, depth);
 
     // interprete the code
+    uint8_t depth = frame->getDepth();
     uint8_t *code = mCodeAttr->code;
     uint8_t *codeEnd = code + mCodeAttr->codeLength;
     while (code < codeEnd) {

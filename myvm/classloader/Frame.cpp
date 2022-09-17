@@ -1,6 +1,7 @@
 #include "Frame.h"
 #include "Method.h"
 #include "LocalVariableTable.h"
+#include "../classloader/ThreadLocalStorage.h"
 #include <iostream>
 
 using namespace std;
@@ -13,9 +14,16 @@ Frame::Frame(Method *method, uint32_t localVariableSize, uint16_t depth) {
     mClazz = method->getClass();
     mMethod = method;
     mCallDepth = depth;
+
+    shared_ptr<OperandStack> curStack = ThreadLocalStorage::getInstance()->getStack();
+    mStackReturnPos = curStack->getSize();
 }
 
 Frame::~Frame() {
+}
+
+uint16_t Frame::getStackReturn() {
+
 }
 
 }

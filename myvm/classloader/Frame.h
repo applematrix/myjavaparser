@@ -22,6 +22,7 @@ public:
     ClassFileInfo *getClass() { return mClazz;}
     Method* getMethod() { return mMethod; }
     uint16_t getDepth() { return mCallDepth; }
+    uint16_t getStackReturn();
 
 private:
     ClassFileInfo* mClazz;
@@ -29,6 +30,7 @@ private:
     shared_ptr<LocalVariableTable> mLocalVariableTable;
     std::vector<ConstantInfo*> *mClassConstantPool;
     uint16_t mCallDepth;
+    uint32_t mStackReturnPos;
 };
 
 }
