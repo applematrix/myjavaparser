@@ -38,7 +38,11 @@ BootstrapClassLoader::~BootstrapClassLoader() {
 }
 
 ClassFileInfo* BootstrapClassLoader::getClassByName(string& name) {
-    return mLoadedClasses[name];
+    return mLoadedClasses.find(name) == mLoadedClasses.end() ? nullptr : mLoadedClasses[name];
+}
+
+ClassFileInfo* BootstrapClassLoader::getClassByName(const char* name) {
+    return getClassByName(string(name));
 }
 
 void BootstrapClassLoader::addClass(string& name, ClassFileInfo *clazz) {

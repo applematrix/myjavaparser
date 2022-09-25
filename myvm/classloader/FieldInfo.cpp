@@ -8,16 +8,19 @@
 #include "AttributeInfo.h"
 
 #include <iostream>
+#include <memory>
 using namespace std;
 
 using namespace myvm;
 
 namespace myvm {
 
-FieldInfo::FieldInfo(uint16_t flags,
+FieldInfo::FieldInfo(ClassFileInfo *clazz,
+    uint16_t flags,
     uint16_t name,
     uint16_t desc,
     vector<AttributeInfo*> *attrs) {
+    mOwnerClazz = clazz;
     accessFlags = flags;
     nameIndex = name;
     descriptorIndex = desc;
@@ -69,7 +72,29 @@ FieldInfo* FieldInfo::loadFromFile(ClassFileInfo *classFileInfo, FileReader *fil
             cout << "Load attribute #" << i << " complete!" << endl;
         }
     }
-    return new FieldInfo(accessFlags, nameIndex, descriptorIndex, attributes);
+    return new FieldInfo(classFileInfo, accessFlags, nameIndex, descriptorIndex, attributes);
+}
+
+void FieldInfo::resolve() {
+    ConstantUtf8 *name = mOwnerClazz->getUtf8Constant(nameIndex);
+    if (name == nullptr) {
+        // Error;
+        return;
+    }
+    ConstantUtf8 *desc = mOwnerClazz->getUtf8Constant(descriptorIndex);
+    if (desc == nullptr) {
+        return;
+    }
+
+    mTypeInfo = TypeInfo::parseFrom(desc);
+}
+
+void FieldInfo::updateOffset(uint32_t offset) {
+    mOffsetInClass = offset;
+}
+
+uint32_t FieldInfo::offsetInClass() {
+    return mOffsetInClass;
 }
 
 }

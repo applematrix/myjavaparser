@@ -30,6 +30,8 @@ public:
     void printConstantInfo(ConstantInfo *constant) const;
     void printConstantInfo(uint16_t index) const;
     char* getUtf8ConstantName(uint16_t index) const;
+    ConstantUtf8* getUtf8Constant(uint16_t index) const;
+    ClassFileInfo* getSuperClass() const;
     const char* getClassName() {
         return mClassName.c_str();
     };
@@ -37,6 +39,8 @@ public:
     Method* findMainMethod();
     Method* findMethod(const ConstantNameAndType *methodInfo);
     Method* findMethod(const ConstantUtf8* methodName, const ConstantUtf8 *methodDesc);
+    FieldInfo* findField(uint16_t nameIndex, uint16_t descIndex) const;
+    uint32_t classSize() const;
 private:
     int loadConstants();
     int loadInterfaces();
@@ -70,8 +74,10 @@ private:
     std::vector<AttributeInfo*> mAttributes;
     std::string mClassName;
     std::string mSuperClassName;
+    uint32_t mClassSize;
 
     FileReader *mFileReader;
+    ClassFileInfo *mSuperClass;
 };
 
 

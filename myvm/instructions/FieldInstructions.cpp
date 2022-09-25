@@ -4,6 +4,8 @@
 #include "../classloader/ConstantInfo.h"
 #include "../classloader/ConstantFieldRef.h"
 #include "../classloader/BootstrapClassLoader.h"
+#include "../classloader/Heap.h"
+#include "../classloader/Object.h"
 
 #include <iostream>
 
@@ -50,6 +52,20 @@ void PutFieldInstruction::run(Frame *frame) {
 
     cout << INDENTS[frame->getDepth()] << "put field, index:"
         << mIndex << ", name:" << name->bytes << ", description:" << desc->bytes << endl;
+    
+    FieldInfo* field = clazz->findField(typeInfo->nameIndex, typeInfo->descriptorIndex);
+    shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
+    if (field->getType()->doubleUnit()) {
+        uint64_t value = stack->popUint64();
+        uint32_t handle = stack->popUint32();
+        Object *object = Heap::getInstance()->getObject(handle);
+        object->putField(field->offsetInClass(), value);
+    } else {
+        uint32_t value = stack->popUint32();
+        uint32_t handle = stack->popUint32();
+        Object *object = Heap::getInstance()->getObject(handle);
+        object->putField(field->offsetInClass(), value);
+    }
 }
 
 }

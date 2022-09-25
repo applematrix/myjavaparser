@@ -282,7 +282,7 @@ Instruction* Instruction::interpreteCode(uint8_t *code) {
         case RETURN:
             return new ReturnInstruction(code);
         default:
-            cout << "Unknown op code" << endl;
+            cout << "Unknown op code : " << (int32_t)opCode << endl;
     }
     return nullptr;
 }

@@ -216,4 +216,12 @@ void Method::resolveParaListAndType() {
     mReturnType = TypeInfo::parseFrom(returnType, 0);
 }
 
+const string& Method::getName() const {
+    return mName;
+}
+
+const string& Method::getDesc() const {
+    return mDescriptor;
+}
+
 }

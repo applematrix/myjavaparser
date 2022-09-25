@@ -71,10 +71,6 @@ void InvokeSpecialInstruction::run(Frame *frame) {
     
     ConstantUtf8* targetMethodName = (ConstantUtf8*)clazz->getConstantAt(nameAndTypeRef->nameIndex);
     ConstantUtf8* targetMethodDesc = (ConstantUtf8*)clazz->getConstantAt(nameAndTypeRef->descriptorIndex);
-    cout << INDENTS[frame->getDepth()] << "InvokeSpecialInstruction, target class:" << targetClassName->bytes
-         << ", target method:" << targetMethodName->bytes
-         << ", description:" << targetMethodDesc->bytes << endl;
-
 
     shared_ptr<OperandStack> curStack = ThreadLocalStorage::getInstance()->getStack();
 
@@ -105,6 +101,11 @@ void InvokeSpecialInstruction::run(Frame *frame) {
         uint32_t objectRef = curStack->popUint32();
         localVariableTable->storeUint32(0, objectRef);
     }
+
+    cout << INDENTS[frame->getDepth()] << "InvokeSpecialInstruction, target class:" << targetClassName->bytes
+         << ", target method:" << targetMethodName->bytes
+         << ", description:" << targetMethodDesc->bytes 
+         << ", pop the args from the stack, current stack size = " << curStack->getSize()<< endl;
 
     cout << INDENTS[frame->getDepth()] << "{" << endl;
     targetMethod->invoke(newFrame);
@@ -147,6 +148,47 @@ void InvokeVirtualInstruction::run(ClassFileInfo* clazz, Method *context, Operan
 void InvokeVirtualInstruction::run(Frame *frame) {
     ClassFileInfo *clazz = frame->getClass();
     ConstantMethodRef* methodRef = (ConstantMethodRef*)clazz->getConstantAt(mIndex);
+    ConstantNameAndType* nameAndTypeRef = (ConstantNameAndType*)clazz->getConstantAt(methodRef->nameAndTypeIndex);
+    Method* method = clazz->findMethod(nameAndTypeRef);
+
+    if (method == nullptr) {
+        cout << "InvokeVirtualInstruction error: no method found!" << endl;
+    }
+
+    shared_ptr<OperandStack> curStack = ThreadLocalStorage::getInstance()->getStack();
+    vector<shared_ptr<TypeInfo>> args = method->getArgs();
+    
+    CodeAttr* codeAttr = method->getCodeAttr();
+    shared_ptr<Frame> newFrame = make_shared<Frame>(method, codeAttr->maxLocals, frame->getDepth() + 1);
+    auto attr = codeAttr->getAttributeByType(ATTR_LOCAL_VARIABLE_TABLE);
+    if (attr == nullptr) {
+        // Error?!
+    }
+
+    shared_ptr<LocalVariableTable> localVariableTable = newFrame->getLocalVariableTable();
+    shared_ptr<LocalVariableTableAttr> lvtAttr = dynamic_pointer_cast<LocalVariableTableAttr>(attr);
+    for (int i = args.size() - 1; i > 0; i--) {
+        shared_ptr<TypeInfo> type = args.at(i);
+        uint16_t index = lvtAttr->localVariables.at(i)->index;
+        if(type->doubleUnit()) {
+            uint64_t operand = curStack->popUint64();
+            localVariableTable->storeUint64(index, operand);
+        } else {
+            uint32_t operand = curStack->popUint32();
+            localVariableTable->storeUint32(index, operand);
+        }
+    }
+
+    uint32_t objectRef = curStack->popUint32();
+    localVariableTable->storeUint32(0, objectRef);
+
+    cout << "InvokeVirtualInstruction, method:" << method->getName()
+        << ", description:" << method->getDesc() 
+        << ", pop the args from the stack, current stack size = " << curStack->getSize()<< endl;
+
+    cout << INDENTS[frame->getDepth()] << "{" << endl;
+    method->invoke(newFrame);
+    cout << INDENTS[frame->getDepth()] << "}" << endl;
 }
 
 }

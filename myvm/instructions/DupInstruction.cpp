@@ -19,10 +19,11 @@ void DupInstruction::run(ClassFileInfo* clazz, Method *context, OperandStack *st
 void DupInstruction::run(Frame* frame) {
     shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
     uint32_t handle = stack->popUint32();
-
-    cout << INDENTS[frame->getDepth()] << "Duplicate stack top instance=" << handle << endl;
+    
     stack->pushUint32(handle);
     stack->pushUint32(handle);
+    cout << INDENTS[frame->getDepth()] << "Duplicate stack top instance=" << handle 
+        << ", current stack size = " << stack->getSize() << endl;
 }
 
 }

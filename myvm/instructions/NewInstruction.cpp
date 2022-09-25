@@ -3,6 +3,7 @@
 #include "../classloader/OperandStack.h"
 #include "../classloader/ObjectRef.h"
 #include "../classloader/Heap.h"
+#include "../classloader/BootstrapClassLoader.h"
 #include <iostream>
 
 using namespace std;
@@ -18,18 +19,18 @@ NewInstruction::NewInstruction(uint8_t *code) {
 }
 
 void NewInstruction::run(ClassFileInfo* clazz, Method *context, OperandStack *stack) {
-    ConstantClass*constantInfo = (ConstantClass*)clazz->getConstantAt(mIndex);
+    // ConstantClass*constantInfo = (ConstantClass*)clazz->getConstantAt(mIndex);
 
-    const char* constantName = constantInfo->typeString();
+    // const char* constantName = constantInfo->typeString();
     
-    ConstantUtf8* constantUtf8 = (ConstantUtf8*)clazz->getConstantAt(constantInfo->nameIndex);
-    cout << "new Instance, type:" << constantInfo->typeString()
-        << ", binary name:" << constantUtf8->bytes << endl;
+    // ConstantUtf8* constantUtf8 = (ConstantUtf8*)clazz->getConstantAt(constantInfo->nameIndex);
+    // cout << "new Instance, type:" << constantInfo->typeString()
+    //     << ", binary name:" << constantUtf8->bytes << endl;
 
-    // TODO: release the memory
-    const char* className = (const char*)constantUtf8->bytes;
-    uint32_t handle = Heap::getInstance()->allocateObject(className);
-    stack->pushUint32(handle);
+    // // TODO: release the memory
+    // const char* className = (const char*)constantUtf8->bytes;
+    // uint32_t handle = Heap::getInstance()->allocateObject(className);
+    // stack->pushUint32(handle);
 }
 
 void NewInstruction::run(Frame *frame) {
@@ -41,14 +42,17 @@ void NewInstruction::run(Frame *frame) {
 
     // TODO: release the memory
     const char* className = (const char*)constantUtf8->bytes;
-    uint32_t handle = Heap::getInstance()->allocateObject(className);
-    shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
+    BootstrapClassLoader *bootstrapClassLoder = BootstrapClassLoader::getInstance();
+    
+    ClassFileInfo *instanceClazz = bootstrapClassLoder->getClassByName(className);
+    uint32_t handle = Heap::getInstance()->allocateObject(instanceClazz);
 
+    shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
+    stack->pushUint32(handle);
     cout << INDENTS[frame->getDepth()] << "new Instance, type:" << constantInfo->typeString()
         << ", binary name:" << constantUtf8->bytes
-        << ", push handle=" << handle << " into the stack "<< endl;
-
-    stack->pushUint32(handle);
+        << ", push handle=" << handle << " into the stack"
+        << ", current stack size =" << stack->getSize() << endl;
 }
 
 }

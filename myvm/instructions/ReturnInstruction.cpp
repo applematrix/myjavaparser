@@ -12,10 +12,11 @@ void ReturnInstruction::run(ClassFileInfo* clazz, Method *context, OperandStack 
 }
 
 void ReturnInstruction::run(Frame* frame) {
-    shared_ptr<OperandStack> curStack = ThreadLocalStorage::getInstance()->getStack();
-    curStack->trimSize(frame->getStackReturn());
-    cout << INDENTS[frame->getDepth()] << "ReturnInstruction run: clear the stack! " << endl;
+    shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
+    stack->trimSize(frame->getStackReturn());
 
+    cout << INDENTS[frame->getDepth()] << "ReturnInstruction run: clear the stack"
+        << ", current stack size =" << stack->getSize()<< endl;
 }
 
 }

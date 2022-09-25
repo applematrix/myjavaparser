@@ -142,6 +142,27 @@ char* ClassFileInfo::getUtf8ConstantName(uint16_t index) const {
     return (char*)((ConstantUtf8*)constant)->bytes;
 }
 
+ConstantUtf8* ClassFileInfo::getUtf8Constant(uint16_t index) const {
+    ConstantInfo *constant = getConstantAt(index);
+    if (constant == nullptr) {
+        return nullptr;
+    }
+    return (ConstantUtf8*)constant;
+}
+
+FieldInfo* ClassFileInfo::findField(uint16_t nameIndex, uint16_t descIndex)const {
+    for (auto field : mFields) {
+        if(field->nameIndex == nameIndex && field->descriptorIndex == descIndex) {
+            return field;
+        }
+    }
+    return nullptr;
+}
+
+ClassFileInfo* ClassFileInfo::getSuperClass() const {
+    return mSuperClass;
+}
+
 int ClassFileInfo::loadConstants() {
     int status = mFileReader->readUint16(constantPoolSize);
     if (status != 0) {
@@ -182,6 +203,7 @@ int ClassFileInfo::loadFields() {
     if (status != 0) {
         return status;
     }
+    uint32_t fieldMemorySize = 0;
     mFields.reserve(fieldsCount);
     for (int i = 0; i < fieldsCount; i++) {
         FieldInfo* field = FieldInfo::loadFromFile(this, mFileReader);
@@ -237,7 +259,6 @@ void ClassFileInfo::resolve() {
     ConstantClass* thisClazz = (ConstantClass*)getConstantAt(thisClass);
     ConstantUtf8* classNameUtf8 = (ConstantUtf8*)getConstantAt(thisClazz->nameIndex);
     mClassName = std::string((const char*)classNameUtf8->bytes);
-
     
     if (superClass == 0) {
         // only the Object class' super class is 0
@@ -250,8 +271,27 @@ void ClassFileInfo::resolve() {
     ConstantUtf8* superClassNameUtf8 = (ConstantUtf8*)getConstantAt(superClazz->nameIndex);
     mSuperClassName = std::string((const char*)superClassNameUtf8->bytes);
 
-    cout << "Resolve " << mClassName << "\'s super class" << mSuperClassName << endl;
-    BootstrapClassLoader::getInstance()->loadClassFromClassPath(mSuperClassName);
+    mSuperClass =  BootstrapClassLoader::getInstance()->getClassByName(mSuperClassName);
+    if (mSuperClass == nullptr) {
+        cout << "Resolve " << mClassName << "\'s super class" << mSuperClassName << endl;
+        BootstrapClassLoader::getInstance()->loadClassFromClassPath(mSuperClassName);
+        mSuperClass =  BootstrapClassLoader::getInstance()->getClassByName(mSuperClassName);
+    }
+
+    // resolve the class size
+    mClassSize = 0;
+    uint32_t offset = 0;
+    for (auto field : mFields) {
+        field->resolve();
+        mClassSize += field->getType()->doubleUnit() ? sizeof(uint64_t) : sizeof(uint32_t);
+        field->updateOffset(offset);
+        offset += field->getType()->doubleUnit() ? 2 : 1;
+    }
+
+    // TODO:
+    if (mSuperClass != nullptr) {
+        mClassSize += mSuperClass->classSize();
+    }
 }
 
 void ClassFileInfo::invokeMethod() {
@@ -285,6 +325,10 @@ Method* ClassFileInfo::findMethod(const ConstantUtf8* methodName, const Constant
         }
     }
     return nullptr;
+}
+
+uint32_t ClassFileInfo::classSize() const {
+    return mClassSize;
 }
 
 }

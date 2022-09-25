@@ -8,8 +8,10 @@
 #define _FIELD_INFO_H_
 
 #include <vector>
+#include <memory>
 
 #include "FileReader.h"
+#include "TypeInfo.h"
 
 using namespace myvm;
 using namespace std;
@@ -20,19 +22,33 @@ class ClassFileInfo;
 
 struct FieldInfo {
 public:
-    FieldInfo(uint16_t flags, uint16_t name, uint16_t desc, vector<AttributeInfo*> *attrs);
+    FieldInfo(ClassFileInfo *clazz, 
+        uint16_t flags, uint16_t name, uint16_t desc, vector<AttributeInfo*> *attrs);
     ~FieldInfo();
+    void resolve();
+    void updateOffset(uint32_t offset);
+    uint32_t offsetInClass();
+    shared_ptr<TypeInfo> getType() {
+        return mTypeInfo;
+    }
+
     static FieldInfo* loadFromFile(ClassFileInfo *classFileInfo, FileReader *fileReader);
-private:
+public:
     uint16_t accessFlags;
     uint16_t nameIndex;
     uint16_t descriptorIndex;
     uint16_t attributeCount;
 
+private:
     vector<AttributeInfo*> mAttributes;
+    ClassFileInfo* mOwnerClazz;
+    shared_ptr<TypeInfo> mTypeInfo;
+
+    // runtime properties
+    uint32_t mOffsetInClass;
 };
 
 typedef FieldInfo MethodInfo;
-
 }
+
 #endif

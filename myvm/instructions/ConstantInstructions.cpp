@@ -17,10 +17,10 @@ void IConstantInstruction::run(ClassFileInfo* clazz, Method *context, OperandSta
 }
 
 void IConstantInstruction::run(Frame* frame) {
-    cout << INDENTS[frame->getDepth()] << "IConstant run push " << mValue << " into the stack! " << endl;
-
     shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
     stack->pushInt32(mValue);
+    cout << INDENTS[frame->getDepth()] << "IConstant run push " << mValue << " into the stack"
+        << ", current stack size =" << stack->getSize()<< endl;
 }
 
 }

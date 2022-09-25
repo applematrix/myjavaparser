@@ -1,10 +1,13 @@
 #ifndef _TYPE_INFO_H_
 #define _TYPE_INFO_H_
 
+#include "../classloader/ConstantInfo.h"
+
 #include <stdint.h>
 #include <string>
 #include <memory>
 using namespace std;
+using namespace myvm;
 
 namespace myvm {
 
@@ -32,6 +35,7 @@ public:
     }
     //virtual const char* getDesc() = 0;
     static shared_ptr<TypeInfo> parseFrom(const string& desc, uint16_t offset);
+    static shared_ptr<TypeInfo> parseFrom(ConstantUtf8 *utf8);
 public:
     Type type;
 };

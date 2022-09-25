@@ -53,11 +53,11 @@ void AloadInstruction::run(Frame* frame) {
     }
     uint32_t objectRef = lvt->variableAt(mLocalVariableTableIndex);
 
-    cout << INDENTS[frame->getDepth()] << "AloadInstruction run: load object at local variable[" << (uint32_t)mLocalVariableTableIndex << "]="
-        << objectRef <<" into the stack! " << endl;
-
     shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
     stack->pushUint32(objectRef);
+    cout << INDENTS[frame->getDepth()] << "AloadInstruction run: load object at local variable[" << (uint32_t)mLocalVariableTableIndex << "]="
+        << objectRef <<" into the stack"
+        << ", current stack size =" << stack->getSize()<< endl;
 }
 
 

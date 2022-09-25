@@ -33,6 +33,17 @@ void AStoreInstruction::run(ClassFileInfo* clazz, Method *context, OperandStack 
 void AStoreInstruction::run(Frame* frame) {
     shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
     shared_ptr<LocalVariableTable> lvt = frame->getLocalVariableTable();
+
+    if (lvt == nullptr) {
+        cout << "No local variable table" << endl;
+        return;
+    }
+    uint32_t handle = stack->popUint32();
+    cout << "AStoreInstruction run: store handle = " << handle
+        << " at the top of stack into localVariableTable[" << (uint32_t)mLocalVariableTableIndex << "]"
+        << ", current stack size = " << stack->getSize()<< endl;
+    // TODO: check the handle
+    lvt->storeUint32(mLocalVariableTableIndex, handle);
 }
 
 }

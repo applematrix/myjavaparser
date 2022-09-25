@@ -14,21 +14,23 @@ using namespace std;
 
 namespace myvm {
 class ObjectRef;
+class Object;
+class ClassFileInfo;
 
 class Heap {
 public:
     static Heap* getInstance();
 
     ~Heap() {}
-    ObjectRef* getReference(uint32_t handle);
-    uint32_t allocateObject(const char* name);
+    Object* getObject(uint32_t handle);
+    uint32_t allocateObject(const ClassFileInfo* name);
 private:
     Heap() {
         mNextHandle = FIRST_HANDLE;
     }
     static Heap* sInstance;
 private:
-    map<uint32_t, ObjectRef*> mObjectRefs;
+    map<uint32_t, Object*> mObjectRefs;
     uint32_t mNextHandle;
 };
 

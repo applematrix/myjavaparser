@@ -2,6 +2,11 @@
 
 namespace myvm {
 
+/*static*/ shared_ptr<TypeInfo> TypeInfo::parseFrom(ConstantUtf8 *utf8) {
+    string str((const char*)utf8->bytes);
+    return parseFrom(str, 0);
+}
+
 /*static*/ shared_ptr<TypeInfo> TypeInfo::parseFrom(const string& desc, uint16_t offset) {
     char c = desc.at(offset);
     uint8_t dimensions = 0;

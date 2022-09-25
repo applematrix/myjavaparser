@@ -60,6 +60,8 @@ public:
     bool match(const ConstantNameAndType* nameAndType);
     bool match(const ConstantUtf8* methodName, const ConstantUtf8* methodDesc);
     void resolve(ClassFileInfo *clazz);
+    const string& getName() const;
+    const string& getDesc() const;
     OperandStack* getOperandStack();
     LocalVariableTable* getLocalVariableTable();
     ClassFileInfo* getClass();

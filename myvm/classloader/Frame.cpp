@@ -2,6 +2,7 @@
 #include "Method.h"
 #include "LocalVariableTable.h"
 #include "../classloader/ThreadLocalStorage.h"
+#include "../classloader/OperandStack.h"
 #include <iostream>
 
 using namespace std;
@@ -23,7 +24,7 @@ Frame::~Frame() {
 }
 
 uint16_t Frame::getStackReturn() {
-
+    return mStackReturnPos;
 }
 
 }

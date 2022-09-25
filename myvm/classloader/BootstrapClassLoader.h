@@ -18,6 +18,7 @@ public:
     bool loadClassFromJar(string& jarFile, string className);
     bool loadClassFromClassPath(string& className);
     ClassFileInfo* getClassByName(string& name);
+    ClassFileInfo* getClassByName(const char* name);
     void addClass(string& name, ClassFileInfo *clazz);
 private:
     BootstrapClassLoader();
