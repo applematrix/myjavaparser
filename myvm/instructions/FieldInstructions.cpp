@@ -25,7 +25,37 @@ void GetFieldInstruction::run(ClassFileInfo* clazz, Method *context, OperandStac
 }
 
 void GetFieldInstruction::run(Frame *frame) {
-    cout << "get field" << endl;
+    ClassFileInfo *clazz = frame->getClass();
+    ConstantFieldRef *fieldRef = (ConstantFieldRef *)clazz->getConstantAt(mIndex);
+
+    ConstantClass *classInfo = (ConstantClass*)clazz->getConstantAt(fieldRef->classIndex);
+    ConstantNameAndType *typeInfo = (ConstantNameAndType*)clazz->getConstantAt(fieldRef->nameAndTypeIndex);
+
+    ConstantUtf8 *name = (ConstantUtf8*)clazz->getConstantAt(typeInfo->nameIndex);
+    ConstantUtf8 *desc = (ConstantUtf8*)clazz->getConstantAt(typeInfo->descriptorIndex);
+
+    FieldInfo* field = clazz->findField(typeInfo->nameIndex, typeInfo->descriptorIndex);
+    shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
+    uint32_t handle = stack->popUint32();
+    Object *object = Heap::getInstance()->getObject(handle);
+
+    if (field->getType()->doubleUnit()) {
+        uint64_t value = object->getUint64Field(field->offsetInClass());
+        stack->pushUint64(value);
+
+        cout << INDENTS[frame->getDepth()] << "GetFieldInstruction run, index:"
+            << mIndex << ", name:" << name->bytes << ", description:" << desc->bytes 
+            << ", push long value = " << value << " into the stack"
+            << ", current stack size = " << stack->getSize() << endl;
+    } else {
+        uint32_t value = object->getField(field->offsetInClass());
+        stack->pushUint32(value);
+
+        cout << INDENTS[frame->getDepth()] << "GetFieldInstruction run, index:"
+            << mIndex << ", name:" << name->bytes << ", description:" << desc->bytes 
+            << ", push value = " << value << " into the stack"
+            << ", current stack size = " << stack->getSize() << endl;
+    }
 }
 
 
@@ -60,11 +90,21 @@ void PutFieldInstruction::run(Frame *frame) {
         uint32_t handle = stack->popUint32();
         Object *object = Heap::getInstance()->getObject(handle);
         object->putField(field->offsetInClass(), value);
+
+        cout << INDENTS[frame->getDepth()] << "PutFieldInstruction run, index:"
+            << mIndex << ", name:" << name->bytes << ", description:" << desc->bytes
+            << ", pop value = " << value << " from the stack into the field"
+            << ", current stack size = " << stack->getSize() << endl;
     } else {
         uint32_t value = stack->popUint32();
         uint32_t handle = stack->popUint32();
         Object *object = Heap::getInstance()->getObject(handle);
         object->putField(field->offsetInClass(), value);
+
+        cout << INDENTS[frame->getDepth()] << "PutFieldInstruction run, index:"
+            << mIndex << ", name:" << name->bytes << ", description:" << desc->bytes
+            << ", pop value = " << value << " from the stack into the field"
+            << ", current stack size = " << stack->getSize() << endl;
     }
 }
 

@@ -27,11 +27,11 @@ void Object::putField(uint32_t index, uint64_t value) {
 }
 
 uint32_t Object::getField(uint32_t index) {
-    return mFields[index];
+    return mFields[mFieldOffset + index];
 }
 
 uint64_t Object::getUint64Field(uint32_t index) {
-    return mFields[index];
+    return mFields[mFieldOffset + index];
 }
 
 }

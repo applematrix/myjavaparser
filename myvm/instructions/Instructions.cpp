@@ -14,6 +14,7 @@
 #include "ConstantInstructions.h"
 #include "StoreInstructions.h"
 #include "PopInstructions.h"
+#include "AddInstructions.h"
 #include <iostream>
 
 using namespace std;
@@ -256,6 +257,8 @@ Instruction* Instruction::interpreteCode(uint8_t *code) {
             return new DupInstruction();
         case PUTFIELD:
             return new PutFieldInstruction(code);
+        case GETFIELD:
+            return new GetFieldInstruction(code);
         case INVOKESPECIAL:
             return new InvokeSpecialInstruction(code);
         case INVOKEVIRTUAL:
@@ -281,6 +284,8 @@ Instruction* Instruction::interpreteCode(uint8_t *code) {
             return new PopInstruction(true);
         case RETURN:
             return new ReturnInstruction(code);
+        case IADD:
+            return new IAddInstruction(code);
         default:
             cout << "Unknown op code : " << (int32_t)opCode << endl;
     }
