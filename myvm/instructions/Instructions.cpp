@@ -284,6 +284,8 @@ Instruction* Instruction::interpreteCode(uint8_t *code) {
             return new PopInstruction(true);
         case RETURN:
             return new ReturnInstruction(code);
+        case IRETURN:
+            return new IReturnInstruction(code);
         case IADD:
             return new IAddInstruction(code);
         default:

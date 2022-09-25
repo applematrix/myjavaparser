@@ -17,6 +17,17 @@ private:
     bool mPop2 = false;
 };
 
+class IReturnInstruction : public Instruction {
+public:
+    IReturnInstruction() {}
+    IReturnInstruction(uint8_t *code) {};
+    virtual ~IReturnInstruction() {};
+    virtual uint8_t codeLen() { return 1;}
+    virtual void run(ClassFileInfo* clazz, Method *context, OperandStack *stack) {}
+    virtual void run(Frame* frame);
+};
+
+
 }
 
 #endif

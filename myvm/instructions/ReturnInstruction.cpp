@@ -19,4 +19,16 @@ void ReturnInstruction::run(Frame* frame) {
         << ", current stack size =" << stack->getSize()<< endl;
 }
 
+////////////////////////////////////
+void IReturnInstruction::run(Frame* frame) {
+    shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
+    int32_t returnValue = stack->popInt32();
+    stack->trimSize(frame->getStackReturn());
+    stack->pushInt32(returnValue);
+
+    cout << INDENTS[frame->getDepth()] << "IReturnInstruction run: clear the stack of current frame "
+        << ", and push " << returnValue << " into the stack for the caller"
+        << ", current stack size =" << stack->getSize()<< endl;
+}
+
 }
