@@ -244,7 +244,6 @@ class Instruction {
 public:
     Instruction() {};
     virtual ~Instruction(){};
-    virtual void run(ClassFileInfo *clazz, Method *context, OperandStack *stack) = 0;
     virtual void run(Frame* frame) = 0;
     virtual uint8_t codeLen() = 0;
 

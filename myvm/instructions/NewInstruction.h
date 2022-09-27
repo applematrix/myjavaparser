@@ -22,7 +22,6 @@ public:
     NewInstruction(uint8_t *code);
     virtual ~NewInstruction() {};
     virtual uint8_t codeLen() { return 3;}
-    virtual void run(ClassFileInfo* clazz, Method *context, OperandStack *stack);
     virtual void run(Frame *frame);
 private:
     uint16_t mIndex;

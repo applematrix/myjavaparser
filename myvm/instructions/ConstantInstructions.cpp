@@ -11,11 +11,6 @@ IConstantInstruction::IConstantInstruction(uint8_t *code, int32_t value) {
     mValue = value;
 }
 
-void IConstantInstruction::run(ClassFileInfo* clazz, Method *context, OperandStack *stack) {
-    cout << "IConstant run push " << mValue << " into the stack! " << endl;
-    stack->pushInt32(mValue);
-}
-
 void IConstantInstruction::run(Frame* frame) {
     shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
     stack->pushInt32(mValue);

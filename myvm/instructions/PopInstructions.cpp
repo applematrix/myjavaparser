@@ -7,15 +7,6 @@ using namespace myvm;
 
 namespace myvm {
 
-void PopInstruction::run(ClassFileInfo* clazz, Method *context, OperandStack *stack) {
-    cout << "PopInstruction run: pop " << (mPop2 ? 2 : 1) << " items from the stack! " << endl;
-    // TODO:
-    stack->popUint32();
-    if (mPop2) {
-        stack->popUint32();
-    }
-}
-
 void PopInstruction::run(Frame* frame) {
     shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
     // TODO:

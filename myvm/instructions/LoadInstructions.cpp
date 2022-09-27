@@ -7,14 +7,14 @@ using namespace myvm;
 
 namespace myvm {
 
-void IloadInstruction::run(ClassFileInfo* clazz, Method *context, OperandStack *stack) {
+void IloadInstruction::run(Frame* frame) {
     
 }
 
-void Iload0Instruction::run(ClassFileInfo* clazz, Method *context, OperandStack *stack) {
+void Iload0Instruction::run(Frame* frame) {
 }
 
-void Iload1Instruction::run(ClassFileInfo* clazz, Method *context, OperandStack *stack) {
+void Iload1Instruction::run(Frame* frame) {
 }
 
 ////////////////////////////////////////////////////
@@ -27,17 +27,6 @@ AloadInstruction::AloadInstruction(uint8_t *code) {
 AloadInstruction::AloadInstruction(uint8_t *code, uint8_t index) {
     mOpCode = *code;
     mLocalVariableTableIndex = index;
-}
-
-void AloadInstruction::run(ClassFileInfo* clazz, Method *context, OperandStack *stack) {
-    cout << "AloadInstruction run: load " << (uint32_t)mLocalVariableTableIndex << " into the stack! " << endl;
-    LocalVariableTable* lvt = context->getLocalVariableTable();
-    if (lvt == nullptr) {
-        cout << "No local variable table" << endl;
-        return;
-    }
-    uint32_t objectRef = lvt->variableAt(mLocalVariableTableIndex);
-    stack->pushUint32(objectRef);
 }
 
 void AloadInstruction::run(Frame* frame) {

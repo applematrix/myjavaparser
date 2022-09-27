@@ -8,14 +8,6 @@ using namespace myvm;
 
 namespace myvm {
 
-void DupInstruction::run(ClassFileInfo* clazz, Method *context, OperandStack *stack) {
-    cout << "Duplicate instance"<< endl;
-
-    uint32_t handle = stack->popUint32();
-    stack->pushUint32(handle);
-    stack->pushUint32(handle);
-}
-
 void DupInstruction::run(Frame* frame) {
     shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
     uint32_t handle = stack->popUint32();
