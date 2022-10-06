@@ -44,6 +44,7 @@ static void parseArgs(int argc, const char* args[]) {
 }
 
 int main(int argc, const char* args[]) {
+	Logger::initialize();
 	cout << "hello world, this is a vm toy!" << endl;
 	if (argc <= 1) {
 		cout << "no class file specified" << endl;
@@ -85,5 +86,6 @@ int main(int argc, const char* args[]) {
 	}
 	LOGI("vm closed");
 
+	Logger::clear();
 	return 0;
 }

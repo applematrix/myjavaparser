@@ -73,10 +73,22 @@ std::mutex sSingletonMutex;
 
 /*static */Logger* Logger::getInstance() {
     std::unique_lock<std::mutex> lock(sSingletonMutex);
+    return sInstance;
+}
+
+/*static */void Logger::initialize() {
+    std::unique_lock<std::mutex> lock(sSingletonMutex);
     if (sInstance == nullptr) {
         sInstance = new Logger();
     }
-    return sInstance;
+}
+
+/*static */void Logger::clear() {
+    std::unique_lock<std::mutex> lock(sSingletonMutex);
+    if (sInstance != nullptr) {
+        delete sInstance;
+        sInstance = nullptr;
+    }
 }
 
 Logger::Logger() {

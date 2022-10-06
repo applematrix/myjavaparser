@@ -64,6 +64,8 @@ public:
 class Logger {
 public:
     static Logger* getInstance();
+    static void initialize();
+    static void clear();
     virtual ~Logger();
     void v(const char* message);
     void i(const char* message);
