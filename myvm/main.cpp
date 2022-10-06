@@ -17,6 +17,7 @@
 #include "classloader/Frame.h"
 #include "classloader/CodeAttr.h"
 #include "common/GlobalProperties.h"
+#include "common/Logger.h"
 
 #include <string>
 #include <thread>
@@ -57,6 +58,8 @@ int main(int argc, const char* args[]) {
 		return -1;
 	}
 
+	LOGI("vm started");
+
 	BootstrapClassLoader *mBootstrapClassLoder = BootstrapClassLoader::getInstance();
 	mBootstrapClassLoder->loadClassFromFile(mainClass);
 
@@ -80,6 +83,7 @@ int main(int argc, const char* args[]) {
 
 		mainThread.join();
 	}
+	LOGI("vm closed");
 
 	return 0;
 }
