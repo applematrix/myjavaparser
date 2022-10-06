@@ -19,6 +19,8 @@ using namespace myvm;
 namespace myvm {
 
 ClassFileInfo::ClassFileInfo() {
+    mClassSize = 0;
+    mSuperClass = nullptr;
 }
 
 ClassFileInfo::~ClassFileInfo() {

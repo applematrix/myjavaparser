@@ -16,10 +16,31 @@
 #include "classloader/ThreadLocalStorage.h"
 #include "classloader/Frame.h"
 #include "classloader/CodeAttr.h"
+#include "common/GlobalProperties.h"
 
+#include <string>
 #include <thread>
 using namespace myvm;
 using namespace std;
+
+static void parseArgs(int argc, const char* args[]) {
+	string key = "";
+	shared_ptr<GlobalProperties> globalProperty = GlobalProperties::getInstance();
+	for (int i = 1; i < argc; i++) {
+		string curArg = string(args[i]);
+		if (!key.empty()) {
+			globalProperty->addProperty(key, curArg);
+			key = "";
+		}
+		if (strcmp(args[i], "-classpath") == 0
+			|| strcmp(args[i], "-cp") == 0) {
+			key = "classpath";
+		} else {
+			key = "mainclass";
+			globalProperty->addProperty(key, curArg);
+		}
+	}
+}
 
 int main(int argc, const char* args[]) {
 	cout << "hello world, this is a vm toy!" << endl;
@@ -29,11 +50,18 @@ int main(int argc, const char* args[]) {
 	}
 	const char* path = args[1];
 
-	BootstrapClassLoader *mBootstrapClassLoder = BootstrapClassLoader::getInstance();
-	mBootstrapClassLoder->loadClassFromFile(path);
+	parseArgs(argc, args);
+	string mainClass = GlobalProperties::getInstance()->getProperty("mainclass");
+	if (mainClass.empty()) {
+		cout << "No main class specified" << endl;
+		return -1;
+	}
 
-	ClassFileInfo* mClasssFile = new ClassFileInfo();
-	mClasssFile->loadFromFile(path);
+	BootstrapClassLoader *mBootstrapClassLoder = BootstrapClassLoader::getInstance();
+	mBootstrapClassLoder->loadClassFromFile(mainClass);
+
+	shared_ptr<ClassFileInfo> mClasssFile = make_shared<ClassFileInfo>();
+	mClasssFile->loadFromFile(mainClass.c_str());
 
 	Method *mainMethod = mClasssFile->findMainMethod();
 	if (mainMethod == nullptr) {
@@ -52,7 +80,6 @@ int main(int argc, const char* args[]) {
 
 		mainThread.join();
 	}
-	delete mClasssFile;
 
 	return 0;
 }
