@@ -6,7 +6,7 @@
 
 #include "AttributeInfo.h"
 #include "Instructions.h"
-
+#include <cstring>
 #include <iostream>
 using namespace std;
 

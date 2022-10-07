@@ -3,6 +3,7 @@
 namespace myvm {
 
 shared_ptr<GlobalProperties> GlobalProperties::sInstance = nullptr;
+string GlobalProperties::sEmptyString = "";
 
 GlobalProperties::GlobalProperties() {
 }
@@ -15,7 +16,7 @@ string &GlobalProperties::getProperty(const string &name)
     if (mProperties.find(name) != mProperties.end()) {
         return mProperties[name];
     }
-    return string("");
+    return sEmptyString;
 }
 
 shared_ptr<GlobalProperties> GlobalProperties::getInstance()

@@ -18,6 +18,7 @@ public:
 private:
     map<string, string> mProperties;
     static shared_ptr<GlobalProperties> sInstance;
+    static string sEmptyString;
 };
 
 }
