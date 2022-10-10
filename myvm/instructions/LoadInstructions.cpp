@@ -1,7 +1,7 @@
 #include "LoadInstructions.h"
-#include "../classloader/LocalVariableTable.h"
-#include "../classloader/OperandStack.h"
-#include "../classloader/CodeAttr.h"
+#include "classloader/LocalVariableTable.h"
+#include "classloader/OperandStack.h"
+#include "classloader/CodeAttr.h"
 
 using namespace myvm;
 

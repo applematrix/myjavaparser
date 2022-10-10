@@ -1,6 +1,6 @@
 #include "DupInstruction.h"
-#include "../classloader/OperandStack.h"
-#include "../classloader/ThreadLocalStorage.h"
+#include "classloader/OperandStack.h"
+#include "classloader/ThreadLocalStorage.h"
 #include <iostream>
 
 using namespace std;

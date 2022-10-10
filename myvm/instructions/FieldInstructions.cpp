@@ -1,11 +1,11 @@
 #include "FieldInstructions.h"
-#include "../classloader/Method.h"
-#include "../classloader/ClassFileInfo.h"
-#include "../classloader/ConstantInfo.h"
-#include "../classloader/ConstantFieldRef.h"
-#include "../classloader/BootstrapClassLoader.h"
-#include "../classloader/Heap.h"
-#include "../classloader/Object.h"
+#include "classloader/Method.h"
+#include "classloader/ClassFileInfo.h"
+#include "classloader/ConstantInfo.h"
+#include "classloader/ConstantFieldRef.h"
+#include "classloader/BootstrapClassLoader.h"
+#include "classloader/Heap.h"
+#include "classloader/Object.h"
 
 #include <iostream>
 

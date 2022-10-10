@@ -16,7 +16,7 @@
 #include "ConstantInfo.h"
 #include "Frame.h"
 #include "CodeAttr.h"
-#include "../common/utils.h"
+#include "common/utils.h"
 #include "ThreadLocalStorage.h"
 
 #include <cstring>

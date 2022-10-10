@@ -8,9 +8,9 @@
 #include "FileReader.h"
 #include "ConstantFactory.h"
 #include "AccessFlag.h"
-#include "../classloader/BootstrapClassLoader.h"
-#include "../common/utils.h"
-#include "../classloader/Method.h"
+#include "classloader/BootstrapClassLoader.h"
+#include "common/utils.h"
+#include "classloader/Method.h"
 #include <iostream>
 
 using namespace std;

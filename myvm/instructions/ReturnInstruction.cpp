@@ -1,7 +1,7 @@
 #include "ReturnInstruction.h"
-#include "../classloader/Frame.h"
-#include "../classloader/ThreadLocalStorage.h"
-#include "../classloader/OperandStack.h"
+#include "classloader/Frame.h"
+#include "classloader/ThreadLocalStorage.h"
+#include "classloader/OperandStack.h"
 
 using namespace myvm;
 

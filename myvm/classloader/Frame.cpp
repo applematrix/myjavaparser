@@ -1,8 +1,8 @@
 #include "Frame.h"
 #include "Method.h"
 #include "LocalVariableTable.h"
-#include "../classloader/ThreadLocalStorage.h"
-#include "../classloader/OperandStack.h"
+#include "classloader/ThreadLocalStorage.h"
+#include "classloader/OperandStack.h"
 #include <iostream>
 
 using namespace std;

@@ -1,9 +1,9 @@
 #include "NewInstruction.h"
-#include "../classloader/ClassFileInfo.h"
-#include "../classloader/OperandStack.h"
-#include "../classloader/ObjectRef.h"
-#include "../classloader/Heap.h"
-#include "../classloader/BootstrapClassLoader.h"
+#include "classloader/ClassFileInfo.h"
+#include "classloader/OperandStack.h"
+#include "classloader/ObjectRef.h"
+#include "classloader/Heap.h"
+#include "classloader/BootstrapClassLoader.h"
 #include <iostream>
 
 using namespace std;

@@ -7,7 +7,7 @@
 #include "Heap.h"
 #include "ObjectRef.h"
 #include "Object.h"
-#include "../classloader/ClassFileInfo.h"
+#include "classloader/ClassFileInfo.h"
 
 using namespace myvm;
 
