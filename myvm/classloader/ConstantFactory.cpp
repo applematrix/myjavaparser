@@ -8,6 +8,9 @@
 #include "ConstantFieldRef.h"
 #include "ConstantInterfaceMethodRef.h"
 #include "ConstantMethodRef.h"
+#include <cstring>
+
+using namespace std;
 
 namespace myvm {
 

@@ -49,7 +49,7 @@ namespace myvm {
     return nullptr;
 }
 
-ReferenceTypeInfo::ReferenceTypeInfo(string& desc) 
+ReferenceTypeInfo::ReferenceTypeInfo(const string& desc) 
     : TypeInfo(TYPE_REF) {
     classDescriptor = desc;
 }

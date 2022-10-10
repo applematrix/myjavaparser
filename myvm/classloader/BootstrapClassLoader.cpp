@@ -7,6 +7,8 @@
 
 #ifdef WIN32
 #include  <io.h>
+#else
+#include <unistd.h>
 #endif
 
 using namespace std;
@@ -37,7 +39,7 @@ BootstrapClassLoader::~BootstrapClassLoader() {
     return sInstance;
 }
 
-ClassFileInfo* BootstrapClassLoader::getClassByName(string& name) {
+ClassFileInfo* BootstrapClassLoader::getClassByName(const string& name) {
     return mLoadedClasses.find(name) == mLoadedClasses.end() ? nullptr : mLoadedClasses[name];
 }
 

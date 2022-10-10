@@ -49,7 +49,7 @@ public:
 
 class ReferenceTypeInfo : public TypeInfo {
 public:
-    ReferenceTypeInfo(string& desc);
+    ReferenceTypeInfo(const string& desc);
     ~ReferenceTypeInfo(){}
     virtual uint8_t descLength();
     string classDescriptor;

@@ -19,6 +19,7 @@
 #include "../common/utils.h"
 #include "ThreadLocalStorage.h"
 
+#include <cstring>
 #include <iostream>
 #include <memory>
 

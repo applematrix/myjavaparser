@@ -4,6 +4,7 @@
  *
  */
 #include <iostream>
+#include <cstring>
 #include "ConstantInfo.h"
 #include "ClassFileInfo.h"
 

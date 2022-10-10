@@ -17,7 +17,7 @@ public:
     bool loadClassFromFile(string& classFile);
     bool loadClassFromJar(string& jarFile, string className);
     bool loadClassFromClassPath(string& className);
-    ClassFileInfo* getClassByName(string& name);
+    ClassFileInfo* getClassByName(const string& name);
     ClassFileInfo* getClassByName(const char* name);
     void addClass(string& name, ClassFileInfo *clazz);
 private:

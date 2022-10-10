@@ -19,7 +19,7 @@
 #include "common/GlobalProperties.h"
 #include "common/Logger.h"
 
-#include <string>
+#include <cstring>
 #include <thread>
 using namespace myvm;
 using namespace std;

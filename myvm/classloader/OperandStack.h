@@ -10,6 +10,7 @@
 #define STACK_UNIT_SIZE sizeof(uint32_t)
 
 #include <stack>
+#include <cstdint>
 
 using namespace std;
 
