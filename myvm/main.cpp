@@ -7,9 +7,9 @@
 #include <stdio.h>
 #include <iostream>
 #include "MyVmConfig.h"
-#include "ClassLoader.h"
+#include "classloader/ClassLoader.h"
 #include "classloader/ConstantInfo.h"
-#include "ClassFileInfo.h"
+#include "classloader/ClassFileInfo.h"
 #include "windows/Environment.h"
 #include "classloader/BootstrapClassLoader.h"
 #include "common/utils.h"

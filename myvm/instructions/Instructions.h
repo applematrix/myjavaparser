@@ -10,9 +10,9 @@
 #include <stdint.h>
 #include <string>
 #include <iostream>
-#include "../classloader/Frame.h"
-#include "../classloader/ThreadLocalStorage.h"
-#include "../common/utils.h"
+#include "classloader/Frame.h"
+#include "classloader/ThreadLocalStorage.h"
+#include "common/utils.h"
 using namespace std;
 
 namespace myvm {

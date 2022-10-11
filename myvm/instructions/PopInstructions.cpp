@@ -1,7 +1,7 @@
 #include "PopInstructions.h"
-#include "../classloader/OperandStack.h"
-#include "../classloader/LocalVariableTable.h"
-#include "../classloader/Method.h"
+#include "classloader/OperandStack.h"
+#include "classloader/LocalVariableTable.h"
+#include "classloader/Method.h"
 
 using namespace myvm;
 
