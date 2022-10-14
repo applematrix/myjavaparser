@@ -48,7 +48,7 @@ class Method {
 public:
     static Method* loadFromFile(ClassFileInfo *classFileInfo, FileReader *fileReader);
     
-    Method(ClassFileInfo* owner, uint16_t flags, uint16_t name, uint16_t desc, vector<AttributeInfo*> *attrs);
+    Method(ClassFileInfo* owner, uint16_t flags, uint16_t name, uint16_t desc, vector<shared_ptr<AttributeInfo>> *attrs);
     ~Method();
     void invoke(shared_ptr<Frame> frame);
     bool isAbstract();
@@ -65,7 +65,7 @@ public:
     OperandStack* getOperandStack();
     LocalVariableTable* getLocalVariableTable();
     ClassFileInfo* getClass();
-    CodeAttr* getCodeAttr();
+    shared_ptr<CodeAttr> getCodeAttr();
     vector<shared_ptr<TypeInfo>> getArgs() {return mArgsList;}
 private:
     void resolveParaListAndType();
@@ -74,7 +74,7 @@ private:
     uint16_t nameIndex;
     uint16_t descriptorIndex;
     uint16_t attributeCount;
-    vector<AttributeInfo*> mAttributes;
+    vector<shared_ptr<AttributeInfo>> mAttributes;
     vector<shared_ptr<TypeInfo>> mArgsList;
     shared_ptr<TypeInfo> mReturnType;
 
@@ -87,7 +87,7 @@ private:
     std::string mDescriptor;
     bool mMainMethod;
     bool mConstructor;
-    CodeAttr* mCodeAttr;
+    shared_ptr<CodeAttr> mCodeAttr;
     uint16_t mStackSize;
 };
 

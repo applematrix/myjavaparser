@@ -50,7 +50,7 @@ void InvokeSpecialInstruction::run(Frame *frame) {
     Method* targetMethod = targetClazz->findMethod(targetMethodName, targetMethodDesc);
     vector<shared_ptr<TypeInfo>> args = targetMethod->getArgs();
     
-    CodeAttr* codeAttr = targetMethod->getCodeAttr();
+    shared_ptr<CodeAttr> codeAttr = targetMethod->getCodeAttr();
     shared_ptr<Frame> newFrame = make_shared<Frame>(targetMethod, codeAttr->maxLocals, frame->getDepth() + 1);
     auto attr = codeAttr->getAttributeByType(ATTR_LOCAL_VARIABLE_TABLE);
     if (attr == nullptr) {
@@ -107,7 +107,7 @@ void InvokeVirtualInstruction::run(Frame *frame) {
     shared_ptr<OperandStack> curStack = ThreadLocalStorage::getInstance()->getStack();
     vector<shared_ptr<TypeInfo>> args = method->getArgs();
     
-    CodeAttr* codeAttr = method->getCodeAttr();
+    shared_ptr<CodeAttr> codeAttr = method->getCodeAttr();
     shared_ptr<Frame> newFrame = make_shared<Frame>(method, codeAttr->maxLocals, frame->getDepth() + 1);
     auto attr = codeAttr->getAttributeByType(ATTR_LOCAL_VARIABLE_TABLE);
     if (attr == nullptr) {

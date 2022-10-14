@@ -32,7 +32,7 @@ Method::Method(ClassFileInfo* owner,
     uint16_t flags,
     uint16_t name,
     uint16_t desc,
-    vector<AttributeInfo*> *attrs) {
+    vector<shared_ptr<AttributeInfo>> *attrs) {
     mOwnerClazz = owner;
     accessFlags = flags;
     nameIndex = name;
@@ -122,7 +122,7 @@ Method* Method::loadFromFile(ClassFileInfo *classFileInfo, FileReader *fileReade
     }
 
     cout << "Have "<< attributeCount <<" attributes!" << endl;
-    auto attributes = new vector<AttributeInfo *>();
+    auto attributes = new vector<shared_ptr<AttributeInfo>>();
     if (attributeCount > 0) {
         for (int i = 0; i < attributeCount; i++) {
             cout << "Load attribute #" << i << endl;
@@ -131,7 +131,7 @@ Method* Method::loadFromFile(ClassFileInfo *classFileInfo, FileReader *fileReade
                 cout << "Load attribute #" << i << " failed!" << endl;
                 return nullptr;
             }
-            attributes->push_back(attrInfo);
+            attributes->push_back(shared_ptr<AttributeInfo>(attrInfo));
             cout << "Load attribute #" << i << " complete!" << endl;
         }
     }
@@ -168,10 +168,10 @@ void Method::resolve(ClassFileInfo *clazz) {
         mConstructor = true;
     }
 
-    CodeAttr *codeInfo = nullptr;
     for (auto attr : mAttributes) {
         if (attr->attrType == ATTR_CODE) {
-            mCodeAttr = (CodeAttr* )attr;
+            mCodeAttr = dynamic_pointer_cast<CodeAttr>(attr);
+            break;
         }
     }
 
@@ -184,7 +184,7 @@ ClassFileInfo* Method::getClass() {
     return mOwnerClazz;
 }
 
-CodeAttr* Method::getCodeAttr() {
+shared_ptr<CodeAttr> Method::getCodeAttr() {
     return mCodeAttr;
 }
 

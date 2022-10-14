@@ -73,7 +73,7 @@ int main(int argc, const char* args[]) {
 	} else {
 		std::thread mainThread([](Method *method) {
 			ThreadLocalStorage::getInstance()->intialize();
-			CodeAttr* codeAttr = method->getCodeAttr();
+			shared_ptr<CodeAttr> codeAttr = method->getCodeAttr();
 
 			shared_ptr<Frame> frame = make_shared<Frame>(method, codeAttr->maxLocals, 0);
 			cout << "Invoke the main method!" << endl;
