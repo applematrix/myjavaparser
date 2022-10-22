@@ -29,7 +29,8 @@ list(APPEND EXTRA_INCLUDES "${PROJECT_SOURCE_DIR}/common")
 # add the executable
 add_executable(myvm main.cpp)
 
-target_link_libraries(myvm PUBLIC common classloader instructions windows pthread)
+find_library(LIB_ZIP zip)
+target_link_libraries(myvm PUBLIC common classloader instructions windows pthread "${LIB_ZIP}")
 
 target_include_directories(myvm PUBLIC
                            "${PROJECT_BINARY_DIR}"

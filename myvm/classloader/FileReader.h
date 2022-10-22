@@ -17,11 +17,12 @@ class FileReader {
 public:
     FileReader();
     FileReader(const char* path);
-    ~FileReader();
+    virtual ~FileReader();
+    virtual size_t readFromFile(void *buffer, size_t size) {return 0;};
     inline uint64_t getOffset() { return mOffset;}
     inline uint64_t getSize() {return mSize;}
-    inline void markPosition() {mMarkPosition = mOffset;}
-    inline void unmarkPosition() {mMarkPosition = 0;}
+    //inline void markPosition() {mMarkPosition = mOffset;}
+    //inline void unmarkPosition() {mMarkPosition = 0;}
     void skip(uint32_t bytes);
     void close();
 
@@ -55,6 +56,7 @@ public:
         }
         T tmpVal = 0;
         size_t readSize = fread(&tmpVal, 1, dataSize, mClassFile);
+        //size_t readSize = readFromFile(&tmpVal, dataSize);
         mOffset += dataSize;
         if (readSize != dataSize) return -1;
 

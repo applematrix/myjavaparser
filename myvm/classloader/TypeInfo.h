@@ -1,7 +1,7 @@
 #ifndef _TYPE_INFO_H_
 #define _TYPE_INFO_H_
 
-#include "classloader/ConstantInfo.h"
+#include "ConstantInfo.h"
 
 #include <stdint.h>
 #include <string>
