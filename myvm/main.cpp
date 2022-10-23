@@ -18,7 +18,7 @@
 #include "classloader/CodeAttr.h"
 #include "common/GlobalProperties.h"
 #include "common/Logger.h"
-#include "common/JarFileReader.h"
+#include "common/JarClassFileReader.h"
 #include "common/JarArchive.h"
 
 #include <cstring>

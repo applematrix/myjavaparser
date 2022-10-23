@@ -19,12 +19,10 @@ public:
     FileReader(const char* path);
     virtual ~FileReader();
     virtual size_t readFromFile(void *buffer, size_t size) {return 0;};
-    inline uint64_t getOffset() { return mOffset;}
-    inline uint64_t getSize() {return mSize;}
-    //inline void markPosition() {mMarkPosition = mOffset;}
-    //inline void unmarkPosition() {mMarkPosition = 0;}
-    void skip(uint32_t bytes);
-    void close();
+    virtual uint64_t getOffset() { return 0;}
+    virtual uint64_t getSize() {return 0;}
+    virtual void skip(uint32_t bytes) {};
+    virtual void close() {};
 
     int readInt32(int32_t &val) {
         return read<int32_t>(val);
@@ -51,13 +49,8 @@ public:
 
     template<class T> int read(T &val) {
         int8_t dataSize = sizeof(val);
-        if (mOffset + dataSize > mSize) {
-            return -1;
-        }
         T tmpVal = 0;
-        size_t readSize = fread(&tmpVal, 1, dataSize, mClassFile);
-        //size_t readSize = readFromFile(&tmpVal, dataSize);
-        mOffset += dataSize;
+        size_t readSize = readFromFile(&tmpVal, dataSize);
         if (readSize != dataSize) return -1;
 
         // litte-endian
@@ -71,15 +64,6 @@ public:
     }
     
     int read(void *buffer, int32_t readSize);
-private:
-    void loadFile();
-    bool valid();
-private:
-    FILE *mClassFile;
-    std::string mClassFilePath;
-    uint64_t mOffset;
-    uint64_t mMarkPosition;
-    uint64_t mSize;
 };
 
 }

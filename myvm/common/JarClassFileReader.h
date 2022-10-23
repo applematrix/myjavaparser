@@ -1,5 +1,5 @@
-#ifndef _JAR_FILE_READER_H_
-#define _JAR_FILE_READER_H_
+#ifndef _JAR_CLASS_FILE_READER_H_
+#define _JAR_CLASS_FILE_READER_H_
 
 #include <zip.h>
 #include <string>
@@ -8,10 +8,10 @@ using namespace std;
 
 namespace myvm {
 
-class JarFileReader : public FileReader {
+class JarClassFileReader : public FileReader {
 public:
-    JarFileReader();
-    virtual ~JarFileReader();
+    JarClassFileReader();
+    virtual ~JarClassFileReader();
     void open(const char* jarFilePath, const char* classFileName);
     void close();
     virtual size_t readFromFile(void *buffer, size_t size);

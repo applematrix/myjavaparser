@@ -10,6 +10,7 @@
 #include "AccessFlag.h"
 #include "classloader/BootstrapClassLoader.h"
 #include "common/utils.h"
+#include "common/ClassFileReader.h"
 #include "classloader/Method.h"
 #include <iostream>
 
@@ -27,8 +28,8 @@ ClassFileInfo::~ClassFileInfo() {
 }
 
 void ClassFileInfo::loadFromFile(const char* path) {
-    mFileReader = new FileReader(path);
-    
+    mFileReader = new ClassFileReader(path);
+
     // read magic number
     int status = mFileReader->readUint32(magic);
     if (status != 0 || magic != JAVA_MAGIC) {

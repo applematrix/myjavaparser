@@ -1,4 +1,4 @@
-#include "JarFileReader.h"
+#include "JarClassFileReader.h"
 #include <iostream>
 #include <errno.h>
 #include <string.h>
@@ -9,18 +9,18 @@ const char* MANIFEST = "META-INF/MANIFEST.MF";
 
 namespace myvm {
 
-JarFileReader::JarFileReader() {
+JarClassFileReader::JarClassFileReader() {
     mJarFile = nullptr;
     mClassFileInJar = nullptr;
 }
 
-JarFileReader::~JarFileReader() {
+JarClassFileReader::~JarClassFileReader() {
     if (mJarFile != nullptr) {
         zip_close(mJarFile);
     }
 }
 
-void JarFileReader::open(const char* jarFilePath, const char* classFileName) {
+void JarClassFileReader::open(const char* jarFilePath, const char* classFileName) {
     int error = 0;
     mJarFile= zip_open(jarFilePath, ZIP_RDONLY, &error);
 	if (mJarFile == nullptr) {
@@ -38,7 +38,7 @@ failed:
     close();
 }
 
-void JarFileReader::close() {
+void JarClassFileReader::close() {
     if (mClassFileInJar != nullptr) {
         zip_fclose(mClassFileInJar);
         mClassFileInJar = nullptr;

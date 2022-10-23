@@ -8,6 +8,8 @@ list(APPEND EXTRA_INCLUDES "${PROJECT_SOURCE_DIR}/classloader")
 # add the library
 add_library(classloader ${SRC_LIST})
 
+target_link_libraries(classloader PUBLIC common)
+
 target_include_directories(classloader PUBLIC
                            "${PROJECT_BINARY_DIR}"
                            ${EXTRA_INCLUDES}
