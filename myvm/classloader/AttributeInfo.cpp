@@ -58,7 +58,7 @@ uint8_t getAttributeType(uint8_t *bytes, uint16_t len) {
     return -1;
 }
 
-void RecordAttr::initialize(ClassFileInfo *classFileInfo, FileReader* fileReader){
+void RecordAttr::initialize(ClassInfo *classFileInfo, FileReader* fileReader){
     fileReader->readUint16(componentCount);
     for (int i = 0; i < componentCount; i++) {
         fileReader->readUint16(components[i].nameIndex);

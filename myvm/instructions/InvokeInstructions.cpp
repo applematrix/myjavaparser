@@ -22,7 +22,7 @@ InvokeSpecialInstruction::InvokeSpecialInstruction(uint8_t *code) {
 }
 
 void InvokeSpecialInstruction::run(Frame *frame) {
-    ClassFileInfo *clazz = frame->getClass();
+    ClassInfo *clazz = frame->getClass();
 
     ConstantMethodRef* methodRef = (ConstantMethodRef*)clazz->getConstantAt(mIndex);
     ConstantNameAndType* nameAndTypeRef = (ConstantNameAndType*)clazz->getConstantAt(methodRef->nameAndTypeIndex);
@@ -36,7 +36,7 @@ void InvokeSpecialInstruction::run(Frame *frame) {
     ConstantUtf8* targetClassName = (ConstantUtf8*)clazz->getConstantAt(targetClassInfo->nameIndex);
 
     // TODO: must use the class' loader to load the class
-    ClassFileInfo* targetClazz = BootstrapClassLoader::getInstance()->getClassByName(string((const char*)targetClassName->bytes));
+    ClassInfo* targetClazz = BootstrapClassLoader::getInstance()->getClassByName(string((const char*)targetClassName->bytes));
     if (targetClazz == nullptr) {
         cout << "Class not load, we must load it first!" << endl;
         // TODO:
@@ -95,7 +95,7 @@ InvokeVirtualInstruction::InvokeVirtualInstruction(uint8_t *code) {
 }
 
 void InvokeVirtualInstruction::run(Frame *frame) {
-    ClassFileInfo *clazz = frame->getClass();
+    ClassInfo *clazz = frame->getClass();
     ConstantMethodRef* methodRef = (ConstantMethodRef*)clazz->getConstantAt(mIndex);
     ConstantNameAndType* nameAndTypeRef = (ConstantNameAndType*)clazz->getConstantAt(methodRef->nameAndTypeIndex);
     Method* method = clazz->findMethod(nameAndTypeRef);

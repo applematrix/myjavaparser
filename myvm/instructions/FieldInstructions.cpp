@@ -21,7 +21,7 @@ GetFieldInstruction::GetFieldInstruction(uint8_t *code) {
 }
 
 void GetFieldInstruction::run(Frame *frame) {
-    ClassFileInfo *clazz = frame->getClass();
+    ClassInfo *clazz = frame->getClass();
     ConstantFieldRef *fieldRef = (ConstantFieldRef *)clazz->getConstantAt(mIndex);
 
     ConstantClass *classInfo = (ConstantClass*)clazz->getConstantAt(fieldRef->classIndex);
@@ -63,7 +63,7 @@ PutFieldInstruction::PutFieldInstruction(uint8_t *code) {
 }
 
 void PutFieldInstruction::run(Frame *frame) {
-    ClassFileInfo *clazz = frame->getClass();
+    ClassInfo *clazz = frame->getClass();
     ConstantFieldRef *fieldRef = (ConstantFieldRef *)clazz->getConstantAt(mIndex);
 
     ConstantClass *classInfo = (ConstantClass*)clazz->getConstantAt(fieldRef->classIndex);

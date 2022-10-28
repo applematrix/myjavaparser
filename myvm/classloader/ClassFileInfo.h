@@ -21,17 +21,17 @@ namespace myvm {
 
 const uint32_t JAVA_MAGIC = 0xCAFEBABE;
 
-class ClassFileInfo {
+class ClassInfo {
 public:
-    ClassFileInfo();
-    ~ClassFileInfo();
+    ClassInfo();
+    ~ClassInfo();
     void loadFromFile(const char* filePath);
     ConstantInfo* getConstantAt(uint16_t index) const;
     void printConstantInfo(ConstantInfo *constant) const;
     void printConstantInfo(uint16_t index) const;
     char* getUtf8ConstantName(uint16_t index) const;
     ConstantUtf8* getUtf8Constant(uint16_t index) const;
-    ClassFileInfo* getSuperClass() const;
+    ClassInfo* getSuperClass() const;
     const char* getClassName() {
         return mClassName.c_str();
     };
@@ -77,7 +77,7 @@ private:
     uint32_t mClassSize;
 
     FileReader *mFileReader;
-    ClassFileInfo *mSuperClass;
+    ClassInfo *mSuperClass;
 };
 
 

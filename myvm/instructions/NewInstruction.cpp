@@ -19,7 +19,7 @@ NewInstruction::NewInstruction(uint8_t *code) {
 }
 
 void NewInstruction::run(Frame *frame) {
-    ClassFileInfo *clazz = frame->getClass();
+    ClassInfo *clazz = frame->getClass();
     ConstantClass*constantInfo = (ConstantClass*)clazz->getConstantAt(mIndex);
     const char* constantName = constantInfo->typeString();
     
@@ -29,7 +29,7 @@ void NewInstruction::run(Frame *frame) {
     const char* className = (const char*)constantUtf8->bytes;
     BootstrapClassLoader *bootstrapClassLoder = BootstrapClassLoader::getInstance();
     
-    ClassFileInfo *instanceClazz = bootstrapClassLoder->getClassByName(className);
+    ClassInfo *instanceClazz = bootstrapClassLoder->getClassByName(className);
     uint32_t handle = Heap::getInstance()->allocateObject(instanceClazz);
 
     shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();

@@ -15,7 +15,7 @@ using namespace std;
 namespace myvm {
 class ObjectRef;
 class Object;
-class ClassFileInfo;
+class ClassInfo;
 
 class Heap {
 public:
@@ -23,7 +23,7 @@ public:
 
     ~Heap() {}
     Object* getObject(uint32_t handle);
-    uint32_t allocateObject(const ClassFileInfo* name);
+    uint32_t allocateObject(const ClassInfo* name);
 private:
     Heap() {
         mNextHandle = FIRST_HANDLE;

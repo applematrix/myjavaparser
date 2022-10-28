@@ -18,7 +18,7 @@ using namespace myvm;
 
 namespace myvm {
 
-class ClassFileInfo;
+class ClassInfo;
 class AttributeFactory;
 
 enum AttributeType {
@@ -539,14 +539,14 @@ struct RecordAttr: public AttributeInfo {
         AttributeInfo **attributeInfo;
     } *components;
 
-    void initialize(ClassFileInfo *classFileInfo, FileReader* fileReader);
+    void initialize(ClassInfo *classFileInfo, FileReader* fileReader);
 
-    RecordAttr(ClassFileInfo *classFileInfo, FileReader* fileReader) 
+    RecordAttr(ClassInfo *classFileInfo, FileReader* fileReader) 
         : AttributeInfo(fileReader, ATTR_RECORD) {
         initialize(classFileInfo, fileReader);
     }
 
-    RecordAttr(uint16_t name, uint32_t len, ClassFileInfo *classFileInfo, FileReader *fileReader)
+    RecordAttr(uint16_t name, uint32_t len, ClassInfo *classFileInfo, FileReader *fileReader)
         : AttributeInfo(name, len, ATTR_RECORD) {
         initialize(classFileInfo, fileReader);
     }

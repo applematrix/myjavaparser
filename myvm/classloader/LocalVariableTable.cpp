@@ -20,7 +20,7 @@ void LocalVariableTableAttr::initialize(FileReader *fileReader){
 
 //////////////////////////////////////////
 LocalVariableTable::LocalVariableTable(Method* method, uint16_t size) {
-    ClassFileInfo *clazz = method->getClass();
+    ClassInfo *clazz = method->getClass();
     mLocalVariables = new uint32_t[size];
 }
 

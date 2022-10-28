@@ -13,7 +13,7 @@ using namespace std;
 
 namespace myvm {
 
-class ClassFileInfo;
+class ClassInfo;
 
 enum ConstantTag {
     CONSTANT_UTF8 = 1,
@@ -41,7 +41,7 @@ public:
 
     ConstantInfo(uint8_t _tag): tag(_tag) {}
     const char* typeString();
-    virtual void dump(const ClassFileInfo* classInfo) {}
+    virtual void dump(const ClassInfo* classInfo) {}
     virtual void resolve() {}
 };
 
@@ -51,7 +51,7 @@ public:
 
     ConstantClass(uint8_t tag, uint16_t index) :
         ConstantInfo(tag), nameIndex(index) {}
-    virtual void dump(const ClassFileInfo* classInfo);
+    virtual void dump(const ClassInfo* classInfo);
 };
 
 class ConstantRef: public ConstantInfo {

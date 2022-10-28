@@ -18,11 +18,11 @@ using namespace std;
 
 namespace myvm {
 struct AttributeInfo;
-class ClassFileInfo;
+class ClassInfo;
 
 struct FieldInfo {
 public:
-    FieldInfo(ClassFileInfo *clazz, 
+    FieldInfo(ClassInfo *clazz, 
         uint16_t flags, uint16_t name, uint16_t desc, vector<AttributeInfo*> *attrs);
     ~FieldInfo();
     void resolve();
@@ -32,7 +32,7 @@ public:
         return mTypeInfo;
     }
 
-    static FieldInfo* loadFromFile(ClassFileInfo *classFileInfo, FileReader *fileReader);
+    static FieldInfo* loadFromFile(ClassInfo *classFileInfo, FileReader *fileReader);
 public:
     uint16_t accessFlags;
     uint16_t nameIndex;
@@ -41,7 +41,7 @@ public:
 
 private:
     vector<AttributeInfo*> mAttributes;
-    ClassFileInfo* mOwnerClazz;
+    ClassInfo* mOwnerClazz;
     shared_ptr<TypeInfo> mTypeInfo;
 
     // runtime properties

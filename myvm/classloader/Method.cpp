@@ -28,7 +28,7 @@ using namespace myvm;
 
 namespace myvm {
 
-Method::Method(ClassFileInfo* owner,
+Method::Method(ClassInfo* owner,
     uint16_t flags,
     uint16_t name,
     uint16_t desc,
@@ -95,7 +95,7 @@ bool Method::isProtected() {
     return (accessFlags & METHOD_ACC_PROTECTED) != 0;
 }
 
-Method* Method::loadFromFile(ClassFileInfo *classFileInfo, FileReader *fileReader) {
+Method* Method::loadFromFile(ClassInfo *classFileInfo, FileReader *fileReader) {
     uint16_t accessFlags = 0;
     int status = fileReader->readUint16(accessFlags);
     if (status != 0) {
@@ -152,7 +152,7 @@ bool Method::isMainEntry() {
     return mMainMethod;
 }
 
-void Method::resolve(ClassFileInfo *clazz) {
+void Method::resolve(ClassInfo *clazz) {
     const char* name = clazz->getUtf8ConstantName(nameIndex);
     mName = std::move(std::string(name));
 
@@ -180,7 +180,7 @@ void Method::resolve(ClassFileInfo *clazz) {
     }
 }
 
-ClassFileInfo* Method::getClass() {
+ClassInfo* Method::getClass() {
     return mOwnerClazz;
 }
 

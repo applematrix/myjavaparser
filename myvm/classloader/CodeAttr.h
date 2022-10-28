@@ -23,11 +23,11 @@ public:
     uint16_t attrCounts;
     vector<shared_ptr<AttributeInfo>> attributes;
 
-    CodeAttr(ClassFileInfo *classFileInfo, FileReader* fileReader);
-    CodeAttr(uint16_t name, uint32_t len, ClassFileInfo *classFileInfo, FileReader *fileReader);
+    CodeAttr(ClassInfo *classFileInfo, FileReader* fileReader);
+    CodeAttr(uint16_t name, uint32_t len, ClassInfo *classFileInfo, FileReader *fileReader);
     shared_ptr<AttributeInfo> getAttributeAt(uint16_t index);
     shared_ptr<AttributeInfo> getAttributeByType(uint8_t type);
-    void initialize(ClassFileInfo *classFileInfo, FileReader* fileReader);
+    void initialize(ClassInfo *classFileInfo, FileReader* fileReader);
     void loadExceptionTable(FileReader* fileReader);
     void dumpCode();
 };

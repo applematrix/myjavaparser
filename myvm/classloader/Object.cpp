@@ -2,7 +2,7 @@
 
 namespace myvm {
 
-Object::Object(const ClassFileInfo* clazzInfo) {
+Object::Object(const ClassInfo* clazzInfo) {
     mClazz = clazzInfo;
     mFields = new uint32_t[clazzInfo->classSize()];
     if (clazzInfo->getSuperClass() != nullptr) {

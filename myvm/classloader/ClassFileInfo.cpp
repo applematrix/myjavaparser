@@ -19,15 +19,15 @@ using namespace myvm;
 
 namespace myvm {
 
-ClassFileInfo::ClassFileInfo() {
+ClassInfo::ClassInfo() {
     mClassSize = 0;
     mSuperClass = nullptr;
 }
 
-ClassFileInfo::~ClassFileInfo() {
+ClassInfo::~ClassInfo() {
 }
 
-void ClassFileInfo::loadFromFile(const char* path) {
+void ClassInfo::loadFromFile(const char* path) {
     mFileReader = new ClassFileReader(path);
 
     // read magic number
@@ -110,13 +110,13 @@ void ClassFileInfo::loadFromFile(const char* path) {
     resolve();
 }
 
-void ClassFileInfo::release() {
+void ClassInfo::release() {
     if (mFileReader != nullptr) {
         delete mFileReader;
     }
 }
 
-ConstantInfo* ClassFileInfo::getConstantAt(uint16_t index) const {
+ConstantInfo* ClassInfo::getConstantAt(uint16_t index) const {
     // jvms: the index begin from 1; so decrement it
     index--;
     if (index >= mConstantPool.size() || index < 0) {
@@ -125,7 +125,7 @@ ConstantInfo* ClassFileInfo::getConstantAt(uint16_t index) const {
     return mConstantPool.at(index);
 }
 
-void ClassFileInfo::printConstantInfo(ConstantInfo *constant) const {
+void ClassInfo::printConstantInfo(ConstantInfo *constant) const {
     if (constant == nullptr || constant->tag != CONSTANT_UTF8) {
         return;
     }
@@ -133,11 +133,11 @@ void ClassFileInfo::printConstantInfo(ConstantInfo *constant) const {
     cout << utf8Info->bytes << endl;
 }
 
-void ClassFileInfo::printConstantInfo(uint16_t index) const {
+void ClassInfo::printConstantInfo(uint16_t index) const {
     printConstantInfo(getConstantAt(index));
 }
 
-char* ClassFileInfo::getUtf8ConstantName(uint16_t index) const {
+char* ClassInfo::getUtf8ConstantName(uint16_t index) const {
     ConstantInfo* constant = getConstantAt(index);
     if (constant == nullptr || constant->tag != CONSTANT_UTF8) {
         return nullptr;
@@ -145,7 +145,7 @@ char* ClassFileInfo::getUtf8ConstantName(uint16_t index) const {
     return (char*)((ConstantUtf8*)constant)->bytes;
 }
 
-ConstantUtf8* ClassFileInfo::getUtf8Constant(uint16_t index) const {
+ConstantUtf8* ClassInfo::getUtf8Constant(uint16_t index) const {
     ConstantInfo *constant = getConstantAt(index);
     if (constant == nullptr) {
         return nullptr;
@@ -153,7 +153,7 @@ ConstantUtf8* ClassFileInfo::getUtf8Constant(uint16_t index) const {
     return (ConstantUtf8*)constant;
 }
 
-FieldInfo* ClassFileInfo::findField(uint16_t nameIndex, uint16_t descIndex)const {
+FieldInfo* ClassInfo::findField(uint16_t nameIndex, uint16_t descIndex)const {
     for (auto field : mFields) {
         if(field->nameIndex == nameIndex && field->descriptorIndex == descIndex) {
             return field;
@@ -162,11 +162,11 @@ FieldInfo* ClassFileInfo::findField(uint16_t nameIndex, uint16_t descIndex)const
     return nullptr;
 }
 
-ClassFileInfo* ClassFileInfo::getSuperClass() const {
+ClassInfo* ClassInfo::getSuperClass() const {
     return mSuperClass;
 }
 
-int ClassFileInfo::loadConstants() {
+int ClassInfo::loadConstants() {
     int status = mFileReader->readUint16(constantPoolSize);
     if (status != 0) {
         return -1;
@@ -188,7 +188,7 @@ int ClassFileInfo::loadConstants() {
     return 0;
 }
 
-int ClassFileInfo::loadInterfaces() {
+int ClassInfo::loadInterfaces() {
     int status = mFileReader->readUint16(interfacesCount);
     if (status != 0) {
         return -1;
@@ -201,7 +201,7 @@ int ClassFileInfo::loadInterfaces() {
     return status;
 }
 
-int ClassFileInfo::loadFields() {
+int ClassInfo::loadFields() {
     int status = mFileReader->readUint16(fieldsCount);
     if (status != 0) {
         return status;
@@ -218,7 +218,7 @@ int ClassFileInfo::loadFields() {
     return 0;
 }
 
-int ClassFileInfo::loadMethods() {
+int ClassInfo::loadMethods() {
     int status = mFileReader->readUint16(methodsCount);
     if (status != 0) {
         return status;
@@ -240,7 +240,7 @@ int ClassFileInfo::loadMethods() {
     return 0;
 }
 
-int ClassFileInfo::loadAttributes() {
+int ClassInfo::loadAttributes() {
     int status = mFileReader->readUint16(attributesCount);
     if (status != 0) {
         return -1;
@@ -254,7 +254,7 @@ int ClassFileInfo::loadAttributes() {
     return 0;
 }
 
-void ClassFileInfo::resolve() {
+void ClassInfo::resolve() {
     for (auto method : mMethods) {
         method->resolve(this);
     }
@@ -297,13 +297,13 @@ void ClassFileInfo::resolve() {
     }
 }
 
-void ClassFileInfo::invokeMethod() {
+void ClassInfo::invokeMethod() {
 }
 
-void ClassFileInfo::createInstance() {
+void ClassInfo::createInstance() {
 }
 
-Method* ClassFileInfo::findMainMethod() {
+Method* ClassInfo::findMainMethod() {
     for (auto method : mMethods) {
         if (method->isMainEntry()) {
             return method;
@@ -312,7 +312,7 @@ Method* ClassFileInfo::findMainMethod() {
     return nullptr;
 }
 
-Method* ClassFileInfo::findMethod(const ConstantNameAndType* nameAndType) {
+Method* ClassInfo::findMethod(const ConstantNameAndType* nameAndType) {
     for (auto method : mMethods) {
         if (method->match(nameAndType)) {
             return method;
@@ -321,7 +321,7 @@ Method* ClassFileInfo::findMethod(const ConstantNameAndType* nameAndType) {
     return nullptr;
 }
 
-Method* ClassFileInfo::findMethod(const ConstantUtf8* methodName, const ConstantUtf8* methodDesc) {
+Method* ClassInfo::findMethod(const ConstantUtf8* methodName, const ConstantUtf8* methodDesc) {
     for (auto method : mMethods) {
         if (method->match(methodName, methodDesc)) {
             return method;
@@ -330,7 +330,7 @@ Method* ClassFileInfo::findMethod(const ConstantUtf8* methodName, const Constant
     return nullptr;
 }
 
-uint32_t ClassFileInfo::classSize() const {
+uint32_t ClassInfo::classSize() const {
     return mClassSize;
 }
 

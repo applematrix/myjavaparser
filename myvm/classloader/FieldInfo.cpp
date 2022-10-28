@@ -15,7 +15,7 @@ using namespace myvm;
 
 namespace myvm {
 
-FieldInfo::FieldInfo(ClassFileInfo *clazz,
+FieldInfo::FieldInfo(ClassInfo *clazz,
     uint16_t flags,
     uint16_t name,
     uint16_t desc,
@@ -32,7 +32,7 @@ FieldInfo::~FieldInfo() {
 
 }
 
-FieldInfo* FieldInfo::loadFromFile(ClassFileInfo *classFileInfo, FileReader *fileReader) {
+FieldInfo* FieldInfo::loadFromFile(ClassInfo *classFileInfo, FileReader *fileReader) {
     uint16_t accessFlags = 0;
     int status = fileReader->readUint16(accessFlags);
     if (status != 0) {

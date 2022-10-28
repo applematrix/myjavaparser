@@ -21,7 +21,7 @@ struct AttributeMap{
     uint8_t attributeType;
 };
 
-static uint8_t getAttributeType(ClassFileInfo* classInfo, uint16_t nameIndex) {
+static uint8_t getAttributeType(ClassInfo* classInfo, uint16_t nameIndex) {
     ConstantInfo* constantInfo = classInfo->getConstantAt(nameIndex);
     if (constantInfo == nullptr) {
         return -1;
@@ -35,7 +35,7 @@ static uint8_t getAttributeType(ClassFileInfo* classInfo, uint16_t nameIndex) {
     return getAttributeType(utf8Info->bytes, utf8Info->length);
 }
 
-AttributeInfo* AttributeFactory::loadFromFile(ClassFileInfo* classInfo, FileReader* fileReader) {
+AttributeInfo* AttributeFactory::loadFromFile(ClassInfo* classInfo, FileReader* fileReader) {
     uint16_t nameIndex = 0;
     int status = fileReader->readUint16(nameIndex);
     if (status != 0) {

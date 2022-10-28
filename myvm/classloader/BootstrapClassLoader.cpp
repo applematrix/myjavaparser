@@ -39,15 +39,15 @@ BootstrapClassLoader::~BootstrapClassLoader() {
     return sInstance;
 }
 
-ClassFileInfo* BootstrapClassLoader::getClassByName(const string& name) {
+ClassInfo* BootstrapClassLoader::getClassByName(const string& name) {
     return mLoadedClasses.find(name) == mLoadedClasses.end() ? nullptr : mLoadedClasses[name];
 }
 
-ClassFileInfo* BootstrapClassLoader::getClassByName(const char* name) {
+ClassInfo* BootstrapClassLoader::getClassByName(const char* name) {
     return getClassByName(string(name));
 }
 
-void BootstrapClassLoader::addClass(string& name, ClassFileInfo *clazz) {
+void BootstrapClassLoader::addClass(string& name, ClassInfo *clazz) {
     // TODO: multi-thread access
     if (classLoaded(name)) {
         cout << name << " already add into bootstrap classloader" << endl;
@@ -57,7 +57,7 @@ void BootstrapClassLoader::addClass(string& name, ClassFileInfo *clazz) {
 }
 
 bool BootstrapClassLoader::loadClassFromFile(const char* path) {
-    ClassFileInfo *clazz = new ClassFileInfo();
+    ClassInfo *clazz = new ClassInfo();
 	clazz->loadFromFile(path);
 
     std::string className = clazz->getClassName();

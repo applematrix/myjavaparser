@@ -17,16 +17,16 @@ public:
     bool loadClassFromFile(string& classFile);
     bool loadClassFromJar(string& jarFile, string className);
     bool loadClassFromClassPath(string& className);
-    ClassFileInfo* getClassByName(const string& name);
-    ClassFileInfo* getClassByName(const char* name);
-    void addClass(string& name, ClassFileInfo *clazz);
+    ClassInfo* getClassByName(const string& name);
+    ClassInfo* getClassByName(const char* name);
+    void addClass(string& name, ClassInfo *clazz);
 private:
     BootstrapClassLoader();
     bool classLoaded(string& name);
     void covertPath(string& path);
 private:
     static BootstrapClassLoader *sInstance;
-    map<string, ClassFileInfo*> mLoadedClasses;
+    map<string, ClassInfo*> mLoadedClasses;
     vector<string> mBootClassPathes;
 };
 

@@ -30,7 +30,7 @@ Object* Heap::getObject(uint32_t handle) {
     return nullptr;
 }
 
-uint32_t Heap::allocateObject(const ClassFileInfo *clazz) {
+uint32_t Heap::allocateObject(const ClassInfo *clazz) {
     uint32_t class_size = clazz->classSize();
     Object* object = new Object(clazz);
     mObjectRefs[mNextHandle] = object;

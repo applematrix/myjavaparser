@@ -34,7 +34,7 @@ const char* ConstantInfo::typeString() {
     }
 }
 
-void ConstantClass::dump(const ClassFileInfo* classInfo) {
+void ConstantClass::dump(const ClassInfo* classInfo) {
     //cout << "ConstantClass:" << classInfo->getUtf8ConstantName(nameIndex) << endl;
 }
 

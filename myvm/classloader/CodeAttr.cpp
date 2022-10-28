@@ -7,17 +7,17 @@ using namespace std;
 
 namespace myvm{
 
-CodeAttr::CodeAttr(ClassFileInfo *classFileInfo, FileReader* fileReader)
+CodeAttr::CodeAttr(ClassInfo *classFileInfo, FileReader* fileReader)
     : AttributeInfo(fileReader, ATTR_CODE) {
     initialize(classFileInfo, fileReader);
 }
 
-CodeAttr::CodeAttr(uint16_t name, uint32_t len, ClassFileInfo *classFileInfo, FileReader *fileReader)
+CodeAttr::CodeAttr(uint16_t name, uint32_t len, ClassInfo *classFileInfo, FileReader *fileReader)
     : AttributeInfo(name, len, ATTR_CODE) {
     initialize(classFileInfo, fileReader);
 }
 
-void CodeAttr::initialize(ClassFileInfo *classFileInfo, FileReader* fileReader) {
+void CodeAttr::initialize(ClassInfo *classFileInfo, FileReader* fileReader) {
     fileReader->readUint16(maxStack);
     fileReader->readUint16(maxLocals);
     fileReader->readUint32(codeLength);

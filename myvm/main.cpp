@@ -132,7 +132,7 @@ int main(int argc, const char* args[]) {
 	BootstrapClassLoader *mBootstrapClassLoder = BootstrapClassLoader::getInstance();
 	mBootstrapClassLoder->loadClassFromFile(mainClass);
 
-	shared_ptr<ClassFileInfo> mClasssFile = make_shared<ClassFileInfo>();
+	shared_ptr<ClassInfo> mClasssFile = make_shared<ClassInfo>();
 	mClasssFile->loadFromFile(mainClass.c_str());
 
 	Method *mainMethod = mClasssFile->findMainMethod();

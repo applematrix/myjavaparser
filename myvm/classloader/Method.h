@@ -22,7 +22,7 @@ namespace myvm {
 struct AttributeInfo;
 struct CodeAttr;
 class ConstantNameAndType;
-class ClassFileInfo;
+class ClassInfo;
 class FileReader;
 class OperandStack;
 class LocalVariableTable;
@@ -46,9 +46,9 @@ enum MethodAccessFlag {
 
 class Method {
 public:
-    static Method* loadFromFile(ClassFileInfo *classFileInfo, FileReader *fileReader);
+    static Method* loadFromFile(ClassInfo *classFileInfo, FileReader *fileReader);
     
-    Method(ClassFileInfo* owner, uint16_t flags, uint16_t name, uint16_t desc, vector<shared_ptr<AttributeInfo>> *attrs);
+    Method(ClassInfo* owner, uint16_t flags, uint16_t name, uint16_t desc, vector<shared_ptr<AttributeInfo>> *attrs);
     ~Method();
     void invoke(shared_ptr<Frame> frame);
     bool isAbstract();
@@ -59,12 +59,12 @@ public:
     bool isMainEntry();
     bool match(const ConstantNameAndType* nameAndType);
     bool match(const ConstantUtf8* methodName, const ConstantUtf8* methodDesc);
-    void resolve(ClassFileInfo *clazz);
+    void resolve(ClassInfo *clazz);
     const string& getName() const;
     const string& getDesc() const;
     OperandStack* getOperandStack();
     LocalVariableTable* getLocalVariableTable();
-    ClassFileInfo* getClass();
+    ClassInfo* getClass();
     shared_ptr<CodeAttr> getCodeAttr();
     vector<shared_ptr<TypeInfo>> getArgs() {return mArgsList;}
 private:
@@ -80,7 +80,7 @@ private:
 
     OperandStack* mOperandStack;
     LocalVariableTable *mLocalVariables;
-    ClassFileInfo* mOwnerClazz;
+    ClassInfo* mOwnerClazz;
 
     // resolved info
     std::string mName;
