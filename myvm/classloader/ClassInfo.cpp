@@ -4,11 +4,11 @@
  *
  */
 
-#include "ClassFileInfo.h"
+#include "ClassInfo.h"
 #include "FileReader.h"
 #include "ConstantFactory.h"
 #include "AccessFlag.h"
-#include "classloader/BootstrapClassLoader.h"
+#include "BootstrapClassLoader.h"
 #include "common/utils.h"
 #include "common/ClassFileReader.h"
 #include "classloader/Method.h"

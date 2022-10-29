@@ -5,7 +5,7 @@
  */
 
 #include "Method.h"
-#include "ClassFileInfo.h"
+#include "ClassInfo.h"
 #include "FileReader.h"
 #include "AttributeInfo.h"
 #include "AccessFlag.h"

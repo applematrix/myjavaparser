@@ -1,5 +1,5 @@
 #include "NewInstruction.h"
-#include "classloader/ClassFileInfo.h"
+#include "classloader/ClassInfo.h"
 #include "classloader/OperandStack.h"
 #include "classloader/ObjectRef.h"
 #include "classloader/Heap.h"

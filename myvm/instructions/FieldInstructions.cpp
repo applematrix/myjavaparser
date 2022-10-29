@@ -1,6 +1,6 @@
 #include "FieldInstructions.h"
 #include "classloader/Method.h"
-#include "classloader/ClassFileInfo.h"
+#include "classloader/ClassInfo.h"
 #include "classloader/ConstantInfo.h"
 #include "classloader/ConstantFieldRef.h"
 #include "classloader/BootstrapClassLoader.h"

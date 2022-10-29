@@ -3,7 +3,7 @@
 
 #include <map>
 #include <string>
-#include "ClassFileInfo.h"
+#include "ClassInfo.h"
 using namespace std;
 using namespace myvm;
 

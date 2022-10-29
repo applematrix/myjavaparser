@@ -8,7 +8,7 @@
 #define _ATTRIBUTE_FACTORY_H_
 //#include "AttributeInfo.h"
 #include "FileReader.h"
-#include "ClassFileInfo.h"
+#include "ClassInfo.h"
 
 using namespace myvm;
 

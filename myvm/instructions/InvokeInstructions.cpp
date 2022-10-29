@@ -1,7 +1,7 @@
 #include "InvokeInstructions.h"
 #include "classloader/OperandStack.h"
 #include "classloader/Heap.h"
-#include "classloader/ClassFileInfo.h"
+#include "classloader/ClassInfo.h"
 #include "classloader/ConstantMethodRef.h"
 #include "classloader/BootstrapClassLoader.h"
 #include "classloader/CodeAttr.h"

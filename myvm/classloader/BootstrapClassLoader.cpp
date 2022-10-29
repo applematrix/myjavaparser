@@ -1,5 +1,5 @@
 #include "BootstrapClassLoader.h"
-#include "ClassFileInfo.h"
+#include "ClassInfo.h"
 #include "utils.h"
 #include <iostream>
 #include <stdio.h>

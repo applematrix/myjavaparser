@@ -4,8 +4,8 @@
  *
  */
 
-#ifndef _CLASS_FILE_H_
-#define _CLASS_FILE_H_
+#ifndef _CLASS_INFO_H_
+#define _CLASS_INFO_H_
 
 #include <vector>
 

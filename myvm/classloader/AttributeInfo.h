@@ -8,7 +8,7 @@
 #define _ATTRIBUTE_INFO_H_
 
 #include "FileReader.h"
-#include "ClassFileInfo.h"
+#include "ClassInfo.h"
 #include "AttributeFactory.h"
 
 #include <vector>
