@@ -15,7 +15,7 @@ public:
     bool open(string& jarFilePath, string& classFileName);
     void close();
     virtual size_t readFromFile(void *buffer, size_t size);
-
+    virtual void skip(uint32_t bytes);
 private:
     zip_t *mJarFile;
     zip_file * mClassFileInJar;

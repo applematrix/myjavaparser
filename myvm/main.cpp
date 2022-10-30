@@ -58,14 +58,49 @@ static void parseArgs(int argc, const char* args[]) {
 	}
 }
 
+static void testParseObjectClass() {
+	cout << "testParseObjectClass" << endl;
+	ClassInfo *clazz = new ClassInfo();
+	string objectFile = "./test/jdk_classes/java/lang/Object.class";
+    if (!clazz->loadFromFile(objectFile)) {
+		cout << "testParseObjectClass failed" << endl;
+        return;
+    }
+	cout << "testParseObjectClass end" << endl;
+}
+
+static void testUnzipObjectClass() {
+	shared_ptr<JarClassFileReader> jarFile = make_shared<JarClassFileReader>();
+	string jarPath = "/home/lenovo/github_upload/myjavaparser/myvm/test/jdk_classes/rt.jar";
+	string className = "java/lang/Object.class";
+	jarFile->open(jarPath, className);
+
+	FILE *fw = fopen("object.class", "wb");
+	while (true) {
+		int8_t byte;
+		int readBytes = jarFile->readInt8(byte);
+		if (readBytes != 0) {
+			break;
+		}
+		fwrite(&byte, 1, 1, fw);
+	}
+	fflush(fw);
+	fclose(fw);
+}
+
 int main(int argc, const char* args[]) {
 	Logger::initialize();
 	cout << "Hello world, I'm a toy vm, I can do simple jobs for you" << endl;
 
 	parseArgs(argc, args);
+
+	testParseObjectClass();
+	testUnzipObjectClass();
+
+	cout << "load classes from the configuration" << endl;
+
 	string mainClassName;
 	shared_ptr<GlobalProperties> globalProperty = GlobalProperties::getInstance();
-	
 	BootstrapClassLoader *mBootstrapClassLoder = BootstrapClassLoader::getInstance();
 	ClassInfo *mainClass = nullptr;
 	if (globalProperty->containsProperty("classpath")) {

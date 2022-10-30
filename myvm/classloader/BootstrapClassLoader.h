@@ -15,7 +15,7 @@ public:
     ~BootstrapClassLoader();
     ClassInfo* loadClassFromFile(string& classFile);
     ClassInfo* loadClassFromBootclassPathJar(string& className);
-    ClassInfo* loadClassFromJar(string& jarFile, string& className);
+    ClassInfo* loadClassFromJar(string& jarFile, string& className, string& fileName);
     bool loadClassFromClassPath(string& className);
     ClassInfo* getClassByName(const string& name);
     ClassInfo* getClassByName(const char* name);

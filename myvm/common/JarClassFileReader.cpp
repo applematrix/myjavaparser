@@ -55,4 +55,14 @@ size_t JarClassFileReader::readFromFile(void *buffer, size_t size) {
     return readBytes;
 }
 
+void JarClassFileReader::skip(uint32_t bytes) {
+    int8_t *buffer = new int8_t[bytes];
+    int64_t readBytes = zip_fread(mClassFileInJar, buffer, bytes);
+    if (readBytes != bytes) {
+        cout << "JarClassFileReader retry skip " << bytes << " bytes by fread failed return " << readBytes << endl;
+    }
+    mOffset += readBytes;
+    delete[] buffer;
+}
+
 }

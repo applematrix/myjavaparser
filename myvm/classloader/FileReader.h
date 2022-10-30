@@ -8,6 +8,7 @@
 #define _FILE_READER_H_
 #include <stdio.h>
 #include <string>
+#include <iostream>
 #include "stdint.h"
 
 using namespace std;
@@ -60,10 +61,14 @@ public:
             val |= (tmpVal & 0xff);
             tmpVal >>= 8;
         }
+        //cout << "Offset: " << mOffset << ", value:" << (int64_t)val << ", dataSize:" << sizeof(val) << endl;
+        mOffset += sizeof(val);
         return 0;
     }
     
     int read(void *buffer, int32_t readSize);
+protected:
+    uint32_t mOffset = 0;
 };
 
 }

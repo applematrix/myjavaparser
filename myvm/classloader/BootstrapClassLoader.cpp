@@ -59,6 +59,7 @@ void BootstrapClassLoader::addClass(string& name, ClassInfo *clazz) {
         cout << name << " already add into bootstrap classloader" << endl;
         return;
     }
+    cout << "Add class: " << name << " into bootstrap classloader" << endl;
     mLoadedClasses[name] = clazz;
 }
 
@@ -86,16 +87,16 @@ ClassInfo* BootstrapClassLoader::loadClassFromBootclassPathJar(string& className
         JarArchive jar;
         jar.loadFile(bootjar);
         if (jar.containsClass(fullName)) {
-            return loadClassFromJar(bootjar, fullName);
+            return loadClassFromJar(bootjar, className, fullName);
         }
     }
     cout << className << " not found in all bootclass path jar" << endl;
     return nullptr;
 }
 
-ClassInfo* BootstrapClassLoader::loadClassFromJar(string& jarFile, string& className) {
+ClassInfo* BootstrapClassLoader::loadClassFromJar(string& jarFile, string& className, string& fileName) {
     ClassInfo *clazz = new ClassInfo();
-	if(!clazz->loadFromJar(jarFile, className)) {
+	if(!clazz->loadFromJar(jarFile, fileName)) {
         delete clazz;
         return nullptr;
     }
