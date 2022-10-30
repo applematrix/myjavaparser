@@ -175,7 +175,7 @@ ConstantUtf8* ClassInfo::getUtf8Constant(uint16_t index) const {
     return (ConstantUtf8*)constant;
 }
 
-FieldInfo* ClassInfo::findField(uint16_t nameIndex, uint16_t descIndex)const {
+shared_ptr<FieldInfo> ClassInfo::findField(uint16_t nameIndex, uint16_t descIndex)const {
     for (auto field : mFields) {
         if(field->nameIndex == nameIndex && field->descriptorIndex == descIndex) {
             return field;
@@ -235,7 +235,7 @@ int ClassInfo::loadFields() {
         if (field == nullptr) {
             return -1;
         }
-        mFields.push_back(field);
+        mFields.push_back(shared_ptr<FieldInfo>(field));
     }
     return 0;
 }

@@ -30,7 +30,7 @@ void GetFieldInstruction::run(Frame *frame) {
     ConstantUtf8 *name = (ConstantUtf8*)clazz->getConstantAt(typeInfo->nameIndex);
     ConstantUtf8 *desc = (ConstantUtf8*)clazz->getConstantAt(typeInfo->descriptorIndex);
 
-    FieldInfo* field = clazz->findField(typeInfo->nameIndex, typeInfo->descriptorIndex);
+    shared_ptr<FieldInfo> field = clazz->findField(typeInfo->nameIndex, typeInfo->descriptorIndex);
     shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
     uint32_t handle = stack->popUint32();
     Object *object = Heap::getInstance()->getObject(handle);
@@ -75,7 +75,7 @@ void PutFieldInstruction::run(Frame *frame) {
     cout << INDENTS[frame->getDepth()] << "put field, index:"
         << mIndex << ", name:" << name->bytes << ", description:" << desc->bytes << endl;
     
-    FieldInfo* field = clazz->findField(typeInfo->nameIndex, typeInfo->descriptorIndex);
+    shared_ptr<FieldInfo> field = clazz->findField(typeInfo->nameIndex, typeInfo->descriptorIndex);
     shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
     if (field->getType()->doubleUnit()) {
         uint64_t value = stack->popUint64();

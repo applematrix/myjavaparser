@@ -8,6 +8,7 @@
 #define _CLASS_INFO_H_
 
 #include <vector>
+#include <memory>
 
 #include "ConstantInfo.h"
 #include "FieldInfo.h"
@@ -16,6 +17,7 @@
 #include "Method.h"
 
 using namespace myvm;
+using namespace std;
 
 namespace myvm {
 
@@ -40,7 +42,7 @@ public:
     Method* findMainMethod();
     Method* findMethod(const ConstantNameAndType *methodInfo);
     Method* findMethod(const ConstantUtf8* methodName, const ConstantUtf8 *methodDesc);
-    FieldInfo* findField(uint16_t nameIndex, uint16_t descIndex) const;
+    shared_ptr<FieldInfo> findField(uint16_t nameIndex, uint16_t descIndex) const;
     uint32_t classSize() const;
 private:
     bool loadFromFileInternal();
@@ -71,7 +73,7 @@ private:
     // runtime properties
     uint16_t *mInterfaces;
     std::vector<ConstantInfo*> mConstantPool;
-    std::vector<FieldInfo*> mFields;
+    std::vector<shared_ptr<FieldInfo>> mFields;
     std::vector<Method*> mMethods;
     std::vector<AttributeInfo*> mAttributes;
     std::string mClassName;
