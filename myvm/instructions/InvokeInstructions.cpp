@@ -26,7 +26,7 @@ void InvokeSpecialInstruction::run(Frame *frame) {
 
     ConstantMethodRef* methodRef = (ConstantMethodRef*)clazz->getConstantAt(mIndex);
     ConstantNameAndType* nameAndTypeRef = (ConstantNameAndType*)clazz->getConstantAt(methodRef->nameAndTypeIndex);
-    Method* method = clazz->findMethod(nameAndTypeRef);
+    shared_ptr<Method> method = clazz->findMethod(nameAndTypeRef);
 
     if (method == nullptr) {
         cout << "InvokeSpecialInstruction error: no method found!" << endl;
@@ -47,7 +47,7 @@ void InvokeSpecialInstruction::run(Frame *frame) {
 
     shared_ptr<OperandStack> curStack = ThreadLocalStorage::getInstance()->getStack();
 
-    Method* targetMethod = targetClazz->findMethod(targetMethodName, targetMethodDesc);
+    shared_ptr<Method> targetMethod = targetClazz->findMethod(targetMethodName, targetMethodDesc);
     vector<shared_ptr<TypeInfo>> args = targetMethod->getArgs();
     
     shared_ptr<CodeAttr> codeAttr = targetMethod->getCodeAttr();
@@ -98,7 +98,7 @@ void InvokeVirtualInstruction::run(Frame *frame) {
     ClassInfo *clazz = frame->getClass();
     ConstantMethodRef* methodRef = (ConstantMethodRef*)clazz->getConstantAt(mIndex);
     ConstantNameAndType* nameAndTypeRef = (ConstantNameAndType*)clazz->getConstantAt(methodRef->nameAndTypeIndex);
-    Method* method = clazz->findMethod(nameAndTypeRef);
+    shared_ptr<Method> method = clazz->findMethod(nameAndTypeRef);
 
     if (method == nullptr) {
         cout << "InvokeVirtualInstruction error: no method found!" << endl;

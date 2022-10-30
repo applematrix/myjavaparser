@@ -39,9 +39,9 @@ public:
         return mClassName;
     };
     bool resolve();
-    Method* findMainMethod();
-    Method* findMethod(const ConstantNameAndType *methodInfo);
-    Method* findMethod(const ConstantUtf8* methodName, const ConstantUtf8 *methodDesc);
+    shared_ptr<Method> findMainMethod();
+    shared_ptr<Method> findMethod(const ConstantNameAndType *methodInfo);
+    shared_ptr<Method> findMethod(const ConstantUtf8* methodName, const ConstantUtf8 *methodDesc);
     shared_ptr<FieldInfo> findField(uint16_t nameIndex, uint16_t descIndex) const;
     uint32_t classSize() const;
 private:
@@ -74,7 +74,7 @@ private:
     uint16_t *mInterfaces;
     std::vector<ConstantInfo*> mConstantPool;
     std::vector<shared_ptr<FieldInfo>> mFields;
-    std::vector<Method*> mMethods;
+    std::vector<shared_ptr<Method>> mMethods;
     std::vector<AttributeInfo*> mAttributes;
     std::string mClassName;
     std::string mSuperClassName;

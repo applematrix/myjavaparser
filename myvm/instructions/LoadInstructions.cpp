@@ -31,7 +31,7 @@ AloadInstruction::AloadInstruction(uint8_t *code, uint8_t index) {
 
 void AloadInstruction::run(Frame* frame) {
     // test code
-    Method *method = frame->getMethod();
+    shared_ptr<Method> method = frame->getMethod();
     shared_ptr<CodeAttr> codeAttr = method->getCodeAttr();
     auto attr = codeAttr->getAttributeByType(ATTR_LOCAL_VARIABLE_TABLE);
 

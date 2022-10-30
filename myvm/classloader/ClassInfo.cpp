@@ -255,7 +255,7 @@ int ClassInfo::loadMethods() {
             cout << "Load method:" << i << " failed! " << endl;
             return -1;
         }
-        mMethods.push_back(method);
+        mMethods.push_back(shared_ptr<Method>(method));
         cout << "Load method:" << i << " complete! " << endl << endl;
     }
     cout << endl;
@@ -333,7 +333,7 @@ void ClassInfo::invokeMethod() {
 void ClassInfo::createInstance() {
 }
 
-Method* ClassInfo::findMainMethod() {
+shared_ptr<Method> ClassInfo::findMainMethod() {
     for (auto method : mMethods) {
         if (method->isMainEntry()) {
             return method;
@@ -342,7 +342,7 @@ Method* ClassInfo::findMainMethod() {
     return nullptr;
 }
 
-Method* ClassInfo::findMethod(const ConstantNameAndType* nameAndType) {
+shared_ptr<Method> ClassInfo::findMethod(const ConstantNameAndType* nameAndType) {
     for (auto method : mMethods) {
         if (method->match(nameAndType)) {
             return method;
@@ -351,7 +351,7 @@ Method* ClassInfo::findMethod(const ConstantNameAndType* nameAndType) {
     return nullptr;
 }
 
-Method* ClassInfo::findMethod(const ConstantUtf8* methodName, const ConstantUtf8* methodDesc) {
+shared_ptr<Method> ClassInfo::findMethod(const ConstantUtf8* methodName, const ConstantUtf8* methodDesc) {
     for (auto method : mMethods) {
         if (method->match(methodName, methodDesc)) {
             return method;

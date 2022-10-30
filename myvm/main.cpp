@@ -127,11 +127,11 @@ int main(int argc, const char* args[]) {
 	}
 
 	LOGI("vm started");
-	Method *mainMethod = mainClass->findMainMethod();
+	shared_ptr<Method> mainMethod = mainClass->findMainMethod();
 	if (mainMethod == nullptr) {
 		cout << "No main entry method in the class" << endl;
 	} else {
-		std::thread mainThread([](Method *method) {
+		std::thread mainThread([](shared_ptr<Method> method) {
 			ThreadLocalStorage::getInstance()->intialize();
 			shared_ptr<CodeAttr> codeAttr = method->getCodeAttr();
 

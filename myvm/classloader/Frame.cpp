@@ -10,7 +10,7 @@ using namespace myvm;
 
 namespace myvm {
 
-Frame::Frame(Method *method, uint32_t localVariableSize, uint16_t depth) {
+Frame::Frame(shared_ptr<Method> method, uint32_t localVariableSize, uint16_t depth) {
     mLocalVariableTable = make_shared<LocalVariableTable>(method, localVariableSize);
     mClazz = method->getClass();
     mMethod = method;

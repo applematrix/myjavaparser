@@ -6,6 +6,7 @@
 
 #include <stdint.h>
 #include <array>
+#include <memory>
 using namespace std;
 
 namespace myvm {
@@ -43,7 +44,7 @@ private:
 
 class LocalVariableTable {
 public:
-    LocalVariableTable(Method* method, uint16_t size);
+    LocalVariableTable(shared_ptr<Method> method, uint16_t size);
     ~LocalVariableTable();
 
     void storeUint32(uint16_t index, uint32_t value);
