@@ -12,7 +12,7 @@ class JarClassFileReader : public FileReader {
 public:
     JarClassFileReader();
     virtual ~JarClassFileReader();
-    void open(const char* jarFilePath, const char* classFileName);
+    bool open(string& jarFilePath, string& classFileName);
     void close();
     virtual size_t readFromFile(void *buffer, size_t size);
 

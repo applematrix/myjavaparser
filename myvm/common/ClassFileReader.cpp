@@ -12,7 +12,7 @@ ClassFileReader::~ClassFileReader() {
 
 }
 
-ClassFileReader::ClassFileReader(const char* path) {
+ClassFileReader::ClassFileReader(string& path) {
     mClassFilePath = path;
     mClassFile = fopen(mClassFilePath.c_str(), "rb");
     if (mClassFile == nullptr) {

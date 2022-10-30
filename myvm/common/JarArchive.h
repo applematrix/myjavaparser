@@ -15,7 +15,7 @@ public:
     Manifest();
     virtual ~Manifest();
     void loadManifestFromJar(zip_t *jar);
-    string& getMainClass() const;
+    string getMainClass() const;
 private:
     bool split(string &attribute, string& key, string& value);
 
@@ -33,8 +33,9 @@ public:
     JarArchive();
     virtual ~JarArchive();
     void loadFile(string& path);
-    string& getMainClass() const ;
+    string getMainClass() const ;
     shared_ptr<Manifest> getManifest() const;
+    bool containsClass(string& className);
 private:
     string mJarPath;
     zip_t *mOpenedJar = nullptr;

@@ -5,7 +5,7 @@
 #include <string>
 using namespace std;
 
-const char* MANIFEST = "META-INF/MANIFEST.MF";
+const static char* MANIFEST = "META-INF/MANIFEST.MF";
 const static int32_t BUFFER_SIZE = 1024;
 
 namespace myvm {
@@ -93,11 +93,12 @@ bool Manifest::split(string &attribute, string& key, string& value) {
     return true;
 }
 
-string& Manifest::getMainClass() const {
+string Manifest::getMainClass() const {
     auto iter = mAttributes.find("MainClass");
     if (iter != mAttributes.end()) {
-        return (string&)iter->first;
+        return iter->first;
     }
+    return string("");
 }
 
 ////////////////////////////////////
@@ -123,7 +124,7 @@ void JarArchive::loadFile(string& path) {
     int filesInJar = zip_get_num_files(mOpenedJar);
 	for (int i = 0; i < filesInJar; i++) {
 		const char* fileName = zip_get_name(mOpenedJar, i, ZIP_FL_ENC_RAW);
-		cout << "zip file name:" << fileName << endl;
+		//cout << "zip file name:" << fileName << endl;
 
         if (fileName == nullptr || fileName[strlen(fileName)-1] == '/') {
             cout << fileName << " is a directory" << endl;
@@ -140,12 +141,21 @@ shared_ptr<Manifest> JarArchive::getManifest() const {
     return mManifest;
 }
 
-string& JarArchive::getMainClass() const {
+string JarArchive::getMainClass() const {
     auto manifest = getManifest();
     if (manifest == nullptr) {
         cout << "No manifest in the jar!" << endl;
     }
     return manifest->getMainClass();
+}
+
+bool JarArchive::containsClass(string& className) {
+    for (auto file : mFileList) {
+        if (file.compare(className) == 0) {
+            return true;
+        }
+    }
+    return false;
 }
 
 }

@@ -13,9 +13,9 @@ class BootstrapClassLoader {
 public:
     static BootstrapClassLoader *getInstance();
     ~BootstrapClassLoader();
-    bool loadClassFromFile(const char *path);
-    bool loadClassFromFile(string& classFile);
-    bool loadClassFromJar(string& jarFile, string className);
+    ClassInfo* loadClassFromFile(string& classFile);
+    ClassInfo* loadClassFromBootclassPathJar(string& className);
+    ClassInfo* loadClassFromJar(string& jarFile, string& className);
     bool loadClassFromClassPath(string& className);
     ClassInfo* getClassByName(const string& name);
     ClassInfo* getClassByName(const char* name);
@@ -28,6 +28,7 @@ private:
     static BootstrapClassLoader *sInstance;
     map<string, ClassInfo*> mLoadedClasses;
     vector<string> mBootClassPathes;
+    vector<string> mBootClassJars;
 };
 
 }

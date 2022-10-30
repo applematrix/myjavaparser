@@ -31,4 +31,8 @@ void GlobalProperties::addProperty(const string& name, const string& value) {
     mProperties[name] = value;
 }
 
+bool GlobalProperties::containsProperty(const string& name) {
+    return mProperties.find(name) != mProperties.end();
+}
+
 }

@@ -11,7 +11,7 @@ namespace myvm {
 class ClassFileReader : public FileReader {
 public:
     ClassFileReader();
-    ClassFileReader(const char* path);
+    ClassFileReader(string& path);
     ~ClassFileReader();
     virtual size_t readFromFile(void *buffer, size_t size);
     virtual uint64_t getOffset() override { return mOffset;}

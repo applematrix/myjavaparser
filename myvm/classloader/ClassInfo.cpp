@@ -11,6 +11,8 @@
 #include "BootstrapClassLoader.h"
 #include "common/utils.h"
 #include "common/ClassFileReader.h"
+#include "common/JarArchive.h"
+#include "common/JarClassFileReader.h"
 #include "classloader/Method.h"
 #include <iostream>
 
@@ -27,35 +29,55 @@ ClassInfo::ClassInfo() {
 ClassInfo::~ClassInfo() {
 }
 
-void ClassInfo::loadFromFile(const char* path) {
+bool ClassInfo::loadFromFile(string& path) {
     mFileReader = new ClassFileReader(path);
+    return loadFromFileInternal();
+}
 
+bool ClassInfo::loadFromJar(string& jar, string& className) {
+    cout << "loadFromJar jar:"<< jar << " , class: " << className << endl;
+    JarArchive jarFile;
+    jarFile.loadFile(jar);
+    if (!jarFile.containsClass(className)) {
+        cout << "loadFromJar "<< className << " not found in " << jar << endl;
+        return false;
+    }
+    JarClassFileReader* fileReader = new JarClassFileReader();
+    if (!fileReader->open(jar, className)) {
+        cout << "loadFromJar open " << jar << " for class " << className << " failed! " << endl;
+        return false;
+    }
+    mFileReader = fileReader;
+    return loadFromFileInternal();
+}
+
+bool ClassInfo::loadFromFileInternal() {
     // read magic number
     int status = mFileReader->readUint32(magic);
     if (status != 0 || magic != JAVA_MAGIC) {
-        return;
+        return false;
     }
 
     status = mFileReader->readUint16(minorVersion);
     if (status != 0) {
-        return;
+        return false;
     }
     status = mFileReader->readUint16(majorVersion);
     if (status != 0) {
-        return;
+        return false;
     }
 
     cout << "--------Constants------" << endl;
     status = loadConstants();
     if (status != 0) {
-        return;
+        return false;
     }
     cout << "----------------------" << endl << endl;
 
     cout << "-----Access Flags-----" << endl;
     status = mFileReader->readUint16(accessFlags);
     if (status != 0) {
-        return;
+        return false;
     }
     string strAccessFlags;
     accessFlagToString(accessFlags, strAccessFlags);
@@ -65,11 +87,11 @@ void ClassInfo::loadFromFile(const char* path) {
     cout << "----this&superClass----" << endl << endl;
     status = mFileReader->readUint16(thisClass);
     if (status != 0) {
-        return;
+        return false;
     }
     status = mFileReader->readUint16(superClass);
     if (status != 0) {
-        return;
+        return false;
     }
     cout << "----------------------" << endl << endl;
 
@@ -77,7 +99,7 @@ void ClassInfo::loadFromFile(const char* path) {
     status = loadInterfaces();
     if (status != 0) {
         cout << "Load interfaces failed" << endl;
-        return;
+        return false;
     }
     cout << "----------------------" << endl << endl;
 
@@ -85,7 +107,7 @@ void ClassInfo::loadFromFile(const char* path) {
     status = loadFields();
     if (status != 0) {
         cout << "Load fields failed" << endl;
-        return;
+        return false;
     }
     cout << "----------------------" << endl << endl;
 
@@ -93,7 +115,7 @@ void ClassInfo::loadFromFile(const char* path) {
     status = loadMethods();
     if (status != 0) {
         cout << "Load methods failed" << endl;
-        return;
+        return false;
     }
     cout << "----------------------" << endl << endl;
 
@@ -101,13 +123,13 @@ void ClassInfo::loadFromFile(const char* path) {
     status = loadAttributes();
     if (status != 0) {
         cout << "Load attributes failed" << endl;
-        return;
+        return false;
     }
     cout << "----------------------" << endl << endl;
     mFileReader->close();
 
     // resolve the class's runtime data
-    resolve();
+    return resolve();
 }
 
 void ClassInfo::release() {
@@ -254,7 +276,7 @@ int ClassInfo::loadAttributes() {
     return 0;
 }
 
-void ClassInfo::resolve() {
+bool ClassInfo::resolve() {
     for (auto method : mMethods) {
         method->resolve(this);
     }
@@ -266,19 +288,26 @@ void ClassInfo::resolve() {
     if (superClass == 0) {
         // only the Object class' super class is 0
         if (mClassName.compare(OBJECT_CLASS) != 0) {
-            cout << "Error: the class "<< mClassName << "has no parent" << endl;
+            cout << "Error: the class "<< mClassName << " has no parent" << endl;
+            return false;
         }
-        return;
+        cout << "Resolve the class "<< mClassName << " without parent " << endl;
+        return true;
     }
     ConstantClass* superClazz = (ConstantClass*)getConstantAt(superClass);
     ConstantUtf8* superClassNameUtf8 = (ConstantUtf8*)getConstantAt(superClazz->nameIndex);
     mSuperClassName = std::string((const char*)superClassNameUtf8->bytes);
 
-    mSuperClass =  BootstrapClassLoader::getInstance()->getClassByName(mSuperClassName);
+    BootstrapClassLoader* bootClassLoader = BootstrapClassLoader::getInstance();
+
+    mSuperClass =  bootClassLoader->getClassByName(mSuperClassName);
     if (mSuperClass == nullptr) {
         cout << "Resolve " << mClassName << "\'s super class" << mSuperClassName << endl;
-        BootstrapClassLoader::getInstance()->loadClassFromClassPath(mSuperClassName);
-        mSuperClass =  BootstrapClassLoader::getInstance()->getClassByName(mSuperClassName);
+        mSuperClass = bootClassLoader->loadClassFromBootclassPathJar(mSuperClassName);
+        if (mSuperClass == nullptr) {
+            cout << "Resolve " << mClassName << "\'s super class" << mSuperClassName  << " failed!"<< endl;
+            return false;
+        }
     }
 
     // resolve the class size
@@ -295,6 +324,7 @@ void ClassInfo::resolve() {
     if (mSuperClass != nullptr) {
         mClassSize += mSuperClass->classSize();
     }
+    return true;
 }
 
 void ClassInfo::invokeMethod() {

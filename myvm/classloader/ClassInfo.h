@@ -25,23 +25,25 @@ class ClassInfo {
 public:
     ClassInfo();
     ~ClassInfo();
-    void loadFromFile(const char* filePath);
+    bool loadFromFile(string& path);
+    bool loadFromJar(string& jar, string& className);
     ConstantInfo* getConstantAt(uint16_t index) const;
     void printConstantInfo(ConstantInfo *constant) const;
     void printConstantInfo(uint16_t index) const;
     char* getUtf8ConstantName(uint16_t index) const;
     ConstantUtf8* getUtf8Constant(uint16_t index) const;
     ClassInfo* getSuperClass() const;
-    const char* getClassName() {
-        return mClassName.c_str();
+    string getClassName() {
+        return mClassName;
     };
-    void resolve();
+    bool resolve();
     Method* findMainMethod();
     Method* findMethod(const ConstantNameAndType *methodInfo);
     Method* findMethod(const ConstantUtf8* methodName, const ConstantUtf8 *methodDesc);
     FieldInfo* findField(uint16_t nameIndex, uint16_t descIndex) const;
     uint32_t classSize() const;
 private:
+    bool loadFromFileInternal();
     int loadConstants();
     int loadInterfaces();
     int loadFields();

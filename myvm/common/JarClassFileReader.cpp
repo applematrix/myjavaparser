@@ -5,7 +5,7 @@
 using namespace std;
 using namespace myvm;
 
-const char* MANIFEST = "META-INF/MANIFEST.MF";
+const static char* MANIFEST = "META-INF/MANIFEST.MF";
 
 namespace myvm {
 
@@ -20,22 +20,23 @@ JarClassFileReader::~JarClassFileReader() {
     }
 }
 
-void JarClassFileReader::open(const char* jarFilePath, const char* classFileName) {
+bool JarClassFileReader::open(string& jarFilePath, string& classFileName) {
     int error = 0;
-    mJarFile= zip_open(jarFilePath, ZIP_RDONLY, &error);
+    mJarFile= zip_open(jarFilePath.c_str(), ZIP_RDONLY, &error);
 	if (mJarFile == nullptr) {
 		cout << "zip_open failed, err:" << error << ", details:" << strerror(errno) << endl;
 		goto failed;
 	}
 
-    mClassFileInJar = zip_fopen(mJarFile, MANIFEST, 0);
+    mClassFileInJar = zip_fopen(mJarFile, classFileName.c_str(), 0);
     if (mClassFileInJar == nullptr) {
         cout << "zip_fopen "<< classFileName <<" failed failed, error details:" << strerror(errno) << endl;
 		goto failed;
     }
-    return;
+    return true;
 failed:
     close();
+    return false;
 }
 
 void JarClassFileReader::close() {
@@ -47,6 +48,11 @@ void JarClassFileReader::close() {
         zip_close(mJarFile);
         mJarFile = nullptr;
     }
+}
+
+size_t JarClassFileReader::readFromFile(void *buffer, size_t size) {
+    size_t readBytes = zip_fread(mClassFileInJar, buffer, size);
+    return readBytes;
 }
 
 }

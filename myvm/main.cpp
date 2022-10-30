@@ -28,6 +28,9 @@
 using namespace myvm;
 using namespace std;
 
+#ifdef BUILD_DEBUG
+#endif
+
 static void parseArgs(int argc, const char* args[]) {
 	string key = "";
 	shared_ptr<GlobalProperties> globalProperty = GlobalProperties::getInstance();
@@ -47,95 +50,49 @@ static void parseArgs(int argc, const char* args[]) {
 			globalProperty->addProperty(key, curArg);
 		}
 	}
-}
 
-void readJarContent() {
-	// Test
-    int error;
-	const char* testPath = "/home/lenovo/github_upload/myjavaparser/myvm/test/testmyvm/target/testmyvm-1.0-SNAPSHOT.jar";
-    zip_t* zip = zip_open(testPath, ZIP_RDONLY, &error);
-	if (zip == nullptr) {
-		cout << "zip_open failed, err:" << error << ", details:" << strerror(errno) << endl;
-		return;
-	}
-
-	int filesInJar = zip_get_num_files(zip);
-	for (int i = 0; i < filesInJar; i++) {
-		const char* fileName = zip_get_name(zip, i, ZIP_FL_ENC_RAW);
-		cout << "zip file name:" << fileName << endl;
-	}
-	error = zip_close(zip);
-
-}
-
-void readZipContent() {
-	int error;
-	const char* testPath = "/home/lenovo/test_zip.zip";
-
-	zip_t* zip = zip_open(testPath, ZIP_RDONLY, &error);
-	if (zip == nullptr) {
-		cout << "zip_open failed, err:" << error << ", details:" << strerror(errno) << endl;
-		return;
-	}
-
-	int filesInJar = zip_get_num_files(zip);
-	for (int i = 0; i < filesInJar; i++) {
-		const char* fileName = zip_get_name(zip, i, ZIP_FL_ENC_RAW);
-		cout << "zip file name:" << fileName << endl;
-
-		zip_file_t * file = zip_fopen(zip, fileName, 0);
-		if (file == nullptr) {
-			cout << "open file is failed" << endl;
-			return;
-		}
-
-		char buffer[1024] = {0};
-		int size = zip_fread(file, buffer, 1024);
-		if (size == -1) {
-			cout << "read file failed" << endl;
-		}
+	// debug code
+	if (!globalProperty->containsProperty("jar")
+		&& !globalProperty->containsProperty("classpath")) {
+		globalProperty->addProperty("classpath", "./test/testmyvm/target/classes/com/myvm/test/SimpleClass.class");
 	}
 }
 
 int main(int argc, const char* args[]) {
 	Logger::initialize();
-
-	// test code
-	readZipContent();
-	readJarContent();
-
 	cout << "Hello world, I'm a toy vm, I can do simple jobs for you" << endl;
-	if (argc <= 1) {
-		cout << "no class file specified" << endl;
-		return -1;
-	}
-	const char* path = args[1];
 
 	parseArgs(argc, args);
-	string mainClass;
-	string jarPath = GlobalProperties::getInstance()->getProperty("jar");
-	if (jarPath.empty()) {
-		mainClass = GlobalProperties::getInstance()->getProperty("classpath");
-	} else {
+	string mainClassName;
+	shared_ptr<GlobalProperties> globalProperty = GlobalProperties::getInstance();
+	
+	BootstrapClassLoader *mBootstrapClassLoder = BootstrapClassLoader::getInstance();
+	ClassInfo *mainClass = nullptr;
+	if (globalProperty->containsProperty("classpath")) {
+		mainClassName = globalProperty->getProperty("classpath");
+		mainClass = mBootstrapClassLoder->loadClassFromFile(mainClassName);
+		if (mainClass == nullptr) {
+			cout << "load class from .class file failed" << endl;
+			return -1;
+		}
+	} else if (globalProperty->containsProperty("jar")){
+		string jarPath = globalProperty->getProperty("jar");
 		shared_ptr<JarArchive> jarArchive = make_shared<JarArchive>();
 		jarArchive->loadFile(jarPath);
-		mainClass = jarArchive->getMainClass();
-	}
+		mainClassName = jarArchive->getMainClass();
 
-	if (mainClass.empty()) {
-		cout << "No main class specified" << endl;
+		mainClass = mBootstrapClassLoder->loadClassFromBootclassPathJar(mainClassName);
+		if (mainClass == nullptr) {
+			cout << "load class from jar file failed" << endl;
+			return -1;
+		}
+	} else {
+		cout << "no class file specified" << endl;
 		return -1;
 	}
 
 	LOGI("vm started");
-
-	BootstrapClassLoader *mBootstrapClassLoder = BootstrapClassLoader::getInstance();
-	mBootstrapClassLoder->loadClassFromFile(mainClass);
-
-	shared_ptr<ClassInfo> mClasssFile = make_shared<ClassInfo>();
-	mClasssFile->loadFromFile(mainClass.c_str());
-
-	Method *mainMethod = mClasssFile->findMainMethod();
+	Method *mainMethod = mainClass->findMainMethod();
 	if (mainMethod == nullptr) {
 		cout << "No main entry method in the class" << endl;
 	} else {

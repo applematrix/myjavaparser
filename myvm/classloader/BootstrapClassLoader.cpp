@@ -1,7 +1,10 @@
 #include "BootstrapClassLoader.h"
 #include "ClassInfo.h"
 #include "utils.h"
+#include "common/ClassFileReader.h"
+#include "common/JarArchive.h"
 #include <iostream>
+#include <cstring>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -26,6 +29,9 @@ BootstrapClassLoader * BootstrapClassLoader::sInstance = nullptr;
 
 BootstrapClassLoader::BootstrapClassLoader() {
     mBootClassPathes.push_back(BOOT_CLASS_PATH);
+#ifndef WIN32
+    mBootClassJars.push_back("/home/lenovo/github_upload/myjavaparser/myvm/test/jdk_classes/rt.jar");
+#endif // !WIN32
 }
 
 BootstrapClassLoader::~BootstrapClassLoader() {
@@ -56,21 +62,45 @@ void BootstrapClassLoader::addClass(string& name, ClassInfo *clazz) {
     mLoadedClasses[name] = clazz;
 }
 
-bool BootstrapClassLoader::loadClassFromFile(const char* path) {
+ClassInfo* BootstrapClassLoader::loadClassFromFile(string& classFile) {
     ClassInfo *clazz = new ClassInfo();
-	clazz->loadFromFile(path);
+    if (!clazz->loadFromFile(classFile)) {
+        return nullptr;
+    }
 
     std::string className = clazz->getClassName();
     addClass(className, clazz);
-    return true;
+    return clazz;
 }
 
-bool BootstrapClassLoader::loadClassFromFile(string& classFile) {
-    return loadClassFromFile(classFile.c_str());
+ClassInfo* BootstrapClassLoader::loadClassFromBootclassPathJar(string& className) {
+    string fullName = className;
+    const char* suffix = ".class";
+    if (fullName.length() > strlen(suffix)) {
+        string tmp = fullName.substr(fullName.length() - strlen(suffix));
+        if (tmp.compare(suffix) != 0) {
+            fullName.append(".class");
+        }
+    }
+    for (auto bootjar : mBootClassJars) {
+        JarArchive jar;
+        jar.loadFile(bootjar);
+        if (jar.containsClass(fullName)) {
+            return loadClassFromJar(bootjar, fullName);
+        }
+    }
+    cout << className << " not found in all bootclass path jar" << endl;
+    return nullptr;
 }
 
-bool BootstrapClassLoader::loadClassFromJar(string& jarFile, string className) {
-    return false;
+ClassInfo* BootstrapClassLoader::loadClassFromJar(string& jarFile, string& className) {
+    ClassInfo *clazz = new ClassInfo();
+	if(!clazz->loadFromJar(jarFile, className)) {
+        delete clazz;
+        return nullptr;
+    }
+    addClass(className, clazz);
+    return clazz;
 }
 
 bool BootstrapClassLoader::loadClassFromClassPath(string& className) {
