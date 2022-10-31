@@ -76,12 +76,12 @@ FieldInfo* FieldInfo::loadFromFile(ClassInfo *classFileInfo, FileReader *fileRea
 }
 
 void FieldInfo::resolve() {
-    ConstantUtf8 *name = mOwnerClazz->getUtf8Constant(nameIndex);
+    shared_ptr<ConstantUtf8> name = mOwnerClazz->getUtf8Constant(nameIndex);
     if (name == nullptr) {
         // Error;
         return;
     }
-    ConstantUtf8 *desc = mOwnerClazz->getUtf8Constant(descriptorIndex);
+    shared_ptr<ConstantUtf8> desc = mOwnerClazz->getUtf8Constant(descriptorIndex);
     if (desc == nullptr) {
         return;
     }

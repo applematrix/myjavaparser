@@ -2,7 +2,7 @@
 
 namespace myvm {
 
-/*static*/ shared_ptr<TypeInfo> TypeInfo::parseFrom(ConstantUtf8 *utf8) {
+/*static*/ shared_ptr<TypeInfo> TypeInfo::parseFrom(shared_ptr<ConstantUtf8> utf8) {
     string str((const char*)utf8->bytes);
     return parseFrom(str, 0);
 }

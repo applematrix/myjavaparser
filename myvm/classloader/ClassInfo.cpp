@@ -138,7 +138,7 @@ void ClassInfo::release() {
     }
 }
 
-ConstantInfo* ClassInfo::getConstantAt(uint16_t index) const {
+shared_ptr<ConstantInfo> ClassInfo::getConstantAt(uint16_t index) const {
     // jvms: the index begin from 1; so decrement it
     index--;
     if (index >= mConstantPool.size() || index < 0) {
@@ -147,11 +147,11 @@ ConstantInfo* ClassInfo::getConstantAt(uint16_t index) const {
     return mConstantPool.at(index);
 }
 
-void ClassInfo::printConstantInfo(ConstantInfo *constant) const {
+void ClassInfo::printConstantInfo(shared_ptr<ConstantInfo> constant) const {
     if (constant == nullptr || constant->tag != CONSTANT_UTF8) {
         return;
     }
-    ConstantUtf8 *utf8Info = (ConstantUtf8*)constant;
+    shared_ptr<ConstantUtf8> utf8Info = dynamic_pointer_cast<ConstantUtf8>(constant);
     cout << utf8Info->bytes << endl;
 }
 
@@ -160,19 +160,20 @@ void ClassInfo::printConstantInfo(uint16_t index) const {
 }
 
 char* ClassInfo::getUtf8ConstantName(uint16_t index) const {
-    ConstantInfo* constant = getConstantAt(index);
+    shared_ptr<ConstantInfo> constant = getConstantAt(index);
     if (constant == nullptr || constant->tag != CONSTANT_UTF8) {
         return nullptr;
     }
-    return (char*)((ConstantUtf8*)constant)->bytes;
+    shared_ptr<ConstantUtf8> utf8 = dynamic_pointer_cast<ConstantUtf8>(constant);
+    return (char*)utf8->bytes;
 }
 
-ConstantUtf8* ClassInfo::getUtf8Constant(uint16_t index) const {
-    ConstantInfo *constant = getConstantAt(index);
+shared_ptr<ConstantUtf8>  ClassInfo::getUtf8Constant(uint16_t index) const {
+    shared_ptr<ConstantInfo> constant = getConstantAt(index);
     if (constant == nullptr) {
         return nullptr;
     }
-    return (ConstantUtf8*)constant;
+    return dynamic_pointer_cast<ConstantUtf8>(constant);
 }
 
 shared_ptr<FieldInfo> ClassInfo::findField(uint16_t nameIndex, uint16_t descIndex)const {
@@ -204,7 +205,7 @@ int ClassInfo::loadConstants() {
         }
         cout << "Load constant #" << i << ": " << constant->typeString() << endl;
         constant->dump(this);
-        mConstantPool.push_back(constant);
+        mConstantPool.push_back(shared_ptr<ConstantInfo>(constant));
     }
     cout << "Load constants complete!" << endl << endl;
     return 0;
@@ -281,8 +282,8 @@ bool ClassInfo::resolve() {
         method->resolve(this);
     }
 
-    ConstantClass* thisClazz = (ConstantClass*)getConstantAt(thisClass);
-    ConstantUtf8* classNameUtf8 = (ConstantUtf8*)getConstantAt(thisClazz->nameIndex);
+    shared_ptr<ConstantClass> thisClazz = dynamic_pointer_cast<ConstantClass>(getConstantAt(thisClass));
+    shared_ptr<ConstantUtf8> classNameUtf8 = dynamic_pointer_cast<ConstantUtf8>(getConstantAt(thisClazz->nameIndex));
     mClassName = std::string((const char*)classNameUtf8->bytes);
     
     if (superClass == 0) {
@@ -294,8 +295,8 @@ bool ClassInfo::resolve() {
         cout << "Resolve the class "<< mClassName << " without parent " << endl;
         return true;
     }
-    ConstantClass* superClazz = (ConstantClass*)getConstantAt(superClass);
-    ConstantUtf8* superClassNameUtf8 = (ConstantUtf8*)getConstantAt(superClazz->nameIndex);
+    shared_ptr<ConstantClass> superClazz = dynamic_pointer_cast<ConstantClass>(getConstantAt(superClass));
+    shared_ptr<ConstantUtf8> superClassNameUtf8 = dynamic_pointer_cast<ConstantUtf8>(getConstantAt(superClazz->nameIndex));
     mSuperClassName = std::string((const char*)superClassNameUtf8->bytes);
 
     BootstrapClassLoader* bootClassLoader = BootstrapClassLoader::getInstance();
@@ -342,7 +343,7 @@ shared_ptr<Method> ClassInfo::findMainMethod() {
     return nullptr;
 }
 
-shared_ptr<Method> ClassInfo::findMethod(const ConstantNameAndType* nameAndType) {
+shared_ptr<Method> ClassInfo::findMethod(shared_ptr<ConstantNameAndType>& nameAndType) {
     for (auto method : mMethods) {
         if (method->match(nameAndType)) {
             return method;
@@ -351,7 +352,7 @@ shared_ptr<Method> ClassInfo::findMethod(const ConstantNameAndType* nameAndType)
     return nullptr;
 }
 
-shared_ptr<Method> ClassInfo::findMethod(const ConstantUtf8* methodName, const ConstantUtf8* methodDesc) {
+shared_ptr<Method> ClassInfo::findMethod(shared_ptr<ConstantUtf8>& methodName, shared_ptr<ConstantUtf8>& methodDesc) {
     for (auto method : mMethods) {
         if (method->match(methodName, methodDesc)) {
             return method;

@@ -22,13 +22,13 @@ GetFieldInstruction::GetFieldInstruction(uint8_t *code) {
 
 void GetFieldInstruction::run(Frame *frame) {
     ClassInfo *clazz = frame->getClass();
-    ConstantFieldRef *fieldRef = (ConstantFieldRef *)clazz->getConstantAt(mIndex);
+    shared_ptr<ConstantFieldRef> fieldRef = dynamic_pointer_cast<ConstantFieldRef>(clazz->getConstantAt(mIndex));
 
-    ConstantClass *classInfo = (ConstantClass*)clazz->getConstantAt(fieldRef->classIndex);
-    ConstantNameAndType *typeInfo = (ConstantNameAndType*)clazz->getConstantAt(fieldRef->nameAndTypeIndex);
+    shared_ptr<ConstantClass> classInfo = dynamic_pointer_cast<ConstantClass>(clazz->getConstantAt(fieldRef->classIndex));
+    shared_ptr<ConstantNameAndType> typeInfo = dynamic_pointer_cast<ConstantNameAndType>(clazz->getConstantAt(fieldRef->nameAndTypeIndex));
 
-    ConstantUtf8 *name = (ConstantUtf8*)clazz->getConstantAt(typeInfo->nameIndex);
-    ConstantUtf8 *desc = (ConstantUtf8*)clazz->getConstantAt(typeInfo->descriptorIndex);
+    shared_ptr<ConstantUtf8> name = dynamic_pointer_cast<ConstantUtf8>(clazz->getConstantAt(typeInfo->nameIndex));
+    shared_ptr<ConstantUtf8> desc = dynamic_pointer_cast<ConstantUtf8>(clazz->getConstantAt(typeInfo->descriptorIndex));
 
     shared_ptr<FieldInfo> field = clazz->findField(typeInfo->nameIndex, typeInfo->descriptorIndex);
     shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
@@ -64,13 +64,13 @@ PutFieldInstruction::PutFieldInstruction(uint8_t *code) {
 
 void PutFieldInstruction::run(Frame *frame) {
     ClassInfo *clazz = frame->getClass();
-    ConstantFieldRef *fieldRef = (ConstantFieldRef *)clazz->getConstantAt(mIndex);
+    shared_ptr<ConstantFieldRef> fieldRef = dynamic_pointer_cast<ConstantFieldRef>(clazz->getConstantAt(mIndex));
 
-    ConstantClass *classInfo = (ConstantClass*)clazz->getConstantAt(fieldRef->classIndex);
-    ConstantNameAndType *typeInfo = (ConstantNameAndType*)clazz->getConstantAt(fieldRef->nameAndTypeIndex);
+    shared_ptr<ConstantClass> classInfo = dynamic_pointer_cast<ConstantClass>(clazz->getConstantAt(fieldRef->classIndex));
+    shared_ptr<ConstantNameAndType> typeInfo = dynamic_pointer_cast<ConstantNameAndType>(clazz->getConstantAt(fieldRef->nameAndTypeIndex));
 
-    ConstantUtf8 *name = (ConstantUtf8*)clazz->getConstantAt(typeInfo->nameIndex);
-    ConstantUtf8 *desc = (ConstantUtf8*)clazz->getConstantAt(typeInfo->descriptorIndex);
+    shared_ptr<ConstantUtf8> name = dynamic_pointer_cast<ConstantUtf8>(clazz->getConstantAt(typeInfo->nameIndex));
+    shared_ptr<ConstantUtf8> desc = dynamic_pointer_cast<ConstantUtf8>(clazz->getConstantAt(typeInfo->descriptorIndex));
 
     cout << INDENTS[frame->getDepth()] << "put field, index:"
         << mIndex << ", name:" << name->bytes << ", description:" << desc->bytes << endl;

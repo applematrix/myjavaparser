@@ -29,19 +29,19 @@ public:
     ~ClassInfo();
     bool loadFromFile(string& path);
     bool loadFromJar(string& jar, string& className);
-    ConstantInfo* getConstantAt(uint16_t index) const;
-    void printConstantInfo(ConstantInfo *constant) const;
+    shared_ptr<ConstantInfo> getConstantAt(uint16_t index) const;
+    void printConstantInfo(shared_ptr<ConstantInfo> constant) const;
     void printConstantInfo(uint16_t index) const;
     char* getUtf8ConstantName(uint16_t index) const;
-    ConstantUtf8* getUtf8Constant(uint16_t index) const;
+    shared_ptr<ConstantUtf8> getUtf8Constant(uint16_t index) const;
     ClassInfo* getSuperClass() const;
     string getClassName() {
         return mClassName;
     };
     bool resolve();
     shared_ptr<Method> findMainMethod();
-    shared_ptr<Method> findMethod(const ConstantNameAndType *methodInfo);
-    shared_ptr<Method> findMethod(const ConstantUtf8* methodName, const ConstantUtf8 *methodDesc);
+    shared_ptr<Method> findMethod(shared_ptr<ConstantNameAndType>& methodInfo);
+    shared_ptr<Method> findMethod(shared_ptr<ConstantUtf8>& methodName, shared_ptr<ConstantUtf8>& methodDesc);
     shared_ptr<FieldInfo> findField(uint16_t nameIndex, uint16_t descIndex) const;
     uint32_t classSize() const;
 private:
@@ -72,7 +72,7 @@ private:
 
     // runtime properties
     uint16_t *mInterfaces;
-    std::vector<ConstantInfo*> mConstantPool;
+    std::vector<shared_ptr<ConstantInfo>> mConstantPool;
     std::vector<shared_ptr<FieldInfo>> mFields;
     std::vector<shared_ptr<Method>> mMethods;
     std::vector<AttributeInfo*> mAttributes;

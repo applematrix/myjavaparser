@@ -24,16 +24,16 @@ InvokeSpecialInstruction::InvokeSpecialInstruction(uint8_t *code) {
 void InvokeSpecialInstruction::run(Frame *frame) {
     ClassInfo *clazz = frame->getClass();
 
-    ConstantMethodRef* methodRef = (ConstantMethodRef*)clazz->getConstantAt(mIndex);
-    ConstantNameAndType* nameAndTypeRef = (ConstantNameAndType*)clazz->getConstantAt(methodRef->nameAndTypeIndex);
+    shared_ptr<ConstantMethodRef> methodRef = dynamic_pointer_cast<ConstantMethodRef>(clazz->getConstantAt(mIndex));
+    shared_ptr<ConstantNameAndType> nameAndTypeRef = dynamic_pointer_cast<ConstantNameAndType>(clazz->getConstantAt(methodRef->nameAndTypeIndex));
     shared_ptr<Method> method = clazz->findMethod(nameAndTypeRef);
 
     if (method == nullptr) {
         cout << "InvokeSpecialInstruction error: no method found!" << endl;
     }
 
-    ConstantClass* targetClassInfo = (ConstantClass*)clazz->getConstantAt(methodRef->classIndex);
-    ConstantUtf8* targetClassName = (ConstantUtf8*)clazz->getConstantAt(targetClassInfo->nameIndex);
+    shared_ptr<ConstantClass> targetClassInfo = dynamic_pointer_cast<ConstantClass>(clazz->getConstantAt(methodRef->classIndex));
+    shared_ptr<ConstantUtf8> targetClassName = dynamic_pointer_cast<ConstantUtf8>(clazz->getConstantAt(targetClassInfo->nameIndex));
 
     // TODO: must use the class' loader to load the class
     ClassInfo* targetClazz = BootstrapClassLoader::getInstance()->getClassByName(string((const char*)targetClassName->bytes));
@@ -42,8 +42,8 @@ void InvokeSpecialInstruction::run(Frame *frame) {
         // TODO:
     }
     
-    ConstantUtf8* targetMethodName = (ConstantUtf8*)clazz->getConstantAt(nameAndTypeRef->nameIndex);
-    ConstantUtf8* targetMethodDesc = (ConstantUtf8*)clazz->getConstantAt(nameAndTypeRef->descriptorIndex);
+    shared_ptr<ConstantUtf8> targetMethodName = dynamic_pointer_cast<ConstantUtf8>(clazz->getConstantAt(nameAndTypeRef->nameIndex));
+    shared_ptr<ConstantUtf8> targetMethodDesc = dynamic_pointer_cast<ConstantUtf8>(clazz->getConstantAt(nameAndTypeRef->descriptorIndex));
 
     shared_ptr<OperandStack> curStack = ThreadLocalStorage::getInstance()->getStack();
 
@@ -96,8 +96,8 @@ InvokeVirtualInstruction::InvokeVirtualInstruction(uint8_t *code) {
 
 void InvokeVirtualInstruction::run(Frame *frame) {
     ClassInfo *clazz = frame->getClass();
-    ConstantMethodRef* methodRef = (ConstantMethodRef*)clazz->getConstantAt(mIndex);
-    ConstantNameAndType* nameAndTypeRef = (ConstantNameAndType*)clazz->getConstantAt(methodRef->nameAndTypeIndex);
+    shared_ptr<ConstantMethodRef> methodRef = dynamic_pointer_cast<ConstantMethodRef>(clazz->getConstantAt(mIndex));
+    shared_ptr<ConstantNameAndType> nameAndTypeRef = dynamic_pointer_cast<ConstantNameAndType>(clazz->getConstantAt(methodRef->nameAndTypeIndex));
     shared_ptr<Method> method = clazz->findMethod(nameAndTypeRef);
 
     if (method == nullptr) {
