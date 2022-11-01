@@ -28,18 +28,18 @@ public:
     uint16_t tableLen;
     vector<shared_ptr<LocalVariableAttr>> localVariables;
 
-    LocalVariableTableAttr(FileReader* fileReader)
+    LocalVariableTableAttr(shared_ptr<FileReader> fileReader)
         : AttributeInfo(fileReader, ATTR_LOCAL_VARIABLE_TABLE) {
         initialize(fileReader);
     }
 
-    LocalVariableTableAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+    LocalVariableTableAttr(uint16_t name, uint32_t len, shared_ptr<FileReader> fileReader)
         : AttributeInfo(name, len, ATTR_LOCAL_VARIABLE_TABLE) {
         initialize(fileReader);
     }
 
 private:
-    void initialize(FileReader* fileReader);
+    void initialize(shared_ptr<FileReader> fileReader);
 };
 
 class LocalVariableTable {

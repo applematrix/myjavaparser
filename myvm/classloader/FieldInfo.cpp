@@ -32,7 +32,7 @@ FieldInfo::~FieldInfo() {
 
 }
 
-FieldInfo* FieldInfo::loadFromFile(ClassInfo *classFileInfo, FileReader *fileReader) {
+FieldInfo* FieldInfo::loadFromFile(ClassInfo *classFileInfo, shared_ptr<FileReader> fileReader) {
     uint16_t accessFlags = 0;
     int status = fileReader->readUint16(accessFlags);
     if (status != 0) {

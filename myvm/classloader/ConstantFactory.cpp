@@ -14,7 +14,7 @@ using namespace std;
 
 namespace myvm {
 
-static ConstantInfo* createConstantUtf8(FileReader* fileReader) {
+static ConstantInfo* createConstantUtf8(shared_ptr<FileReader> fileReader) {
     uint16_t length;
     int status = fileReader->readUint16(length);
     if (status != 0) {
@@ -29,7 +29,7 @@ static ConstantInfo* createConstantUtf8(FileReader* fileReader) {
     return new ConstantUtf8(length, bytes);
 }
 
-static ConstantInfo* createConstantIntegerOrFloat(uint8_t tag, FileReader* fileReader) {
+static ConstantInfo* createConstantIntegerOrFloat(uint8_t tag, shared_ptr<FileReader> fileReader) {
     uint32_t bytes;
     int status = fileReader->readUint32(bytes);
     if (status != 0) {
@@ -38,7 +38,7 @@ static ConstantInfo* createConstantIntegerOrFloat(uint8_t tag, FileReader* fileR
     return new ConstantInteger(tag, bytes);
 }
 
-static ConstantInfo* createConstantLongOrDouble(uint8_t tag, FileReader* fileReader) {
+static ConstantInfo* createConstantLongOrDouble(uint8_t tag, shared_ptr<FileReader> fileReader) {
     uint32_t highBytes;
     int status = fileReader->readUint32(highBytes);
     if (status != 0) {
@@ -53,7 +53,7 @@ static ConstantInfo* createConstantLongOrDouble(uint8_t tag, FileReader* fileRea
     return new ConstantLong(tag, highBytes, lowBytes);
 }
 
-static ConstantInfo* createConstantString(FileReader* fileReader) {
+static ConstantInfo* createConstantString(shared_ptr<FileReader> fileReader) {
     uint16_t stringIndex;
     int status = fileReader->readUint16(stringIndex);
     if (status != 0) {
@@ -63,7 +63,7 @@ static ConstantInfo* createConstantString(FileReader* fileReader) {
 }
 
 
-static ConstantInfo* createConstantRef(uint8_t tag, FileReader* fileReader) {
+static ConstantInfo* createConstantRef(uint8_t tag, shared_ptr<FileReader> fileReader) {
     uint16_t classIndex;
     int status = fileReader->readUint16(classIndex);
     if (status != 0) {
@@ -78,7 +78,7 @@ static ConstantInfo* createConstantRef(uint8_t tag, FileReader* fileReader) {
     return new ConstantRef(tag, classIndex, nameAndTypeIndex);
 }
 
-static ConstantInfo* createConstantMethodRef(uint8_t tag, FileReader* fileReader) {
+static ConstantInfo* createConstantMethodRef(uint8_t tag, shared_ptr<FileReader> fileReader) {
     uint16_t classIndex;
     int status = fileReader->readUint16(classIndex);
     if (status != 0) {
@@ -93,7 +93,7 @@ static ConstantInfo* createConstantMethodRef(uint8_t tag, FileReader* fileReader
     return new ConstantMethodRef(tag, classIndex, nameAndTypeIndex);
 }
 
-static ConstantInfo* createConstantFieldRef(uint8_t tag, FileReader* fileReader) {
+static ConstantInfo* createConstantFieldRef(uint8_t tag, shared_ptr<FileReader> fileReader) {
     uint16_t classIndex;
     int status = fileReader->readUint16(classIndex);
     if (status != 0) {
@@ -108,7 +108,7 @@ static ConstantInfo* createConstantFieldRef(uint8_t tag, FileReader* fileReader)
     return new ConstantFieldRef(tag, classIndex, nameAndTypeIndex);
 }
 
-static ConstantInfo* createConstantInterfaceMethodRef(uint8_t tag, FileReader* fileReader) {
+static ConstantInfo* createConstantInterfaceMethodRef(uint8_t tag, shared_ptr<FileReader> fileReader) {
     uint16_t classIndex;
     int status = fileReader->readUint16(classIndex);
     if (status != 0) {
@@ -123,7 +123,7 @@ static ConstantInfo* createConstantInterfaceMethodRef(uint8_t tag, FileReader* f
     return new ConstantInterfaceMethodRef(tag, classIndex, nameAndTypeIndex);
 }
 
-static ConstantInfo* createMethodHandle(uint8_t tag, FileReader* fileReader) {
+static ConstantInfo* createMethodHandle(uint8_t tag, shared_ptr<FileReader> fileReader) {
     uint16_t kind;
     int status = fileReader->readUint16(kind);
     if (status != 0) {
@@ -138,7 +138,7 @@ static ConstantInfo* createMethodHandle(uint8_t tag, FileReader* fileReader) {
     return new ConstantMethodHandle(kind, index);
 }
 
-static ConstantInfo* createClass(uint8_t tag, FileReader* fileReader) {
+static ConstantInfo* createClass(uint8_t tag, shared_ptr<FileReader> fileReader) {
     uint16_t index;
     int status = fileReader->readUint16(index);
     if (status != 0) {
@@ -148,7 +148,7 @@ static ConstantInfo* createClass(uint8_t tag, FileReader* fileReader) {
     return new ConstantClass(tag, index);
 }
 
-static ConstantInfo* createNameAndType(FileReader* fileReader) {
+static ConstantInfo* createNameAndType(shared_ptr<FileReader> fileReader) {
     uint16_t nameIndex;
     int status = fileReader->readUint16(nameIndex);
     if (status != 0) {
@@ -166,7 +166,7 @@ static ConstantInfo* createNameAndType(FileReader* fileReader) {
 
 
 
-ConstantInfo* ConstantFactory::loadFromFile(FileReader* fileReader) {
+ConstantInfo* ConstantFactory::loadFromFile(shared_ptr<FileReader> fileReader) {
     uint8_t tag = 0;
     int status = fileReader->readUint8(tag);
     if (status != 0) {

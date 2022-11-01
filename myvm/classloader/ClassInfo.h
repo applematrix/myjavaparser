@@ -80,7 +80,7 @@ private:
     std::string mSuperClassName;
     uint32_t mClassSize;
 
-    FileReader *mFileReader;
+    shared_ptr<FileReader> mFileReader;
     ClassInfo *mSuperClass;
 };
 

@@ -7,17 +7,17 @@ using namespace std;
 
 namespace myvm{
 
-CodeAttr::CodeAttr(ClassInfo *classFileInfo, FileReader* fileReader)
+CodeAttr::CodeAttr(ClassInfo *classFileInfo, shared_ptr<FileReader> fileReader)
     : AttributeInfo(fileReader, ATTR_CODE) {
     initialize(classFileInfo, fileReader);
 }
 
-CodeAttr::CodeAttr(uint16_t name, uint32_t len, ClassInfo *classFileInfo, FileReader *fileReader)
+CodeAttr::CodeAttr(uint16_t name, uint32_t len, ClassInfo *classFileInfo, shared_ptr<FileReader> fileReader)
     : AttributeInfo(name, len, ATTR_CODE) {
     initialize(classFileInfo, fileReader);
 }
 
-void CodeAttr::initialize(ClassInfo *classFileInfo, FileReader* fileReader) {
+void CodeAttr::initialize(ClassInfo *classFileInfo, shared_ptr<FileReader> fileReader) {
     fileReader->readUint16(maxStack);
     fileReader->readUint16(maxLocals);
     fileReader->readUint32(codeLength);
@@ -42,7 +42,7 @@ void CodeAttr::initialize(ClassInfo *classFileInfo, FileReader* fileReader) {
     cout << endl;
 }
 
-void CodeAttr::loadExceptionTable(FileReader* fileReader) {
+void CodeAttr::loadExceptionTable(shared_ptr<FileReader> fileReader) {
     fileReader->readUint16(exceptionTableLength);
     exceptionTable = new ExceptionTable[exceptionTableLength];
 

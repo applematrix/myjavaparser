@@ -3,7 +3,7 @@
 
 namespace myvm {
 
-void LocalVariableTableAttr::initialize(FileReader *fileReader){
+void LocalVariableTableAttr::initialize(shared_ptr<FileReader> fileReader){
     fileReader->readUint16(tableLen);
     localVariables.reserve(tableLen);
     for (int i = 0; i < tableLen; i++)

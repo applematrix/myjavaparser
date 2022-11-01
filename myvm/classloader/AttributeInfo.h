@@ -67,7 +67,7 @@ struct AttributeInfo {
     virtual ~AttributeInfo() {
     }
 
-    AttributeInfo(FileReader* fileReader, uint8_t type) {
+    AttributeInfo(shared_ptr<FileReader> fileReader, uint8_t type) {
         fileReader->readUint16(nameIndex);
         fileReader->readUint32(length);
         attrType = type;
@@ -81,11 +81,11 @@ struct AttributeInfo {
 struct ConstantValueAttr: public AttributeInfo {
     uint16_t constantValueIndex;
 
-    ConstantValueAttr(FileReader *fileReader) : AttributeInfo(fileReader, ATTR_CONSTANT_VALUE) {
+    ConstantValueAttr(shared_ptr<FileReader> fileReader) : AttributeInfo(fileReader, ATTR_CONSTANT_VALUE) {
         fileReader->readUint16(constantValueIndex);
     }
 
-    ConstantValueAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+    ConstantValueAttr(uint16_t name, uint32_t len, shared_ptr<FileReader> fileReader)
         : AttributeInfo(name, len, ATTR_CONSTANT_VALUE) {
         fileReader->readUint16(constantValueIndex);
     }
@@ -96,7 +96,7 @@ struct StackMapTableAttr: public AttributeInfo {
     // TODO:
     uint8_t entries = 0;
 
-    StackMapTableAttr(uint16_t name, uint32_t len, FileReader* fileReader)
+    StackMapTableAttr(uint16_t name, uint32_t len, shared_ptr<FileReader> fileReader)
         : AttributeInfo(name, len, ATTR_STACK_MAP_TABLE) {
         // TODO:
         fileReader->skip(this->length);
@@ -107,7 +107,7 @@ struct ExceptionAttr: public AttributeInfo {
     uint16_t exceptionCount;
     uint16_t *exceptionIndexTable;
 
-    void loadExceptionIndexTable(FileReader* fileReader) {
+    void loadExceptionIndexTable(shared_ptr<FileReader> fileReader) {
         fileReader->readUint16(exceptionCount);
         exceptionIndexTable = new uint16_t[exceptionCount];
         for (int i = 0; i < exceptionCount; i++) {
@@ -115,11 +115,11 @@ struct ExceptionAttr: public AttributeInfo {
         }
     }
 
-    ExceptionAttr(FileReader* fileReader) : AttributeInfo(fileReader, ATTR_EXCEPTIONS) {
+    ExceptionAttr(shared_ptr<FileReader> fileReader) : AttributeInfo(fileReader, ATTR_EXCEPTIONS) {
         loadExceptionIndexTable(fileReader);
     }
 
-    ExceptionAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+    ExceptionAttr(uint16_t name, uint32_t len, shared_ptr<FileReader> fileReader)
         : AttributeInfo(name, len, ATTR_EXCEPTIONS) {
         loadExceptionIndexTable(fileReader);
     }
@@ -134,7 +134,7 @@ struct InnerClassAttr: public AttributeInfo {
         uint16_t innerClassAccessFlags;
     } *classes;
 
-    void initialize(FileReader* fileReader) {
+    void initialize(shared_ptr<FileReader> fileReader) {
         fileReader->readUint16(numberOfClasses);
 
         classes = new Clazz[numberOfClasses];
@@ -143,11 +143,11 @@ struct InnerClassAttr: public AttributeInfo {
         }
     }
 
-    InnerClassAttr(FileReader* fileReader) : AttributeInfo(fileReader, ATTR_INNER_CLASSES) {
+    InnerClassAttr(shared_ptr<FileReader> fileReader) : AttributeInfo(fileReader, ATTR_INNER_CLASSES) {
         initialize(fileReader);
     }
 
-    InnerClassAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+    InnerClassAttr(uint16_t name, uint32_t len, shared_ptr<FileReader> fileReader)
         : AttributeInfo(name, len, ATTR_INNER_CLASSES) {
         initialize(fileReader);
     }
@@ -157,12 +157,12 @@ struct EnclosingMethodAttr: public AttributeInfo {
     uint16_t classIndex;
     uint16_t methodIndex;
 
-    EnclosingMethodAttr(FileReader* fileReader) : AttributeInfo(fileReader, ATTR_ENCLOSING_METHOD) {
+    EnclosingMethodAttr(shared_ptr<FileReader> fileReader) : AttributeInfo(fileReader, ATTR_ENCLOSING_METHOD) {
         fileReader->readUint16(classIndex);
         fileReader->readUint16(methodIndex);
     }
 
-    EnclosingMethodAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+    EnclosingMethodAttr(uint16_t name, uint32_t len, shared_ptr<FileReader> fileReader)
         : AttributeInfo(name, len, ATTR_ENCLOSING_METHOD) {
         fileReader->readUint16(classIndex);
         fileReader->readUint16(methodIndex);
@@ -174,11 +174,11 @@ typedef AttributeInfo SyntheticAttr;
 struct SignatureAttr: public AttributeInfo {
     uint16_t singatureIndex;
 
-    SignatureAttr(FileReader* fileReader) : AttributeInfo(fileReader, ATTR_SIGNATURE) {
+    SignatureAttr(shared_ptr<FileReader> fileReader) : AttributeInfo(fileReader, ATTR_SIGNATURE) {
         fileReader->readUint16(singatureIndex);
     }
 
-    SignatureAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+    SignatureAttr(uint16_t name, uint32_t len, shared_ptr<FileReader> fileReader)
         : AttributeInfo(name, len, ATTR_SIGNATURE) {
         fileReader->readUint16(singatureIndex);
     }
@@ -187,11 +187,11 @@ struct SignatureAttr: public AttributeInfo {
 struct SourceFileAttr: public AttributeInfo {
     uint16_t sourceFileIndex;
 
-    SourceFileAttr(FileReader* fileReader) : AttributeInfo(fileReader, ATTR_SOURCE_FILE) {
+    SourceFileAttr(shared_ptr<FileReader> fileReader) : AttributeInfo(fileReader, ATTR_SOURCE_FILE) {
         fileReader->readUint16(sourceFileIndex);
     }
 
-    SourceFileAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+    SourceFileAttr(uint16_t name, uint32_t len, shared_ptr<FileReader> fileReader)
         : AttributeInfo(name, len, ATTR_SOURCE_FILE) {
         fileReader->readUint16(sourceFileIndex);
     }
@@ -200,12 +200,12 @@ struct SourceFileAttr: public AttributeInfo {
 struct SourceDebugExtensionAttr: public AttributeInfo {
     uint8_t *debugExtension;
 
-    SourceDebugExtensionAttr(FileReader* fileReader) : AttributeInfo(fileReader, ATTR_SOURCE_DEBUG_EXTENSION) {
+    SourceDebugExtensionAttr(shared_ptr<FileReader> fileReader) : AttributeInfo(fileReader, ATTR_SOURCE_DEBUG_EXTENSION) {
         debugExtension = new uint8_t[length];
         fileReader->read(debugExtension, length);
     }
 
-    SourceDebugExtensionAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+    SourceDebugExtensionAttr(uint16_t name, uint32_t len, shared_ptr<FileReader> fileReader)
         : AttributeInfo(name, len, ATTR_SOURCE_DEBUG_EXTENSION) {
         fileReader->read(debugExtension, length);
     }
@@ -218,7 +218,7 @@ struct LineNumberTableAttr: public AttributeInfo {
         uint16_t lineNumber;
     } * lineNumberTable;
 
-    void initialize(FileReader* fileReader) {
+    void initialize(shared_ptr<FileReader> fileReader) {
         fileReader->readUint16(tableLen);
 
         lineNumberTable = new LineNumber[tableLen];
@@ -228,11 +228,11 @@ struct LineNumberTableAttr: public AttributeInfo {
         }
     }
 
-    LineNumberTableAttr(FileReader* fileReader) : AttributeInfo(fileReader, ATTR_LINE_NUMBER_TABLE) {
+    LineNumberTableAttr(shared_ptr<FileReader> fileReader) : AttributeInfo(fileReader, ATTR_LINE_NUMBER_TABLE) {
         initialize(fileReader);
     }
 
-    LineNumberTableAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+    LineNumberTableAttr(uint16_t name, uint32_t len, shared_ptr<FileReader> fileReader)
         : AttributeInfo(name, len, ATTR_LINE_NUMBER_TABLE) {
         initialize(fileReader);
     }
@@ -248,7 +248,7 @@ struct LocalVariableTypeTableAttr: public AttributeInfo {
         uint16_t index;
     } *localVariableTypeTable;
 
-    void initialize(FileReader* fileReader) {
+    void initialize(shared_ptr<FileReader> fileReader) {
         fileReader->readUint16(tableLen);
 
         localVariableTypeTable = new LocalVariableType[tableLen];
@@ -261,11 +261,11 @@ struct LocalVariableTypeTableAttr: public AttributeInfo {
         }
     }
 
-    LocalVariableTypeTableAttr(FileReader* fileReader) : AttributeInfo(fileReader, ATTR_LOCAL_VARIABLE_TYPE_TABLE) {
+    LocalVariableTypeTableAttr(shared_ptr<FileReader> fileReader) : AttributeInfo(fileReader, ATTR_LOCAL_VARIABLE_TYPE_TABLE) {
         initialize(fileReader);
     }
 
-    LocalVariableTypeTableAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+    LocalVariableTypeTableAttr(uint16_t name, uint32_t len, shared_ptr<FileReader> fileReader)
         : AttributeInfo(name, len, ATTR_LOCAL_VARIABLE_TYPE_TABLE) {
         initialize(fileReader);
     }
@@ -287,7 +287,7 @@ struct BootstrapMethodsAttr: public AttributeInfo {
         uint16_t *args;
     } **bootstrapMethods;
 
-    void initialize(FileReader* fileReader) {
+    void initialize(shared_ptr<FileReader> fileReader) {
         fileReader->readUint16(bootstrapMethodNum);
 
         bootstrapMethods = new BootstrapMethod*[bootstrapMethodNum];
@@ -297,11 +297,11 @@ struct BootstrapMethodsAttr: public AttributeInfo {
         }
     }
 
-    BootstrapMethodsAttr(FileReader* fileReader) : AttributeInfo(fileReader, ATTR_BOOTSTRAP_METHODS) {
+    BootstrapMethodsAttr(shared_ptr<FileReader> fileReader) : AttributeInfo(fileReader, ATTR_BOOTSTRAP_METHODS) {
         initialize(fileReader);
     }
 
-    BootstrapMethodsAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+    BootstrapMethodsAttr(uint16_t name, uint32_t len, shared_ptr<FileReader> fileReader)
         : AttributeInfo(name, len, ATTR_BOOTSTRAP_METHODS) {
         initialize(fileReader);
     }
@@ -314,7 +314,7 @@ struct MethodParametersAttr: public AttributeInfo {
         uint16_t accessFlags;
     } *parameters;
 
-    void initialize(FileReader* fileReader) {
+    void initialize(shared_ptr<FileReader> fileReader) {
         fileReader->readUint8(paramCount);
 
         parameters = new Parameter[paramCount];
@@ -324,11 +324,11 @@ struct MethodParametersAttr: public AttributeInfo {
         }
     }
 
-    MethodParametersAttr(FileReader* fileReader) : AttributeInfo(fileReader, ATTR_METHOD_PARAMETERS) {
+    MethodParametersAttr(shared_ptr<FileReader> fileReader) : AttributeInfo(fileReader, ATTR_METHOD_PARAMETERS) {
         initialize(fileReader);
     }
 
-    MethodParametersAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+    MethodParametersAttr(uint16_t name, uint32_t len, shared_ptr<FileReader> fileReader)
         : AttributeInfo(name, len, ATTR_METHOD_PARAMETERS) {
         initialize(fileReader);
     }
@@ -374,7 +374,7 @@ struct ModuleAttr: public AttributeInfo {
     } *provides;
 
     // constructor
-    void initialize(FileReader* fileReader) {
+    void initialize(shared_ptr<FileReader> fileReader) {
         fileReader->readUint8(paramCount);
         fileReader->readUint16(moduleNameIndex);
         fileReader->readUint16(moduleFlags);
@@ -449,11 +449,11 @@ struct ModuleAttr: public AttributeInfo {
         }
     }
 
-    ModuleAttr(FileReader* fileReader) : AttributeInfo(fileReader, ATTR_MODULE) {
+    ModuleAttr(shared_ptr<FileReader> fileReader) : AttributeInfo(fileReader, ATTR_MODULE) {
         initialize(fileReader);
     }
 
-    ModuleAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+    ModuleAttr(uint16_t name, uint32_t len, shared_ptr<FileReader> fileReader)
         : AttributeInfo(name, len, ATTR_MODULE) {
         initialize(fileReader);
     }
@@ -463,7 +463,7 @@ struct ModulePackageAttr: public AttributeInfo {
     uint16_t packageCount;
     uint16_t *packageIndex;
 
-    void initialize(FileReader* fileReader) {
+    void initialize(shared_ptr<FileReader> fileReader) {
         fileReader->readUint16(packageCount);
 
         if (packageCount > 0) {
@@ -474,11 +474,11 @@ struct ModulePackageAttr: public AttributeInfo {
         }
     }
 
-    ModulePackageAttr(FileReader* fileReader) : AttributeInfo(fileReader, ATTR_MODULE_PACKAGE) {
+    ModulePackageAttr(shared_ptr<FileReader> fileReader) : AttributeInfo(fileReader, ATTR_MODULE_PACKAGE) {
         initialize(fileReader);
     }
 
-    ModulePackageAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+    ModulePackageAttr(uint16_t name, uint32_t len, shared_ptr<FileReader> fileReader)
         : AttributeInfo(name, len, ATTR_MODULE_PACKAGE) {
         initialize(fileReader);
     }
@@ -487,11 +487,11 @@ struct ModulePackageAttr: public AttributeInfo {
 struct ModuleMainClassAttr: public AttributeInfo {
     uint16_t mainClassIndex;
 
-    ModuleMainClassAttr(FileReader* fileReader) : AttributeInfo(fileReader, ATTR_MODULE_MAIN_CLASS) {
+    ModuleMainClassAttr(shared_ptr<FileReader> fileReader) : AttributeInfo(fileReader, ATTR_MODULE_MAIN_CLASS) {
         fileReader->readUint16(mainClassIndex);
     }
 
-    ModuleMainClassAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+    ModuleMainClassAttr(uint16_t name, uint32_t len, shared_ptr<FileReader> fileReader)
         : AttributeInfo(name, len, ATTR_MODULE_MAIN_CLASS) {
         fileReader->readUint16(mainClassIndex);
     }    
@@ -500,11 +500,11 @@ struct ModuleMainClassAttr: public AttributeInfo {
 struct NestHostAttr: public AttributeInfo {
     uint16_t hostClassIndex;
 
-    NestHostAttr(FileReader* fileReader) : AttributeInfo(fileReader, ATTR_NEST_HOST) {
+    NestHostAttr(shared_ptr<FileReader> fileReader) : AttributeInfo(fileReader, ATTR_NEST_HOST) {
         fileReader->readUint16(hostClassIndex);
     }
 
-    NestHostAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+    NestHostAttr(uint16_t name, uint32_t len, shared_ptr<FileReader> fileReader)
         : AttributeInfo(name, len, ATTR_NEST_HOST) {
         fileReader->readUint16(hostClassIndex);
     }
@@ -514,14 +514,14 @@ struct NestMemberAttr: public AttributeInfo {
     uint16_t classNum;
     uint16_t *classes;
 
-    NestMemberAttr(FileReader* fileReader) : AttributeInfo(fileReader, ATTR_NEST_MEMBER) {
+    NestMemberAttr(shared_ptr<FileReader> fileReader) : AttributeInfo(fileReader, ATTR_NEST_MEMBER) {
         fileReader->readUint16(classNum);
         for (int i = 0; i < classNum; i++) {
             fileReader->readUint16(classes[i]);
         }
     }
 
-    NestMemberAttr(uint16_t name, uint32_t len, FileReader *fileReader)
+    NestMemberAttr(uint16_t name, uint32_t len, shared_ptr<FileReader> fileReader)
         : AttributeInfo(name, len, ATTR_NEST_MEMBER) {
         fileReader->readUint16(classNum);
         for (int i = 0; i < classNum; i++) {
@@ -539,14 +539,14 @@ struct RecordAttr: public AttributeInfo {
         AttributeInfo **attributeInfo;
     } *components;
 
-    void initialize(ClassInfo *classFileInfo, FileReader* fileReader);
+    void initialize(ClassInfo *classFileInfo, shared_ptr<FileReader> fileReader);
 
-    RecordAttr(ClassInfo *classFileInfo, FileReader* fileReader) 
+    RecordAttr(ClassInfo *classFileInfo, shared_ptr<FileReader> fileReader) 
         : AttributeInfo(fileReader, ATTR_RECORD) {
         initialize(classFileInfo, fileReader);
     }
 
-    RecordAttr(uint16_t name, uint32_t len, ClassInfo *classFileInfo, FileReader *fileReader)
+    RecordAttr(uint16_t name, uint32_t len, ClassInfo *classFileInfo, shared_ptr<FileReader> fileReader)
         : AttributeInfo(name, len, ATTR_RECORD) {
         initialize(classFileInfo, fileReader);
     }

@@ -30,7 +30,7 @@ ClassInfo::~ClassInfo() {
 }
 
 bool ClassInfo::loadFromFile(string& path) {
-    mFileReader = new ClassFileReader(path);
+    mFileReader = make_shared<ClassFileReader>(path);
     return loadFromFileInternal();
 }
 
@@ -47,7 +47,7 @@ bool ClassInfo::loadFromJar(string& jar, string& className) {
         cout << "loadFromJar open " << jar << " for class " << className << " failed! " << endl;
         return false;
     }
-    mFileReader = fileReader;
+    mFileReader = shared_ptr<FileReader>(fileReader);
     return loadFromFileInternal();
 }
 
@@ -133,9 +133,6 @@ bool ClassInfo::loadFromFileInternal() {
 }
 
 void ClassInfo::release() {
-    if (mFileReader != nullptr) {
-        delete mFileReader;
-    }
 }
 
 shared_ptr<ConstantInfo> ClassInfo::getConstantAt(uint16_t index) const {

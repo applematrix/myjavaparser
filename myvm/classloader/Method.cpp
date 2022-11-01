@@ -95,7 +95,7 @@ bool Method::isProtected() {
     return (accessFlags & METHOD_ACC_PROTECTED) != 0;
 }
 
-Method* Method::loadFromFile(ClassInfo *classFileInfo, FileReader *fileReader) {
+Method* Method::loadFromFile(ClassInfo *classFileInfo, shared_ptr<FileReader> fileReader) {
     uint16_t accessFlags = 0;
     int status = fileReader->readUint16(accessFlags);
     if (status != 0) {

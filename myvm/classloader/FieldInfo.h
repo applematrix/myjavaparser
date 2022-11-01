@@ -32,7 +32,7 @@ public:
         return mTypeInfo;
     }
 
-    static FieldInfo* loadFromFile(ClassInfo *classFileInfo, FileReader *fileReader);
+    static FieldInfo* loadFromFile(ClassInfo *classFileInfo, shared_ptr<FileReader> fileReader);
 public:
     uint16_t accessFlags;
     uint16_t nameIndex;

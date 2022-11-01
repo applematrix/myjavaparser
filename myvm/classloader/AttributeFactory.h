@@ -20,7 +20,7 @@ class FileReader;
 
 class AttributeFactory {
 public:
-    static AttributeInfo* loadFromFile(ClassInfo* classInfo, FileReader* fileReader);
+    static AttributeInfo* loadFromFile(ClassInfo* classInfo, shared_ptr<FileReader> fileReader);
 };
 
 }
