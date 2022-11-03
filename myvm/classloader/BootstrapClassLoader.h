@@ -13,20 +13,20 @@ class BootstrapClassLoader {
 public:
     static BootstrapClassLoader *getInstance();
     ~BootstrapClassLoader();
-    ClassInfo* loadClassFromFile(string& classFile);
-    ClassInfo* loadClassFromBootclassPathJar(string& className);
-    ClassInfo* loadClassFromJar(string& jarFile, string& className, string& fileName);
+    shared_ptr<ClassInfo> loadClassFromFile(string& classFile);
+    shared_ptr<ClassInfo> loadClassFromBootclassPathJar(string& className);
+    shared_ptr<ClassInfo> loadClassFromJar(string& jarFile, string& className, string& fileName);
     bool loadClassFromClassPath(string& className);
-    ClassInfo* getClassByName(const string& name);
-    ClassInfo* getClassByName(const char* name);
-    void addClass(string& name, ClassInfo *clazz);
+    shared_ptr<ClassInfo> getClassByName(const string& name);
+    shared_ptr<ClassInfo> getClassByName(const char* name);
+    void addClass(string& name, shared_ptr<ClassInfo> clazz);
 private:
     BootstrapClassLoader();
     bool classLoaded(string& name);
     void covertPath(string& path);
 private:
     static BootstrapClassLoader *sInstance;
-    map<string, ClassInfo*> mLoadedClasses;
+    map<string, shared_ptr<ClassInfo>> mLoadedClasses;
     vector<string> mBootClassPathes;
     vector<string> mBootClassJars;
 };

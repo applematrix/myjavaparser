@@ -36,7 +36,7 @@ void InvokeSpecialInstruction::run(Frame *frame) {
     shared_ptr<ConstantUtf8> targetClassName = dynamic_pointer_cast<ConstantUtf8>(clazz->getConstantAt(targetClassInfo->nameIndex));
 
     // TODO: must use the class' loader to load the class
-    ClassInfo* targetClazz = BootstrapClassLoader::getInstance()->getClassByName(string((const char*)targetClassName->bytes));
+    shared_ptr<ClassInfo> targetClazz = BootstrapClassLoader::getInstance()->getClassByName(string((const char*)targetClassName->bytes));
     if (targetClazz == nullptr) {
         cout << "Class not load, we must load it first!" << endl;
         // TODO:

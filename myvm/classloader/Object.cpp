@@ -2,13 +2,12 @@
 
 namespace myvm {
 
-Object::Object(const ClassInfo* clazzInfo) {
+Object::Object(shared_ptr<ClassInfo>& clazzInfo) {
     mClazz = clazzInfo;
     mFields = new uint32_t[clazzInfo->classSize()];
-    if (clazzInfo->getSuperClass() != nullptr) {
-        mFieldOffset = clazzInfo->getSuperClass()->classSize();
-    }
-    else {
+    if (!clazzInfo->getSuperClass().expired()) {
+        mFieldOffset = clazzInfo->getSuperClass().lock()->classSize();
+    } else {
         mFieldOffset = 0;
     }
 }

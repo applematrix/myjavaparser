@@ -45,15 +45,15 @@ BootstrapClassLoader::~BootstrapClassLoader() {
     return sInstance;
 }
 
-ClassInfo* BootstrapClassLoader::getClassByName(const string& name) {
+shared_ptr<ClassInfo> BootstrapClassLoader::getClassByName(const string& name) {
     return mLoadedClasses.find(name) == mLoadedClasses.end() ? nullptr : mLoadedClasses[name];
 }
 
-ClassInfo* BootstrapClassLoader::getClassByName(const char* name) {
+shared_ptr<ClassInfo> BootstrapClassLoader::getClassByName(const char* name) {
     return getClassByName(string(name));
 }
 
-void BootstrapClassLoader::addClass(string& name, ClassInfo *clazz) {
+void BootstrapClassLoader::addClass(string& name, shared_ptr<ClassInfo> clazz) {
     // TODO: multi-thread access
     if (classLoaded(name)) {
         cout << name << " already add into bootstrap classloader" << endl;
@@ -63,8 +63,8 @@ void BootstrapClassLoader::addClass(string& name, ClassInfo *clazz) {
     mLoadedClasses[name] = clazz;
 }
 
-ClassInfo* BootstrapClassLoader::loadClassFromFile(string& classFile) {
-    ClassInfo *clazz = new ClassInfo();
+shared_ptr<ClassInfo> BootstrapClassLoader::loadClassFromFile(string& classFile) {
+    shared_ptr<ClassInfo> clazz = make_shared<ClassInfo>();
     if (!clazz->loadFromFile(classFile)) {
         return nullptr;
     }
@@ -74,7 +74,7 @@ ClassInfo* BootstrapClassLoader::loadClassFromFile(string& classFile) {
     return clazz;
 }
 
-ClassInfo* BootstrapClassLoader::loadClassFromBootclassPathJar(string& className) {
+shared_ptr<ClassInfo> BootstrapClassLoader::loadClassFromBootclassPathJar(string& className) {
     string fullName = className;
     const char* suffix = ".class";
     if (fullName.length() > strlen(suffix)) {
@@ -94,10 +94,9 @@ ClassInfo* BootstrapClassLoader::loadClassFromBootclassPathJar(string& className
     return nullptr;
 }
 
-ClassInfo* BootstrapClassLoader::loadClassFromJar(string& jarFile, string& className, string& fileName) {
-    ClassInfo *clazz = new ClassInfo();
+shared_ptr<ClassInfo> BootstrapClassLoader::loadClassFromJar(string& jarFile, string& className, string& fileName) {
+    shared_ptr<ClassInfo> clazz = make_shared<ClassInfo>();
 	if(!clazz->loadFromJar(jarFile, fileName)) {
-        delete clazz;
         return nullptr;
     }
     addClass(className, clazz);

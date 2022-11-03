@@ -10,6 +10,7 @@
 #define FIRST_HANDLE 0x10
 
 #include <map>
+#include <memory>
 using namespace std;
 
 namespace myvm {
@@ -23,7 +24,7 @@ public:
 
     ~Heap() {}
     Object* getObject(uint32_t handle);
-    uint32_t allocateObject(const ClassInfo* name);
+    uint32_t allocateObject(shared_ptr<ClassInfo> &name);
 private:
     Heap() {
         mNextHandle = FIRST_HANDLE;

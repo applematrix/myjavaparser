@@ -102,7 +102,7 @@ int main(int argc, const char* args[]) {
 	string mainClassName;
 	shared_ptr<GlobalProperties> globalProperty = GlobalProperties::getInstance();
 	BootstrapClassLoader *mBootstrapClassLoder = BootstrapClassLoader::getInstance();
-	ClassInfo *mainClass = nullptr;
+	shared_ptr<ClassInfo> mainClass;
 	if (globalProperty->containsProperty("classpath")) {
 		mainClassName = globalProperty->getProperty("classpath");
 		mainClass = mBootstrapClassLoder->loadClassFromFile(mainClassName);

@@ -9,7 +9,7 @@ namespace myvm {
 
 class Object {
 public:
-    Object(const ClassInfo* clazzInfo);
+    Object(shared_ptr<ClassInfo>& clazzInfo);
     virtual ~Object();
     void putField(uint32_t index, uint32_t value);
     void putField(uint32_t index, uint64_t value);
@@ -17,7 +17,7 @@ public:
     uint64_t getUint64Field(uint32_t index);
 private:
     uint32_t *mFields;
-    const ClassInfo *mClazz;
+    weak_ptr<ClassInfo> mClazz;
     uint32_t mFieldOffset;
 };
 

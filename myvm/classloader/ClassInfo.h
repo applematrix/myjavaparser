@@ -34,7 +34,7 @@ public:
     void printConstantInfo(uint16_t index) const;
     char* getUtf8ConstantName(uint16_t index) const;
     shared_ptr<ConstantUtf8> getUtf8Constant(uint16_t index) const;
-    ClassInfo* getSuperClass() const;
+    weak_ptr<ClassInfo> getSuperClass() const;
     string getClassName() {
         return mClassName;
     };
@@ -81,7 +81,7 @@ private:
     uint32_t mClassSize;
 
     shared_ptr<FileReader> mFileReader;
-    ClassInfo *mSuperClass;
+    weak_ptr<ClassInfo> mSuperClass;
 };
 
 

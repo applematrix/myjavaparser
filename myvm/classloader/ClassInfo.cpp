@@ -23,7 +23,6 @@ namespace myvm {
 
 ClassInfo::ClassInfo() {
     mClassSize = 0;
-    mSuperClass = nullptr;
 }
 
 ClassInfo::~ClassInfo() {
@@ -182,7 +181,7 @@ shared_ptr<FieldInfo> ClassInfo::findField(uint16_t nameIndex, uint16_t descInde
     return nullptr;
 }
 
-ClassInfo* ClassInfo::getSuperClass() const {
+weak_ptr<ClassInfo> ClassInfo::getSuperClass() const {
     return mSuperClass;
 }
 
@@ -298,11 +297,10 @@ bool ClassInfo::resolve() {
 
     BootstrapClassLoader* bootClassLoader = BootstrapClassLoader::getInstance();
 
-    mSuperClass =  bootClassLoader->getClassByName(mSuperClassName);
-    if (mSuperClass == nullptr) {
+    auto superClass =  bootClassLoader->getClassByName(mSuperClassName);
+    if (superClass == nullptr) {
         cout << "Resolve " << mClassName << "\'s super class" << mSuperClassName << endl;
-        mSuperClass = bootClassLoader->loadClassFromBootclassPathJar(mSuperClassName);
-        if (mSuperClass == nullptr) {
+        if (bootClassLoader->loadClassFromBootclassPathJar(mSuperClassName) == nullptr) {
             cout << "Resolve " << mClassName << "\'s super class" << mSuperClassName  << " failed!"<< endl;
             return false;
         }
@@ -318,10 +316,10 @@ bool ClassInfo::resolve() {
         offset += field->getType()->doubleUnit() ? 2 : 1;
     }
 
-    // TODO:
-    if (mSuperClass != nullptr) {
-        mClassSize += mSuperClass->classSize();
+    if (superClass != nullptr) {
+        mClassSize += superClass->classSize();
     }
+    mSuperClass = superClass;
     return true;
 }
 
