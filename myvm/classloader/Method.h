@@ -62,9 +62,7 @@ public:
     void resolve(ClassInfo *clazz);
     const string& getName() const;
     const string& getDesc() const;
-    OperandStack* getOperandStack();
-    LocalVariableTable* getLocalVariableTable();
-    ClassInfo* getClass();
+    ClassInfo* getOwnerClass();
     shared_ptr<CodeAttr> getCodeAttr();
     vector<shared_ptr<TypeInfo>> getArgs() {return mArgsList;}
 private:
@@ -78,8 +76,6 @@ private:
     vector<shared_ptr<TypeInfo>> mArgsList;
     shared_ptr<TypeInfo> mReturnType;
 
-    OperandStack* mOperandStack;
-    LocalVariableTable *mLocalVariables;
     ClassInfo* mOwnerClazz;
 
     // resolved info

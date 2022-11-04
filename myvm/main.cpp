@@ -54,7 +54,7 @@ static void parseArgs(int argc, const char* args[]) {
 	// debug code
 	if (!globalProperty->containsProperty("jar")
 		&& !globalProperty->containsProperty("classpath")) {
-		globalProperty->addProperty("classpath", "./test/testmyvm/target/classes/com/myvm/test/SimpleClass.class");
+		globalProperty->addProperty("classpath", "./test/testmyvm/target/classes/com/myvm/test/Sum.class");
 	}
 }
 

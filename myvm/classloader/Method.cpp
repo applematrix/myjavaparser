@@ -180,22 +180,12 @@ void Method::resolve(ClassInfo *clazz) {
     }
 }
 
-ClassInfo* Method::getClass() {
+ClassInfo* Method::getOwnerClass() {
     return mOwnerClazz;
 }
 
 shared_ptr<CodeAttr> Method::getCodeAttr() {
     return mCodeAttr;
-}
-
-LocalVariableTable* Method::getLocalVariableTable() {
-    // TODO:
-    return nullptr;
-}
-
-OperandStack* Method::getOperandStack() {
-    // TODO:
-    return nullptr;
 }
 
 void Method::resolveParaListAndType() {
