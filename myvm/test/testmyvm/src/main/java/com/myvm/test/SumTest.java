@@ -1,10 +1,10 @@
 package com.myvm.test;
 
-public class Sum {
+public class SumTest {
     private int mValue1 = 1;
     private int mValue2 = 2;
 
-    public Sum() {
+    public SumTest() {
     }
 
     public int sum() {
@@ -16,7 +16,7 @@ public class Sum {
     }
 	
 	public static void main(String args[]) {
-		Sum obj = new Sum();
+		SumTest obj = new SumTest();
 		obj.sum();
 	}
 }
