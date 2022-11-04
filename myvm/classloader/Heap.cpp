@@ -23,7 +23,7 @@ Heap* Heap::getInstance() {
     return sInstance;
 }
 
-Object* Heap::getObject(uint32_t handle) {
+shared_ptr<Object> Heap::getObject(uint32_t handle) {
     if (mObjectRefs.find(handle) != mObjectRefs.end()) {
         return mObjectRefs[handle];
     }
@@ -32,7 +32,7 @@ Object* Heap::getObject(uint32_t handle) {
 
 uint32_t Heap::allocateObject(shared_ptr<ClassInfo> &clazz) {
     uint32_t class_size = clazz->classSize();
-    Object* object = new Object(clazz);
+    shared_ptr<Object> object = make_shared<Object>(clazz);
     mObjectRefs[mNextHandle] = object;
     // TODO: multi thread
     mNextHandle++;

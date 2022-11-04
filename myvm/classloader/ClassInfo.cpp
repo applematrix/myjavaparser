@@ -268,7 +268,7 @@ int ClassInfo::loadAttributes() {
     mAttributes.reserve(attributesCount);
     for (int i = 0; i < attributesCount; i++) {
         AttributeInfo *attr = AttributeFactory::loadFromFile(this, mFileReader);
-        mAttributes.push_back(attr);
+        mAttributes.push_back(shared_ptr<AttributeInfo>(attr));
     }
     return 0;
 }

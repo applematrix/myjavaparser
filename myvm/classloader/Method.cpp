@@ -95,7 +95,7 @@ bool Method::isProtected() {
     return (accessFlags & METHOD_ACC_PROTECTED) != 0;
 }
 
-Method* Method::loadFromFile(ClassInfo *classFileInfo, shared_ptr<FileReader> fileReader) {
+Method* Method::loadFromFile(ClassInfo *owner, shared_ptr<FileReader> fileReader) {
     uint16_t accessFlags = 0;
     int status = fileReader->readUint16(accessFlags);
     if (status != 0) {
@@ -107,7 +107,7 @@ Method* Method::loadFromFile(ClassInfo *classFileInfo, shared_ptr<FileReader> fi
     if (status != 0) {
         return nullptr;
     }
-    classFileInfo->printConstantInfo(nameIndex);
+    owner->printConstantInfo(nameIndex);
 
     uint16_t descriptorIndex = 0;
     status = fileReader->readUint16(descriptorIndex);
@@ -126,7 +126,7 @@ Method* Method::loadFromFile(ClassInfo *classFileInfo, shared_ptr<FileReader> fi
     if (attributeCount > 0) {
         for (int i = 0; i < attributeCount; i++) {
             cout << "Load attribute #" << i << endl;
-            AttributeInfo *attrInfo = AttributeFactory::loadFromFile(classFileInfo, fileReader);
+            AttributeInfo *attrInfo = AttributeFactory::loadFromFile(owner, fileReader);
             if (attrInfo == nullptr) {
                 cout << "Load attribute #" << i << " failed!" << endl;
                 return nullptr;
@@ -135,7 +135,7 @@ Method* Method::loadFromFile(ClassInfo *classFileInfo, shared_ptr<FileReader> fi
             cout << "Load attribute #" << i << " complete!" << endl;
         }
     }
-    return new Method(classFileInfo, accessFlags, nameIndex, descriptorIndex, attributes);
+    return new Method(owner, accessFlags, nameIndex, descriptorIndex, attributes);
 }
 
 bool Method::match(shared_ptr<ConstantNameAndType>& nameAndType) {

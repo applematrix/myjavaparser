@@ -19,7 +19,7 @@ public:
     Frame(shared_ptr<Method> method, uint32_t localVariableSize, uint16_t depth);
     virtual ~Frame();
     shared_ptr<LocalVariableTable> getLocalVariableTable() { return mLocalVariableTable;}
-    ClassInfo *getClass() { return mClazz;}
+    ClassInfo* getClass() { return mClazz;}
     shared_ptr<Method> getMethod() { return mMethod; }
     uint16_t getDepth() { return mCallDepth; }
     uint16_t getStackReturn();

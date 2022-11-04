@@ -46,7 +46,7 @@ enum MethodAccessFlag {
 
 class Method {
 public:
-    static Method* loadFromFile(ClassInfo *classFileInfo, shared_ptr<FileReader> fileReader);
+    static Method* loadFromFile(ClassInfo *owner, shared_ptr<FileReader> fileReader);
     
     Method(ClassInfo* owner, uint16_t flags, uint16_t name, uint16_t desc, vector<shared_ptr<AttributeInfo>> *attrs);
     ~Method();

@@ -75,7 +75,7 @@ private:
     std::vector<shared_ptr<ConstantInfo>> mConstantPool;
     std::vector<shared_ptr<FieldInfo>> mFields;
     std::vector<shared_ptr<Method>> mMethods;
-    std::vector<AttributeInfo*> mAttributes;
+    std::vector<shared_ptr<AttributeInfo>> mAttributes;
     std::string mClassName;
     std::string mSuperClassName;
     uint32_t mClassSize;

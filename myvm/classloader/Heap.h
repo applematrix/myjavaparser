@@ -23,7 +23,7 @@ public:
     static Heap* getInstance();
 
     ~Heap() {}
-    Object* getObject(uint32_t handle);
+    shared_ptr<Object> getObject(uint32_t handle);
     uint32_t allocateObject(shared_ptr<ClassInfo> &name);
 private:
     Heap() {
@@ -31,7 +31,7 @@ private:
     }
     static Heap* sInstance;
 private:
-    map<uint32_t, Object*> mObjectRefs;
+    map<uint32_t, shared_ptr<Object>> mObjectRefs;
     uint32_t mNextHandle;
 };
 

@@ -33,7 +33,7 @@ void GetFieldInstruction::run(Frame *frame) {
     shared_ptr<FieldInfo> field = clazz->findField(typeInfo->nameIndex, typeInfo->descriptorIndex);
     shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
     uint32_t handle = stack->popUint32();
-    Object *object = Heap::getInstance()->getObject(handle);
+    auto object = Heap::getInstance()->getObject(handle);
 
     if (field->getType()->doubleUnit()) {
         uint64_t value = object->getUint64Field(field->offsetInClass());
@@ -80,7 +80,7 @@ void PutFieldInstruction::run(Frame *frame) {
     if (field->getType()->doubleUnit()) {
         uint64_t value = stack->popUint64();
         uint32_t handle = stack->popUint32();
-        Object *object = Heap::getInstance()->getObject(handle);
+        auto object = Heap::getInstance()->getObject(handle);
         object->putField(field->offsetInClass(), value);
 
         cout << INDENTS[frame->getDepth()] << "PutFieldInstruction run, index:"
@@ -90,7 +90,7 @@ void PutFieldInstruction::run(Frame *frame) {
     } else {
         uint32_t value = stack->popUint32();
         uint32_t handle = stack->popUint32();
-        Object *object = Heap::getInstance()->getObject(handle);
+        auto object = Heap::getInstance()->getObject(handle);
         object->putField(field->offsetInClass(), value);
 
         cout << INDENTS[frame->getDepth()] << "PutFieldInstruction run, index:"
