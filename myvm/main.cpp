@@ -4,6 +4,9 @@
  *
  */
 
+#undef LOG_TAG
+#define LOG_TAG "Main"
+
 #include <stdio.h>
 #include <iostream>
 #include "MyVmConfig.h"
@@ -97,7 +100,7 @@ int main(int argc, const char* args[]) {
 	testParseObjectClass();
 	testUnzipObjectClass();
 
-	cout << "load classes from the configuration" << endl;
+	LOGI("load classes from the configuration");
 
 	string mainClassName;
 	shared_ptr<GlobalProperties> globalProperty = GlobalProperties::getInstance();
@@ -118,7 +121,7 @@ int main(int argc, const char* args[]) {
 
 		mainClass = mBootstrapClassLoder->loadClassFromBootclassPathJar(mainClassName);
 		if (mainClass == nullptr) {
-			cout << "load class from jar file failed" << endl;
+			LOGW("load class from jar file failed");
 			return -1;
 		}
 	} else {

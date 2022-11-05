@@ -20,10 +20,14 @@ const char* logLevelString(uint8_t level) {
     }
 }
 
-LogItem::LogItem(uint8_t _level, const char* message)
+LogItem::LogItem(uint8_t _level, const char* _tag, const char* message)
     : level(_level) {
     auto now = chrono::system_clock::now();
     timestamp = std::chrono::system_clock::to_time_t(now);
+    tag = _tag;
+    std::thread::id tid = this_thread::get_id();
+    threadId = *((uint64_t*)&tid);
+
     format(message);
 }
 
@@ -41,9 +45,9 @@ void LogItem::format(const char* message) {
     uint32_t min = localTime->tm_min;
     uint32_t sec = localTime->tm_sec;
 
-    uint32_t len = snprintf(buffer, BUFFER_LEN, "%d-%d-%d %d:%d:%d ", year, month, day, hour, min, sec);
-    snprintf(buffer + len, BUFFER_LEN - len, "%s %s", logLevelString(level), message);
-    formatLog = buffer;
+    uint32_t len = snprintf(buffer, BUFFER_LEN, "%d-%02d-%02d %02d:%02d:%02d %20ld ", year, month, day, hour, min, sec, threadId);
+    snprintf(buffer + len, BUFFER_LEN - len, "%s %-10s: %s", logLevelString(level), tag.c_str(), message);
+    formatedLog = buffer;
 }
 
 /////////////////////////////////////////////
@@ -102,7 +106,7 @@ Logger::Logger() {
     uint32_t hour = localTime->tm_hour;
     uint32_t min = localTime->tm_min;
 
-    snprintf(buffer, 1024, "%d-%d-%d-%d-%d.log", year, month, day, hour, min);
+    snprintf(buffer, 1024, "%d-%02d-%02d-%02d-%02d.log", year, month, day, hour, min);
     mFileWriter = make_shared<FileWriter>(buffer);
     mLastFlushTime = chrono::system_clock::now();
 }
@@ -111,19 +115,28 @@ Logger::~Logger() {
     flush();
 }
 
-void Logger::v(const char* message) {
-    shared_ptr<LogItem> log = make_shared<LogItem>(VERBOSE, message);
+void Logger::v(const char* tag, const char* message) {
+    shared_ptr<LogItem> log = make_shared<LogItem>(VERBOSE, tag, message);
     writeLog(log);
 }
 
-void Logger::i(const char* message) {
-    shared_ptr<LogItem> log = make_shared<LogItem>(INFO, message);
+void Logger::i(const char* tag, const char* message) {
+    shared_ptr<LogItem> log = make_shared<LogItem>(INFO, tag, message);
+    writeLog(log);
+}
+
+void Logger::w(const char* tag, const char* message) {
+    shared_ptr<LogItem> log = make_shared<LogItem>(WARNING, tag, message);
+    writeLog(log);
+}
+
+void Logger::e(const char* tag, const char* message) {
+    shared_ptr<LogItem> log = make_shared<LogItem>(ERROR, tag, message);
     writeLog(log);
 }
 
 void Logger::writeLog(shared_ptr<LogItem> log) {
-    std::thread::id threadId = this_thread::get_id();
-    uint8_t index = *((uint32_t*)&threadId) % LOGGER_POOL_SIZE;
+    uint8_t index = log->threadId % LOGGER_POOL_SIZE;
 
     shared_ptr<CachedLog> cacheLogger = nullptr;
     bool needFlush = false;
@@ -157,7 +170,7 @@ void Logger::flush() {
         mergeLog(mergedLogs);
     }
     for (auto log : mergedLogs) {
-        mFileWriter->writeMessage(log->formatLog);
+        mFileWriter->writeMessage(log->formatedLog);
     }
 }
 

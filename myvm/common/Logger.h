@@ -6,29 +6,52 @@
 #include <list>
 #include <string>
 #include <mutex>
-using namespace std;
+#include <stdio.h>
 
 #include "FileWriter.h"
+#define MAX_LOG_LENGTH_PER_LINE 4096
+
 using namespace myvm;
+using namespace std;
 
 namespace myvm {
 
-#define LOGI(log) \
-    Logger::getInstance()->i(log)
+#define LOG(...) \
+    char log[MAX_LOG_LENGTH_PER_LINE] = {0}; \
+    snprintf(log, MAX_LOG_LENGTH_PER_LINE, __VA_ARGS__);
 
-#define LOGV(log) \
-    Logger::getInstance()->v(log)
+#define LOGV(...) { \
+    LOG(__VA_ARGS__); \
+    Logger::getInstance()->v(LOG_TAG, log);\
+}
+
+#define LOGI(...) { \
+    LOG(__VA_ARGS__);\
+    Logger::getInstance()->i(LOG_TAG, log);\
+}
+
+#define LOGW(...) { \
+    LOG(__VA_ARGS__);\
+    Logger::getInstance()->w(LOG_TAG, log);\
+}
+
+#define LOGE(...) { \
+    LOG(__VA_ARGS__);\
+    Logger::getInstance()->w(LOG_TAG, log);\
+}
 
 enum LogLevel {
     VERBOSE,
     INFO,
+    WARNING,
+    ERROR,
 };
 
 const char* logLevelString(uint8_t level);
 
 class LogItem {
 public:
-    LogItem(uint8_t level, const char* message);
+    LogItem(uint8_t level, const char* tag, const char* message);
     ~LogItem();
     bool operator==(const LogItem& other) const {
         return timestamp == other.timestamp;
@@ -45,8 +68,10 @@ public:
     void format(const char* message);
 
     uint64_t timestamp;
+    uint64_t threadId;
+    string tag;
     uint8_t level;
-    string formatLog;
+    string formatedLog;
 };
 
 class CachedLog {
@@ -67,8 +92,10 @@ public:
     static void initialize();
     static void clear();
     virtual ~Logger();
-    void v(const char* message);
-    void i(const char* message);
+    void v(const char* tag, const char* message);
+    void i(const char* tag, const char* message);
+    void w(const char* tag, const char* message);
+    void e(const char* tag, const char* message);
     void writeLog(shared_ptr<LogItem> log);
     void flush();
 private:
