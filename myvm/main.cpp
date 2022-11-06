@@ -57,7 +57,8 @@ static void parseArgs(int argc, const char* args[]) {
 	// debug code
 	if (!globalProperty->containsProperty("jar")
 		&& !globalProperty->containsProperty("classpath")) {
-		globalProperty->addProperty("classpath", "./test/testmyvm/target/classes/com/myvm/test/SumTest.class");
+		//globalProperty->addProperty("classpath", "./test/testmyvm/target/classes/com/myvm/test/SumTest.class");
+		globalProperty->addProperty("classpath", "./test/testmyvm/target/classes/com/myvm/test/SystemTest.class");
 	}
 }
 
@@ -97,8 +98,8 @@ int main(int argc, const char* args[]) {
 
 	parseArgs(argc, args);
 
-	testParseObjectClass();
-	testUnzipObjectClass();
+	//testParseObjectClass();
+	//testUnzipObjectClass();
 
 	LOGI("load classes from the configuration");
 
@@ -148,6 +149,8 @@ int main(int argc, const char* args[]) {
 		mainThread.join();
 	}
 	LOGI("vm closed");
+
+	cout << "vm closed"<< endl;	
 
 	Logger::clear();
 	return 0;
