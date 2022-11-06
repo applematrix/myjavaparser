@@ -2,7 +2,7 @@
 #define _INVOKE_INSTRUCTIONS_H_
 
 #include "Instructions.h"
-#include "classloader/Frame.h"
+#include "../classloader/Frame.h"
 
 using namespace myvm;
 

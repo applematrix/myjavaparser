@@ -9,11 +9,11 @@
 #include "ConstantFactory.h"
 #include "AccessFlag.h"
 #include "BootstrapClassLoader.h"
-#include "common/utils.h"
-#include "common/ClassFileReader.h"
-#include "common/JarArchive.h"
-#include "common/JarClassFileReader.h"
-#include "classloader/Method.h"
+#include "../common/utils.h"
+#include "../common/ClassFileReader.h"
+#include "../common/JarArchive.h"
+#include "../common/JarClassFileReader.h"
+#include "Method.h"
 #include <iostream>
 
 using namespace std;

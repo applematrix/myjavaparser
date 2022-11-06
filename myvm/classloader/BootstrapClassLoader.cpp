@@ -1,8 +1,8 @@
 #include "BootstrapClassLoader.h"
 #include "ClassInfo.h"
 #include "utils.h"
-#include "common/ClassFileReader.h"
-#include "common/JarArchive.h"
+#include "../common/ClassFileReader.h"
+#include "../common/JarArchive.h"
 #include <iostream>
 #include <cstring>
 #include <stdio.h>

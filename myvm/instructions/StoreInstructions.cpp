@@ -1,8 +1,8 @@
 #include "StoreInstructions.h"
-#include "classloader/OperandStack.h"
-#include "classloader/LocalVariableTable.h"
-#include "classloader/Method.h"
-#include "classloader/Frame.h"
+#include "../classloader/OperandStack.h"
+#include "../classloader/LocalVariableTable.h"
+#include "../classloader/Method.h"
+#include "../classloader/Frame.h"
 
 using namespace myvm;
 

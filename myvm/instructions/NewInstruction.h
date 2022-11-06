@@ -8,7 +8,7 @@
 #define _NEW_INSTRCTIONS_H_
 
 #include "Instructions.h"
-#include "classloader/Method.h"
+#include "../classloader/Method.h"
 
 using namespace myvm;
 

@@ -1,7 +1,7 @@
 #include "AddInstructions.h"
-#include "classloader/OperandStack.h"
-#include "classloader/ThreadLocalStorage.h"
-#include "classloader/Frame.h"
+#include "../classloader/OperandStack.h"
+#include "../classloader/ThreadLocalStorage.h"
+#include "../classloader/Frame.h"
 #include <iostream>
 using namespace std;
 using namespace myvm;
