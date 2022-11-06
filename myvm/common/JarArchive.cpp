@@ -1,3 +1,7 @@
+#undef LOG_TAG
+#define LOG_TAG "JarArchive"
+#include "../common/Logger.h"
+
 #include "JarArchive.h"
 #include <iostream>
 #include <errno.h>
@@ -28,7 +32,7 @@ Manifest::~Manifest() {
 void Manifest::loadManifestFromJar(zip_t *jar) {
     zip_file_t * file = zip_fopen(jar, MANIFEST, 0);
     if (file == nullptr) {
-        cout << "zip_fopen manifest failed failed, error details:" << strerror(errno) << endl;
+        LOGW("zip_fopen manifest failed failed, error details: %s", strerror(errno));
 		return;
     }
 
@@ -42,10 +46,10 @@ void Manifest::loadManifestFromJar(zip_t *jar) {
             memset(buffer, 0, sizeof(buffer));
             readSize = zip_fread(file, buffer, BUFFER_SIZE);
             if (readSize == 0) {
-                cout << "no more content in the file" << endl;
+                //LOGW("no more content in the file");
                 break;
             } else if (readSize == -1) {
-                cout << "zip_fopen failed, err:"<< endl;
+                //LOGW("zip_fopen failed, err:");
                 break;
             }
             startPos = buffer;
@@ -117,17 +121,16 @@ void JarArchive::loadFile(string& path) {
     int error = 0;
     mOpenedJar= zip_open(path.c_str(), ZIP_RDONLY, &error);
     if (mOpenedJar == nullptr) {
-		cout << "zip_open failed, err:" << error << ", details:" << strerror(errno) << endl;
+		LOGW("zip_open failed, err:%d, details: %s", error, strerror(errno));
         return;
 	}
 
     int filesInJar = zip_get_num_files(mOpenedJar);
 	for (int i = 0; i < filesInJar; i++) {
 		const char* fileName = zip_get_name(mOpenedJar, i, ZIP_FL_ENC_RAW);
-		//cout << "zip file name:" << fileName << endl;
 
-        if (fileName == nullptr || fileName[strlen(fileName)-1] == '/') {
-            cout << fileName << " is a directory" << endl;
+        if (fileName != nullptr && fileName[strlen(fileName)-1] == '/') {
+            LOGW("%s is a directory", fileName);
             continue;
         }
         mFileList.push_back(fileName);
@@ -144,7 +147,7 @@ shared_ptr<Manifest> JarArchive::getManifest() const {
 string JarArchive::getMainClass() const {
     auto manifest = getManifest();
     if (manifest == nullptr) {
-        cout << "No manifest in the jar!" << endl;
+        LOGW("No manifest in the jar!");
     }
     return manifest->getMainClass();
 }

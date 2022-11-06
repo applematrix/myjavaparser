@@ -1,3 +1,7 @@
+#undef LOG_TAG
+#define LOG_TAG "NewInstruction"
+#include "common/Logger.h"
+
 #include "NewInstruction.h"
 #include "../classloader/ClassInfo.h"
 #include "../classloader/OperandStack.h"
@@ -34,10 +38,11 @@ void NewInstruction::run(Frame *frame) {
 
     shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
     stack->pushUint32(handle);
-    cout << INDENTS[frame->getDepth()] << "new Instance, type:" << constantInfo->typeString()
-        << ", binary name:" << constantUtf8->bytes
-        << ", push handle=" << handle << " into the stack"
-        << ", current stack size =" << stack->getSize() << endl;
+    
+    LOGD("%sNewInstruction run, new Instance, type:%s"
+            ", binary name:%s"
+            ", push handle=%d into the stack, current stack size = %d", 
+            INDENTS[frame->getDepth()], constantInfo->typeString(), constantUtf8->bytes, handle, stack->getSize());
 }
 
 }

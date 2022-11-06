@@ -110,7 +110,7 @@ int main(int argc, const char* args[]) {
 		mainClassName = globalProperty->getProperty("classpath");
 		mainClass = mBootstrapClassLoder->loadClassFromFile(mainClassName);
 		if (mainClass == nullptr) {
-			cout << "load class from .class file failed" << endl;
+			LOGI("load class from .class file failed");
 			return -1;
 		}
 	} else if (globalProperty->containsProperty("jar")){
@@ -125,24 +125,24 @@ int main(int argc, const char* args[]) {
 			return -1;
 		}
 	} else {
-		cout << "no class file specified" << endl;
+		LOGI("no class file specified");
 		return -1;
 	}
 
 	LOGI("vm started");
 	shared_ptr<Method> mainMethod = mainClass->findMainMethod();
 	if (mainMethod == nullptr) {
-		cout << "No main entry method in the class" << endl;
+		LOGW("No main entry method in the class");
 	} else {
 		std::thread mainThread([](shared_ptr<Method> method) {
 			ThreadLocalStorage::getInstance()->intialize();
 			shared_ptr<CodeAttr> codeAttr = method->getCodeAttr();
 
 			shared_ptr<Frame> frame = make_shared<Frame>(method, codeAttr->maxLocals, 0);
-			cout << "Invoke the main method!" << endl;
-			cout << INDENTS[0] << "{" << endl;
+			LOGI("Invoke the main method!" );
+			//cout << INDENTS[0] << "{" << endl;
 			method->invoke(frame);
-			cout << INDENTS[0] << "}" << endl;
+			//cout << INDENTS[0] << "}" << endl;
 			}, mainMethod);
 
 		mainThread.join();

@@ -1,3 +1,7 @@
+#undef LOG_TAG
+#define LOG_TAG "AStoreInstruction"
+#include "common/Logger.h"
+
 #include "StoreInstructions.h"
 #include "../classloader/OperandStack.h"
 #include "../classloader/LocalVariableTable.h"
@@ -23,13 +27,14 @@ void AStoreInstruction::run(Frame* frame) {
     shared_ptr<LocalVariableTable> lvt = frame->getLocalVariableTable();
 
     if (lvt == nullptr) {
-        cout << "No local variable table" << endl;
+        LOGW("No local variable table");
         return;
     }
     uint32_t handle = stack->popUint32();
-    cout << "AStoreInstruction run: store handle = " << handle
-        << " at the top of stack into localVariableTable[" << (uint32_t)mLocalVariableTableIndex << "]"
-        << ", current stack size = " << stack->getSize()<< endl;
+
+    LOGD("%sAStoreInstruction run: store handle = %d"
+            " at the top of stack into localVariableTable[%d]"
+            ", current stack size = %d", INDENTS[frame->getDepth()], handle, (uint32_t)mLocalVariableTableIndex, stack->getSize());
     // TODO: check the handle
     lvt->storeUint32(mLocalVariableTableIndex, handle);
 }

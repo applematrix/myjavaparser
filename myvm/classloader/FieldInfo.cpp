@@ -4,6 +4,10 @@
  *
  */
 
+#undef LOG_TAG
+#define LOG_TAG "FieldInfo"
+#include "../common/Logger.h"
+
 #include "FieldInfo.h"
 #include "AttributeInfo.h"
 
@@ -58,18 +62,18 @@ FieldInfo* FieldInfo::loadFromFile(ClassInfo *classFileInfo, shared_ptr<FileRead
         return nullptr;
     }
 
-    cout << "Have "<< attributeCount <<" attributes!" << endl;
+    LOGI("Have %d attributes!", attributeCount);
     auto attributes = new vector<AttributeInfo *>();
     if (attributeCount > 0) {
         for (int i = 0; i < attributeCount; i++) {
-            cout << "Load attribute #" << i << endl;
+            LOGI("Load attribute #%d", i);
             AttributeInfo *attrInfo = AttributeFactory::loadFromFile(classFileInfo, fileReader);
             if (attrInfo == nullptr) {
-                cout << "Load attribute #" << i << " failed!" << endl;
+                LOGW("Load attribute #%d failed!", i);
                 return nullptr;
             }
             attributes->push_back(attrInfo);
-            cout << "Load attribute #" << i << " complete!" << endl;
+            LOGI("Load attribute #%d complete!", i);
         }
     }
     return new FieldInfo(classFileInfo, accessFlags, nameIndex, descriptorIndex, attributes);

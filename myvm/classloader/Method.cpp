@@ -4,6 +4,10 @@
  *
  */
 
+#undef LOG_TAG
+#define LOG_TAG "Method"
+#include "../common/Logger.h"
+
 #include "Method.h"
 #include "ClassInfo.h"
 #include "FileReader.h"
@@ -49,11 +53,11 @@ Method::~Method() {
 
 void Method::invoke(shared_ptr<Frame> frame) {
     if (isAbstract()) {
-        cout << "Can't invoke abstract method!"<< endl;
+        LOGW("Can't invoke abstract method!");
         return;
     }
     if (mCodeAttr == nullptr) {
-        cout << "No code for this method!" << endl;
+        LOGW("No code for this method!");
         return;
     }
 
@@ -65,10 +69,10 @@ void Method::invoke(shared_ptr<Frame> frame) {
     uint8_t *code = mCodeAttr->code;
     uint8_t *codeEnd = code + mCodeAttr->codeLength;
     while (code < codeEnd) {
-        cout << indent(depth) << "interprete code:" << (int32_t)*code << endl;
+        LOGI("%sinterprete code: %d", indent(depth), (int32_t)*code);
         auto instruction = Instruction::interpreteCode(code);
         if (instruction == nullptr) {
-            cout << "Invalid instruction!" << endl;
+            LOGW("Invalid instruction!");
         }
         instruction->run(frame.get());
         code += instruction->codeLen();
@@ -121,18 +125,18 @@ Method* Method::loadFromFile(ClassInfo *owner, shared_ptr<FileReader> fileReader
         return nullptr;
     }
 
-    cout << "Have "<< attributeCount <<" attributes!" << endl;
+    LOGI("Have %d attributes!", attributeCount);
     auto attributes = new vector<shared_ptr<AttributeInfo>>();
     if (attributeCount > 0) {
         for (int i = 0; i < attributeCount; i++) {
-            cout << "Load attribute #" << i << endl;
+            LOGI("Load attribute #%d", i);
             AttributeInfo *attrInfo = AttributeFactory::loadFromFile(owner, fileReader);
             if (attrInfo == nullptr) {
-                cout << "Load attribute #" << i << " failed!" << endl;
+                LOGW("Load attribute #%d failed!", i);
                 return nullptr;
             }
             attributes->push_back(shared_ptr<AttributeInfo>(attrInfo));
-            cout << "Load attribute #" << i << " complete!" << endl;
+            LOGI("Load attribute #%d complete!", i);
         }
     }
     return new Method(owner, accessFlags, nameIndex, descriptorIndex, attributes);

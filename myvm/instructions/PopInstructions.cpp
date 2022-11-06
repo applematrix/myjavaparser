@@ -1,3 +1,7 @@
+#undef LOG_TAG
+#define LOG_TAG "PopInstruction"
+#include "common/Logger.h"
+
 #include "PopInstructions.h"
 #include "../classloader/OperandStack.h"
 #include "../classloader/LocalVariableTable.h"
@@ -11,8 +15,9 @@ void PopInstruction::run(Frame* frame) {
     shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
     // TODO:
     stack->popUint32();
-    cout << INDENTS[frame->getDepth()] << "PopInstruction run: pop "
-        << (mPop2 ? 2 : 1) << " items from the stack! " << endl;
+
+    LOGD("%sPopInstruction run: pop %d  items from the stack"
+            ", current stack size =%d", INDENTS[frame->getDepth()], (mPop2 ? 2 : 1), stack->getSize());
     if (mPop2) {
         stack->popUint32();
     }

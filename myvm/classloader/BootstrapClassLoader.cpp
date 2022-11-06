@@ -1,8 +1,12 @@
+#undef LOG_TAG
+#define LOG_TAG "BootstrapClassLoader"
+
 #include "BootstrapClassLoader.h"
 #include "ClassInfo.h"
 #include "utils.h"
 #include "../common/ClassFileReader.h"
 #include "../common/JarArchive.h"
+#include "../common/Logger.h"
 #include <iostream>
 #include <cstring>
 #include <stdio.h>
@@ -56,10 +60,10 @@ shared_ptr<ClassInfo> BootstrapClassLoader::getClassByName(const char* name) {
 void BootstrapClassLoader::addClass(string& name, shared_ptr<ClassInfo> clazz) {
     // TODO: multi-thread access
     if (classLoaded(name)) {
-        cout << name << " already add into bootstrap classloader" << endl;
+        LOGW("%s already add into bootstrap classloader", name.c_str());
         return;
     }
-    cout << "Add class: " << name << " into bootstrap classloader" << endl;
+    LOGI("Add class: %s into bootstrap classloader", name.c_str());
     mLoadedClasses[name] = clazz;
 }
 
@@ -90,7 +94,7 @@ shared_ptr<ClassInfo> BootstrapClassLoader::loadClassFromBootclassPathJar(string
             return loadClassFromJar(bootjar, className, fullName);
         }
     }
-    cout << className << " not found in all bootclass path jar" << endl;
+    LOGW("%s not found in all bootclass path jar", className.c_str());
     return nullptr;
 }
 
@@ -121,11 +125,11 @@ bool BootstrapClassLoader::loadClassFromClassPath(string& className) {
         }
 
         if(loadClassFromFile(fullPath)) {
-            cout << "Loaded class:" << className << " from " << fullPath << endl;
+            LOGW("Loaded class: %s from %s", className.c_str(), fullPath.c_str());
             return true;
         }
     }
-    cout << "Can't found the class:" << className << endl;
+    LOGW("Can't found the class: %s", className.c_str());
     return false;
 }
 

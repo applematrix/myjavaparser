@@ -1,3 +1,7 @@
+#undef LOG_TAG
+#define LOG_TAG "LoadInstruction"
+#include "common/Logger.h"
+
 #include "LoadInstructions.h"
 #include "../classloader/LocalVariableTable.h"
 #include "../classloader/OperandStack.h"
@@ -37,16 +41,16 @@ void AloadInstruction::run(Frame* frame) {
 
     shared_ptr<LocalVariableTable> lvt = frame->getLocalVariableTable();
     if (lvt == nullptr) {
-        cout << "No local variable table" << endl;
+        LOGW("No local variable table");
         return;
     }
     uint32_t objectRef = lvt->variableAt(mLocalVariableTableIndex);
 
     shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
     stack->pushUint32(objectRef);
-    cout << INDENTS[frame->getDepth()] << "AloadInstruction run: load object at local variable[" << (uint32_t)mLocalVariableTableIndex << "]="
-        << objectRef <<" into the stack"
-        << ", current stack size =" << stack->getSize()<< endl;
+    
+    LOGD("%sAloadInstruction run, load object at local variable[%d]=%d, into the stack"
+            ", current stack size = %d", INDENTS[frame->getDepth()], (uint32_t)mLocalVariableTableIndex, objectRef, stack->getSize());
 }
 
 

@@ -4,12 +4,16 @@
  *
  */
 
+#undef LOG_TAG
+#define LOG_TAG "AttributeFactory"
+
 #include <iostream>
 
 #include "AttributeFactory.h"
 #include "AttributeInfo.h"
 #include "CodeAttr.h"
 #include "LocalVariableTable.h"
+#include "../common/Logger.h"
 
 using namespace myvm;
 using namespace std;
@@ -49,8 +53,7 @@ AttributeInfo* AttributeFactory::loadFromFile(ClassInfo* classInfo, shared_ptr<F
     }
 
     uint8_t type = getAttributeType(classInfo, nameIndex);
-    std::cout << "Load attribute type:" << (int32_t)type << ", name:" << nameOfAttrType(type)
-        << ", attribute length: " << attrLength << endl;
+    LOGI("Load attribute type:%d , name:%s , attribute length:%d ", (int32_t)type, nameOfAttrType(type), attrLength);
     switch (type)
     {
         case ATTR_CONSTANT_VALUE:

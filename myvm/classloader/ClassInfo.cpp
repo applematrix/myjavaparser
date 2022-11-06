@@ -4,6 +4,9 @@
  *
  */
 
+#undef LOG_TAG
+#define LOG_TAG "ClassInfo"
+
 #include "ClassInfo.h"
 #include "FileReader.h"
 #include "ConstantFactory.h"
@@ -13,6 +16,7 @@
 #include "../common/ClassFileReader.h"
 #include "../common/JarArchive.h"
 #include "../common/JarClassFileReader.h"
+#include "../common/Logger.h"
 #include "Method.h"
 #include <iostream>
 
@@ -34,16 +38,16 @@ bool ClassInfo::loadFromFile(string& path) {
 }
 
 bool ClassInfo::loadFromJar(string& jar, string& className) {
-    cout << "loadFromJar jar:"<< jar << " , class: " << className << endl;
+    LOGI("loadFromJar jar: %s, class: %s", jar.c_str(), className.c_str());
     JarArchive jarFile;
     jarFile.loadFile(jar);
     if (!jarFile.containsClass(className)) {
-        cout << "loadFromJar "<< className << " not found in " << jar << endl;
+        LOGW("loadFromJar %s not found in %s", className.c_str(), jar.c_str());
         return false;
     }
     JarClassFileReader* fileReader = new JarClassFileReader();
     if (!fileReader->open(jar, className)) {
-        cout << "loadFromJar open " << jar << " for class " << className << " failed! " << endl;
+        LOGW("loadFromJar open: %s for class: %s failed!", jar.c_str(), className.c_str());
         return false;
     }
     mFileReader = shared_ptr<FileReader>(fileReader);
@@ -66,24 +70,24 @@ bool ClassInfo::loadFromFileInternal() {
         return false;
     }
 
-    cout << "--------Constants------" << endl;
+    LOGI("--------Constants------");
     status = loadConstants();
     if (status != 0) {
         return false;
     }
-    cout << "----------------------" << endl << endl;
+    LOGI("----------------------");
 
-    cout << "-----Access Flags-----" << endl;
+    LOGI("-----Access Flags-----");
     status = mFileReader->readUint16(accessFlags);
     if (status != 0) {
         return false;
     }
     string strAccessFlags;
     accessFlagToString(accessFlags, strAccessFlags);
-    cout << "Access flags("<< accessFlags << "): " << strAccessFlags << endl;
-    cout << "----------------------" << endl << endl;
+    LOGI("Access flags(%d): %s", accessFlags, strAccessFlags.c_str());
+    LOGI("----------------------");
 
-    cout << "----this&superClass----" << endl << endl;
+    LOGI("----this&superClass----");
     status = mFileReader->readUint16(thisClass);
     if (status != 0) {
         return false;
@@ -92,39 +96,39 @@ bool ClassInfo::loadFromFileInternal() {
     if (status != 0) {
         return false;
     }
-    cout << "----------------------" << endl << endl;
+    LOGI("----------------------");
 
-    cout << "------Interfaces------" << endl << endl;
+    LOGI("------Interfaces------");
     status = loadInterfaces();
     if (status != 0) {
-        cout << "Load interfaces failed" << endl;
+        LOGW("Load interfaces failed");
         return false;
     }
-    cout << "----------------------" << endl << endl;
+    LOGI("----------------------");
 
-    cout << "--------Fields--------" << endl;
+    LOGI("--------Fields--------");
     status = loadFields();
     if (status != 0) {
-        cout << "Load fields failed" << endl;
+        LOGW("Load fields failed");
         return false;
     }
-    cout << "----------------------" << endl << endl;
+    LOGI("----------------------");
 
-    cout << "--------Methods--------" << endl;
+    LOGI("--------Methods--------");
     status = loadMethods();
     if (status != 0) {
-        cout << "Load methods failed" << endl;
+        LOGW("Load methods failed");
         return false;
     }
-    cout << "----------------------" << endl << endl;
+    LOGI("----------------------");
 
-    cout << "--------Attributes--------" << endl;
+    LOGI( "--------Attributes--------");
     status = loadAttributes();
     if (status != 0) {
-        cout << "Load attributes failed" << endl;
+        LOGW("Load attributes failed");
         return false;
     }
-    cout << "----------------------" << endl << endl;
+    LOGI("----------------------");
     mFileReader->close();
 
     // resolve the class's runtime data
@@ -148,7 +152,7 @@ void ClassInfo::printConstantInfo(shared_ptr<ConstantInfo> constant) const {
         return;
     }
     shared_ptr<ConstantUtf8> utf8Info = dynamic_pointer_cast<ConstantUtf8>(constant);
-    cout << utf8Info->bytes << endl;
+    LOGD("Constant info:%s", utf8Info->bytes);
 }
 
 void ClassInfo::printConstantInfo(uint16_t index) const {
@@ -199,11 +203,11 @@ int ClassInfo::loadConstants() {
         if (constant == nullptr) {
             return -1;
         }
-        cout << "Load constant #" << i << ": " << constant->typeString() << endl;
+        LOGI("Load constant #%d: %s", i, constant->typeString());
         constant->dump(this);
         mConstantPool.push_back(shared_ptr<ConstantInfo>(constant));
     }
-    cout << "Load constants complete!" << endl << endl;
+    LOGI("Load constants complete!");
     return 0;
 }
 
@@ -243,19 +247,18 @@ int ClassInfo::loadMethods() {
         return status;
     }
 
-    cout << "Loading "<< methodsCount <<" method ..."<< endl;
+    LOGI("Loading %d methods ...", methodsCount);
     mMethods.reserve(methodsCount);
     for (int i = 0; i < methodsCount; i++) {
-        cout << "Load method:" << i << endl;
+        LOGI("Load method:", i);
         Method* method = Method::loadFromFile(this, mFileReader);
         if (method == nullptr) {
-            cout << "Load method:" << i << " failed! " << endl;
+            LOGW("Load method #%d complete!", i);
             return -1;
         }
         mMethods.push_back(shared_ptr<Method>(method));
-        cout << "Load method:" << i << " complete! " << endl << endl;
+        LOGI("Load method #%d complete!", i);
     }
-    cout << endl;
     return 0;
 }
 
@@ -285,10 +288,10 @@ bool ClassInfo::resolve() {
     if (superClass == 0) {
         // only the Object class' super class is 0
         if (mClassName.compare(OBJECT_CLASS) != 0) {
-            cout << "Error: the class "<< mClassName << " has no parent" << endl;
+            LOGW("Error: the class:%s has no parent", mClassName.c_str());
             return false;
         }
-        cout << "Resolve the class "<< mClassName << " without parent " << endl;
+        LOGI("Resolve the class :%s without parent", mClassName.c_str());
         return true;
     }
     shared_ptr<ConstantClass> superClazz = dynamic_pointer_cast<ConstantClass>(getConstantAt(superClass));
@@ -299,9 +302,9 @@ bool ClassInfo::resolve() {
 
     auto superClass =  bootClassLoader->getClassByName(mSuperClassName);
     if (superClass == nullptr) {
-        cout << "Resolve " << mClassName << "\'s super class" << mSuperClassName << endl;
+        LOGI("Resolve the class :%s \'s super class:", mClassName.c_str(), mSuperClassName.c_str());
         if (bootClassLoader->loadClassFromBootclassPathJar(mSuperClassName) == nullptr) {
-            cout << "Resolve " << mClassName << "\'s super class" << mSuperClassName  << " failed!"<< endl;
+            LOGW("Resolve the class :%s \'s super class failed!", mClassName.c_str(), mSuperClassName.c_str());
             return false;
         }
     }

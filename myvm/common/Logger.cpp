@@ -15,8 +15,16 @@ const char* logLevelString(uint8_t level) {
     switch (level) {
     case VERBOSE:
         return "V";
+    case DEBUG:
+        return "V";
     case INFO:
         return "I";
+    case WARNING:
+        return "V";
+    case ERROR:
+        return "E";
+    default:
+        return "U";
     }
 }
 
@@ -117,6 +125,11 @@ Logger::~Logger() {
 
 void Logger::v(const char* tag, const char* message) {
     shared_ptr<LogItem> log = make_shared<LogItem>(VERBOSE, tag, message);
+    writeLog(log);
+}
+
+void Logger::d(const char* tag, const char* message) {
+    shared_ptr<LogItem> log = make_shared<LogItem>(DEBUG, tag, message);
     writeLog(log);
 }
 

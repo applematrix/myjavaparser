@@ -1,3 +1,7 @@
+#undef LOG_TAG
+#define LOG_TAG "IConstantInstruction"
+#include "common/Logger.h"
+
 #include "ConstantInstructions.h"
 #include "../classloader/OperandStack.h"
 #include "../classloader/ThreadLocalStorage.h"
@@ -14,8 +18,8 @@ IConstantInstruction::IConstantInstruction(uint8_t *code, int32_t value) {
 void IConstantInstruction::run(Frame* frame) {
     shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();
     stack->pushInt32(mValue);
-    cout << INDENTS[frame->getDepth()] << "IConstant run push " << mValue << " into the stack"
-        << ", current stack size =" << stack->getSize()<< endl;
+    LOGD("%IConstantInstruction run, push %d"
+        " into the stack, current stack size = %d", INDENTS[frame->getDepth()], mValue, stack->getSize());
 }
 
 }

@@ -1,3 +1,7 @@
+#undef LOG_TAG
+#define LOG_TAG "InvokeSpecialInstruction"
+#include "common/Logger.h"
+
 #include "InvokeInstructions.h"
 #include "../classloader/OperandStack.h"
 #include "../classloader/Heap.h"
@@ -29,7 +33,7 @@ void InvokeSpecialInstruction::run(Frame *frame) {
     shared_ptr<Method> method = clazz->findMethod(nameAndTypeRef);
 
     if (method == nullptr) {
-        cout << "InvokeSpecialInstruction error: no method found!" << endl;
+        LOGW("InvokeSpecialInstruction error: no method found!");
     }
 
     shared_ptr<ConstantClass> targetClassInfo = dynamic_pointer_cast<ConstantClass>(clazz->getConstantAt(methodRef->classIndex));
@@ -38,7 +42,7 @@ void InvokeSpecialInstruction::run(Frame *frame) {
     // TODO: must use the class' loader to load the class
     shared_ptr<ClassInfo> targetClazz = BootstrapClassLoader::getInstance()->getClassByName(string((const char*)targetClassName->bytes));
     if (targetClazz == nullptr) {
-        cout << "Class not load, we must load it first!" << endl;
+        LOGW("Class not load, we must load it first!");
         // TODO:
     }
     
@@ -75,14 +79,13 @@ void InvokeSpecialInstruction::run(Frame *frame) {
         localVariableTable->storeUint32(0, objectRef);
     }
 
-    cout << INDENTS[frame->getDepth()] << "InvokeSpecialInstruction, target class:" << targetClassName->bytes
-         << ", target method:" << targetMethodName->bytes
-         << ", description:" << targetMethodDesc->bytes 
-         << ", pop the args from the stack, current stack size = " << curStack->getSize()<< endl;
+    LOGD("%sInvokeSpecialInstruction, target class:%s, target method:%s, description:%s" 
+            ", pop the args from the stack, current stack size = %d", 
+            INDENTS[frame->getDepth()], targetClassName->bytes, targetMethodName->bytes, targetMethodDesc->bytes, curStack->getSize());
 
-    cout << INDENTS[frame->getDepth()] << "{" << endl;
+    LOGD("%s{", INDENTS[frame->getDepth()]);
     targetMethod->invoke(newFrame);
-    cout << INDENTS[frame->getDepth()] << "}" << endl;
+    LOGD("%s}", INDENTS[frame->getDepth()]);
 }
 
 /////////////////////////////////////////////////////////////////
@@ -101,7 +104,7 @@ void InvokeVirtualInstruction::run(Frame *frame) {
     shared_ptr<Method> method = clazz->findMethod(nameAndTypeRef);
 
     if (method == nullptr) {
-        cout << "InvokeVirtualInstruction error: no method found!" << endl;
+        LOGW("InvokeVirtualInstruction error: no method found!");
     }
 
     shared_ptr<OperandStack> curStack = ThreadLocalStorage::getInstance()->getStack();
@@ -131,13 +134,13 @@ void InvokeVirtualInstruction::run(Frame *frame) {
     uint32_t objectRef = curStack->popUint32();
     localVariableTable->storeUint32(0, objectRef);
 
-    cout << "InvokeVirtualInstruction, method:" << method->getName()
-        << ", description:" << method->getDesc() 
-        << ", pop the args from the stack, current stack size = " << curStack->getSize()<< endl;
+    LOGD("%sInvokeVirtualInstruction, method:%s, description:%s" 
+            ", pop the args from the stack, current stack size = %d", INDENTS[frame->getDepth()], method->getName(), method->getDesc(), curStack->getSize());
 
-    cout << INDENTS[frame->getDepth()] << "{" << endl;
+
+    LOGD("%s{", INDENTS[frame->getDepth()]);
     method->invoke(newFrame);
-    cout << INDENTS[frame->getDepth()] << "}" << endl;
+    LOGD("%s}", INDENTS[frame->getDepth()]);
 }
 
 }

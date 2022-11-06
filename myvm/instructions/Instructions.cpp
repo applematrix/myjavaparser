@@ -4,6 +4,10 @@
  *
  */
 
+#undef LOG_TAG
+#define LOG_TAG "Instructions"
+#include "common/Logger.h"
+
 #include "Instructions.h"
 #include "LoadInstructions.h"
 #include "NewInstruction.h"
@@ -289,7 +293,7 @@ Instruction* Instruction::interpreteCode(uint8_t *code) {
         case IADD:
             return new IAddInstruction(code);
         default:
-            cout << "Unknown op code : " << (int32_t)opCode << endl;
+            LOGW("Unknown op code : %d", (int32_t)opCode);
     }
     return nullptr;
 }

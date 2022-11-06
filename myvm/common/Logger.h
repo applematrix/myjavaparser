@@ -25,6 +25,11 @@ namespace myvm {
     Logger::getInstance()->v(LOG_TAG, log);\
 }
 
+#define LOGD(...) { \
+    LOG(__VA_ARGS__);\
+    Logger::getInstance()->d(LOG_TAG, log);\
+}
+
 #define LOGI(...) { \
     LOG(__VA_ARGS__);\
     Logger::getInstance()->i(LOG_TAG, log);\
@@ -42,6 +47,7 @@ namespace myvm {
 
 enum LogLevel {
     VERBOSE,
+    DEBUG,
     INFO,
     WARNING,
     ERROR,
@@ -93,6 +99,7 @@ public:
     static void clear();
     virtual ~Logger();
     void v(const char* tag, const char* message);
+    void d(const char* tag, const char* message);
     void i(const char* tag, const char* message);
     void w(const char* tag, const char* message);
     void e(const char* tag, const char* message);

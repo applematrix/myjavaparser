@@ -1,3 +1,7 @@
+#undef LOG_TAG
+#define LOG_TAG "IAddInstruction"
+#include "common/Logger.h"
+
 #include "AddInstructions.h"
 #include "../classloader/OperandStack.h"
 #include "../classloader/ThreadLocalStorage.h"
@@ -22,10 +26,10 @@ void IAddInstruction::run(Frame* frame) {
 
     int32_t result = operand1 + operand2;
     stack->pushInt32(result);
-    
-    cout << INDENTS[frame->getDepth()] << "IAddInstruction run, pop " << operand1
-        << " and "<< operand2 << " from the stack and push result = " << result
-        << " back to the stack, current stack size =" << stack->getSize()<< endl;
+
+    LOGD("%sIAddInstruction run, pop %d"
+        " and %d from the stack and push result = %d"
+        " back to the stack, current stack size = %d", INDENTS[frame->getDepth()], operand1, operand2, result, stack->getSize());
 }
 
 }

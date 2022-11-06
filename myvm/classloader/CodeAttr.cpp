@@ -1,3 +1,7 @@
+#undef LOG_TAG
+#define LOG_TAG "CodeAttr"
+#include "common/Logger.h"
+
 #include "CodeAttr.h"
 #include "Instructions.h"
 #include <iostream>
@@ -29,17 +33,17 @@ void CodeAttr::initialize(ClassInfo *classFileInfo, shared_ptr<FileReader> fileR
     fileReader->readUint16(attrCounts);
 
     attributes.reserve(attrCounts);
-    cout << "Code attributes:" << endl;
+    LOGI("Code attributes:");
     for (int i = 0; i < attrCounts; i++) {
-        cout << "   ";
+        //cout << "   ";
         AttributeInfo *attrInfo  = AttributeFactory::loadFromFile(classFileInfo, fileReader);
         attributes.push_back(shared_ptr<AttributeInfo>(attrInfo));
     }
-    cout << "Code attributes end!" << endl;
+    LOGI("Code attributes end!");
 
-    cout << "Code instructions:" << endl;
+    LOGD("Code instructions section begin:");
     dumpCode();
-    cout << endl;
+    LOGD("Code instructions section end;");
 }
 
 void CodeAttr::loadExceptionTable(shared_ptr<FileReader> fileReader) {
@@ -57,7 +61,7 @@ void CodeAttr::loadExceptionTable(shared_ptr<FileReader> fileReader) {
 void CodeAttr::dumpCode() {
     uint8_t *opcode = code;
     for (uint32_t i = 0; i < codeLength; i++) {
-        cout << Instruction::getOpCodeDesc(opcode[i]) << endl;
+        LOGD("instruction:%s", Instruction::getOpCodeDesc(opcode[i]));
     }
 }
 
