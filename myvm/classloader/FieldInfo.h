@@ -31,6 +31,8 @@ public:
     shared_ptr<TypeInfo> getType() {
         return mTypeInfo;
     }
+    bool match(shared_ptr<ConstantNameAndType>& nameAndType) const;
+    bool match(uint16_t nameIndex, uint16_t descIndex) const;
 
     static FieldInfo* loadFromFile(ClassInfo *classFileInfo, shared_ptr<FileReader> fileReader);
 public:

@@ -1,6 +1,6 @@
 #undef LOG_TAG
 #define LOG_TAG "DupInstruction"
-#include "common/Logger.h"
+#include "../common/Logger.h"
 
 #include "DupInstruction.h"
 #include "../classloader/OperandStack.h"
@@ -18,7 +18,7 @@ void DupInstruction::run(Frame* frame) {
     
     stack->pushUint32(handle);
     stack->pushUint32(handle);
-    LOGD("%DupInstruction run, Duplicate stack top instance= %d"
+    LOGD("%sDupInstruction run, Duplicate stack top instance= %d"
         ", current stack size = %d", INDENTS[frame->getDepth()], handle, stack->getSize());
 }
 

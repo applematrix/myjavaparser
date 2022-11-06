@@ -1,6 +1,6 @@
 #undef LOG_TAG
 #define LOG_TAG "LoadInstruction"
-#include "common/Logger.h"
+#include "../common/Logger.h"
 
 #include "LoadInstructions.h"
 #include "../classloader/LocalVariableTable.h"

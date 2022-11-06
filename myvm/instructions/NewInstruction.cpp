@@ -1,6 +1,6 @@
 #undef LOG_TAG
 #define LOG_TAG "NewInstruction"
-#include "common/Logger.h"
+#include "../common/Logger.h"
 
 #include "NewInstruction.h"
 #include "../classloader/ClassInfo.h"

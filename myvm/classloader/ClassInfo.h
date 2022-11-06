@@ -38,11 +38,17 @@ public:
     string getClassName() {
         return mClassName;
     };
+    template<class T>
+    shared_ptr<T> getConstant(uint16_t index) const {
+        return dynamic_pointer_cast<T>(getConstantAt(index));
+    }
+
     bool resolve();
     shared_ptr<Method> findMainMethod();
     shared_ptr<Method> findMethod(shared_ptr<ConstantNameAndType>& methodInfo);
     shared_ptr<Method> findMethod(shared_ptr<ConstantUtf8>& methodName, shared_ptr<ConstantUtf8>& methodDesc);
     shared_ptr<FieldInfo> findField(uint16_t nameIndex, uint16_t descIndex) const;
+    shared_ptr<FieldInfo> findField(shared_ptr<ConstantNameAndType>& fieldInfo) const;
     uint32_t classSize() const;
 private:
     bool loadFromFileInternal();

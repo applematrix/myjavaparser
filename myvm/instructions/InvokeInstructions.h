@@ -15,7 +15,7 @@ public:
     virtual uint8_t codeLen() { return 3;}
     virtual void run(Frame *frame);
 private:
-    uint8_t mIndex;
+    uint16_t mIndex;
 };
 
 
@@ -26,7 +26,7 @@ public:
     virtual uint8_t codeLen() { return 3;}
     virtual void run(Frame *frame);
 private:
-    uint8_t mIndex;
+    uint16_t mIndex;
 };
 
 }

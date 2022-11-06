@@ -178,7 +178,16 @@ shared_ptr<ConstantUtf8>  ClassInfo::getUtf8Constant(uint16_t index) const {
 
 shared_ptr<FieldInfo> ClassInfo::findField(uint16_t nameIndex, uint16_t descIndex)const {
     for (auto field : mFields) {
-        if(field->nameIndex == nameIndex && field->descriptorIndex == descIndex) {
+        if(field->match(nameIndex, descIndex)) {
+            return field;
+        }
+    }
+    return nullptr;
+}
+
+shared_ptr<FieldInfo> ClassInfo::findField(shared_ptr<ConstantNameAndType>& fieldInfo) const {
+    for (auto field : mFields) {
+        if(field->match(fieldInfo)) {
             return field;
         }
     }

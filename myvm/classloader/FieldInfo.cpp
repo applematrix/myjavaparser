@@ -101,4 +101,12 @@ uint32_t FieldInfo::offsetInClass() {
     return mOffsetInClass;
 }
 
+bool FieldInfo::match(shared_ptr<ConstantNameAndType>& nameAndType) const {
+    return match(nameAndType->nameIndex, nameAndType->descriptorIndex);
+}
+
+bool FieldInfo::match(uint16_t nameIndex, uint16_t descIndex) const {
+    return this->nameIndex == nameIndex && this->descriptorIndex == descIndex;
+}
+
 }

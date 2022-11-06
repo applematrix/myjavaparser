@@ -1,6 +1,6 @@
 #undef LOG_TAG
 #define LOG_TAG "ReturnInstruction"
-#include "common/Logger.h"
+#include "../common/Logger.h"
 
 #include "ReturnInstruction.h"
 #include "../classloader/Frame.h"

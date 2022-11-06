@@ -1,6 +1,6 @@
 #undef LOG_TAG
 #define LOG_TAG "PopInstruction"
-#include "common/Logger.h"
+#include "../common/Logger.h"
 
 #include "PopInstructions.h"
 #include "../classloader/OperandStack.h"

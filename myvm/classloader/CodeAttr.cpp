@@ -1,6 +1,6 @@
 #undef LOG_TAG
 #define LOG_TAG "CodeAttr"
-#include "common/Logger.h"
+#include "../common/Logger.h"
 
 #include "CodeAttr.h"
 #include "Instructions.h"

@@ -58,7 +58,7 @@ static void parseArgs(int argc, const char* args[]) {
 	if (!globalProperty->containsProperty("jar")
 		&& !globalProperty->containsProperty("classpath")) {
 		//globalProperty->addProperty("classpath", "./test/testmyvm/target/classes/com/myvm/test/SumTest.class");
-		globalProperty->addProperty("classpath", "./test/testmyvm/target/classes/com/myvm/test/SystemTest.class");
+		globalProperty->addProperty("classpath", "/home/lenovo/github_upload/myjavaparser/myvm/test/testmyvm/target/classes/com/myvm/test/SystemTest.class");
 	}
 }
 
@@ -111,7 +111,7 @@ int main(int argc, const char* args[]) {
 		mainClassName = globalProperty->getProperty("classpath");
 		mainClass = mBootstrapClassLoder->loadClassFromFile(mainClassName);
 		if (mainClass == nullptr) {
-			LOGI("load class from .class file failed");
+			LOGI("load class:%s from .class file failed", mainClassName.c_str());
 			return -1;
 		}
 	} else if (globalProperty->containsProperty("jar")){
@@ -122,7 +122,7 @@ int main(int argc, const char* args[]) {
 
 		mainClass = mBootstrapClassLoder->loadClassFromBootclassPathJar(mainClassName);
 		if (mainClass == nullptr) {
-			LOGW("load class from jar file failed");
+			LOGW("load class:%s from jar file failed", mainClassName.c_str());
 			return -1;
 		}
 	} else {

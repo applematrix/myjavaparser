@@ -1,6 +1,6 @@
 #undef LOG_TAG
 #define LOG_TAG "AStoreInstruction"
-#include "common/Logger.h"
+#include "../common/Logger.h"
 
 #include "StoreInstructions.h"
 #include "../classloader/OperandStack.h"

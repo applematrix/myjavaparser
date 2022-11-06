@@ -6,7 +6,7 @@
 
 #undef LOG_TAG
 #define LOG_TAG "Instructions"
-#include "common/Logger.h"
+#include "../common/Logger.h"
 
 #include "Instructions.h"
 #include "LoadInstructions.h"
@@ -19,6 +19,7 @@
 #include "StoreInstructions.h"
 #include "PopInstructions.h"
 #include "AddInstructions.h"
+#include "StaticInstructions.h"
 #include <iostream>
 
 using namespace std;
@@ -292,6 +293,8 @@ Instruction* Instruction::interpreteCode(uint8_t *code) {
             return new IReturnInstruction(code);
         case IADD:
             return new IAddInstruction(code);
+        case GETSTATIC:
+            return new GetStaticInstruction(code);
         default:
             LOGW("Unknown op code : %d", (int32_t)opCode);
     }

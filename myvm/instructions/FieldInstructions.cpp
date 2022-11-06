@@ -1,6 +1,6 @@
 #undef LOG_TAG
 #define LOG_TAG "FieldInstruction"
-#include "common/Logger.h"
+#include "../common/Logger.h"
 
 #include "FieldInstructions.h"
 #include "../classloader/Method.h"

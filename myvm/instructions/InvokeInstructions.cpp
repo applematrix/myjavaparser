@@ -1,6 +1,6 @@
 #undef LOG_TAG
 #define LOG_TAG "InvokeSpecialInstruction"
-#include "common/Logger.h"
+#include "../common/Logger.h"
 
 #include "InvokeInstructions.h"
 #include "../classloader/OperandStack.h"
