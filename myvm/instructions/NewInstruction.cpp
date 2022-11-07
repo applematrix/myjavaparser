@@ -24,10 +24,10 @@ NewInstruction::NewInstruction(uint8_t *code) {
 
 void NewInstruction::run(Frame *frame) {
     ClassInfo *clazz = frame->getClass();
-    shared_ptr<ConstantClass> constantInfo = dynamic_pointer_cast<ConstantClass>(clazz->getConstantAt(mIndex));
+    auto constantInfo = clazz->getConstant<ConstantClass>(mIndex);
     const char* constantName = constantInfo->typeString();
     
-    shared_ptr<ConstantUtf8> constantUtf8 = dynamic_pointer_cast<ConstantUtf8>(clazz->getConstantAt(constantInfo->nameIndex));
+    auto constantUtf8 = clazz->getConstant<ConstantUtf8>(constantInfo->nameIndex);
 
     // TODO: release the memory
     const char* className = (const char*)constantUtf8->bytes;

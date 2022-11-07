@@ -35,7 +35,7 @@ static uint8_t getAttributeType(ClassInfo* classInfo, uint16_t nameIndex) {
     if (tag != CONSTANT_UTF8) {
         return -1;
     }
-    shared_ptr<ConstantUtf8> utf8Info = dynamic_pointer_cast<ConstantUtf8>(constantInfo);
+    auto utf8Info = dynamic_pointer_cast<ConstantUtf8>(constantInfo);
     return getAttributeType(utf8Info->bytes, utf8Info->length);
 }
 

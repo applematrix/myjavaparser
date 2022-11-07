@@ -151,7 +151,7 @@ void ClassInfo::printConstantInfo(shared_ptr<ConstantInfo> constant) const {
     if (constant == nullptr || constant->tag != CONSTANT_UTF8) {
         return;
     }
-    shared_ptr<ConstantUtf8> utf8Info = dynamic_pointer_cast<ConstantUtf8>(constant);
+    auto utf8Info = dynamic_pointer_cast<ConstantUtf8>(constant);
     LOGD("Constant info:%s", utf8Info->bytes);
 }
 
@@ -164,7 +164,7 @@ char* ClassInfo::getUtf8ConstantName(uint16_t index) const {
     if (constant == nullptr || constant->tag != CONSTANT_UTF8) {
         return nullptr;
     }
-    shared_ptr<ConstantUtf8> utf8 = dynamic_pointer_cast<ConstantUtf8>(constant);
+    auto utf8 = dynamic_pointer_cast<ConstantUtf8>(constant);
     return (char*)utf8->bytes;
 }
 
@@ -285,13 +285,17 @@ int ClassInfo::loadAttributes() {
     return 0;
 }
 
+void ClassInfo::loadClassesInConstantPool() {
+
+}
+
 bool ClassInfo::resolve() {
     for (auto method : mMethods) {
         method->resolve(this);
     }
 
-    shared_ptr<ConstantClass> thisClazz = dynamic_pointer_cast<ConstantClass>(getConstantAt(thisClass));
-    shared_ptr<ConstantUtf8> classNameUtf8 = dynamic_pointer_cast<ConstantUtf8>(getConstantAt(thisClazz->nameIndex));
+    auto thisClazz = getConstant<ConstantClass>(thisClass);
+    auto classNameUtf8 = getConstant<ConstantUtf8>(thisClazz->nameIndex);
     mClassName = std::string((const char*)classNameUtf8->bytes);
     
     if (superClass == 0) {
@@ -303,8 +307,8 @@ bool ClassInfo::resolve() {
         LOGI("Resolve the class :%s without parent", mClassName.c_str());
         return true;
     }
-    shared_ptr<ConstantClass> superClazz = dynamic_pointer_cast<ConstantClass>(getConstantAt(superClass));
-    shared_ptr<ConstantUtf8> superClassNameUtf8 = dynamic_pointer_cast<ConstantUtf8>(getConstantAt(superClazz->nameIndex));
+    auto superClazz = getConstant<ConstantClass>(superClass);
+    auto superClassNameUtf8 = getConstant<ConstantUtf8>(superClazz->nameIndex);
     mSuperClassName = std::string((const char*)superClassNameUtf8->bytes);
 
     BootstrapClassLoader* bootClassLoader = BootstrapClassLoader::getInstance();

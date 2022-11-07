@@ -59,6 +59,7 @@ private:
     int loadAttributes();
     void release();
     void createInstance();
+    void loadClassesInConstantPool();
     
     // test code
     void invokeMethod();
