@@ -2,23 +2,26 @@
 #define _BOOTSTRAP_CLASS_LOADER_H_
 
 #include <map>
+#include <vector>
+#include <list>
 #include <string>
 #include "ClassInfo.h"
+#include "ClassLoader.h"
 using namespace std;
 using namespace myvm;
 
 namespace myvm {
 
-class BootstrapClassLoader {
+class BootstrapClassLoader : public ClassLoader {
 public:
     static BootstrapClassLoader *getInstance();
-    ~BootstrapClassLoader();
-    shared_ptr<ClassInfo> loadClassFromFile(string& classFile);
+    virtual ~BootstrapClassLoader();
+    virtual shared_ptr<ClassInfo> loadClassFromFile(string& classFile);
+    virtual shared_ptr<ClassInfo> loadClassFromJar(string& jarFile, string& className, string& fileName);
     shared_ptr<ClassInfo> loadClassFromBootclassPathJar(string& className);
-    shared_ptr<ClassInfo> loadClassFromJar(string& jarFile, string& className, string& fileName);
     bool loadClassFromClassPath(string& className);
-    shared_ptr<ClassInfo> getClassByName(const string& name);
-    shared_ptr<ClassInfo> getClassByName(const char* name);
+    virtual shared_ptr<ClassInfo> getClassByName(const string& name);
+    virtual shared_ptr<ClassInfo> getClassByName(const char* name);
     void addClass(string& name, shared_ptr<ClassInfo> clazz);
 private:
     BootstrapClassLoader();
@@ -27,6 +30,7 @@ private:
 private:
     static BootstrapClassLoader *sInstance;
     map<string, shared_ptr<ClassInfo>> mLoadedClasses;
+    list<string> mPendingLoadClasses;
     vector<string> mBootClassPathes;
     vector<string> mBootClassJars;
 };

@@ -7,12 +7,13 @@
 #ifndef _CLASS_INFO_H_
 #define _CLASS_INFO_H_
 
-#include <vector>
 #include <memory>
+#include <vector>
 
+#include "AttributeInfo.h"
+#include "ClassLoader.h"
 #include "ConstantInfo.h"
 #include "FieldInfo.h"
-#include "AttributeInfo.h"
 #include "FileReader.h"
 #include "Method.h"
 
@@ -20,6 +21,7 @@ using namespace myvm;
 using namespace std;
 
 namespace myvm {
+class ClassLoader;
 
 const uint32_t JAVA_MAGIC = 0xCAFEBABE;
 
@@ -49,6 +51,7 @@ public:
     shared_ptr<FieldInfo> findField(uint16_t nameIndex, uint16_t descIndex) const;
     shared_ptr<FieldInfo> findField(shared_ptr<ConstantNameAndType>& fieldInfo) const;
     uint32_t classSize() const;
+    shared_ptr<ClassLoader> getClassLoader() const;
 private:
     bool loadFromFileInternal();
     int loadConstants();
@@ -88,6 +91,7 @@ private:
 
     shared_ptr<FileReader> mFileReader;
     weak_ptr<ClassInfo> mSuperClass;
+    shared_ptr<ClassLoader> mClassLoader;
 };
 
 

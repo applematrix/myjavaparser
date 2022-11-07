@@ -278,7 +278,14 @@ int ClassInfo::loadAttributes() {
 }
 
 void ClassInfo::loadClassesInConstantPool() {
-
+    // test code
+    mClassLoader.reset(BootstrapClassLoader::getInstance());
+    for (auto constant : mConstantPool) {
+        if (constant->tag != CONSTANT_CLASS) {
+            continue;
+        }
+        // TODO: 2022-11-07
+    }
 }
 
 bool ClassInfo::resolve() {
@@ -366,6 +373,10 @@ shared_ptr<Method> ClassInfo::findMethod(shared_ptr<ConstantUtf8>& methodName, s
 
 uint32_t ClassInfo::classSize() const {
     return mClassSize;
+}
+
+shared_ptr<ClassLoader> ClassInfo::getClassLoader() const {
+    return mClassLoader;
 }
 
 }
