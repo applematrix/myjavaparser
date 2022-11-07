@@ -168,14 +168,6 @@ char* ClassInfo::getUtf8ConstantName(uint16_t index) const {
     return (char*)utf8->bytes;
 }
 
-shared_ptr<ConstantUtf8>  ClassInfo::getUtf8Constant(uint16_t index) const {
-    shared_ptr<ConstantInfo> constant = getConstantAt(index);
-    if (constant == nullptr) {
-        return nullptr;
-    }
-    return dynamic_pointer_cast<ConstantUtf8>(constant);
-}
-
 shared_ptr<FieldInfo> ClassInfo::findField(uint16_t nameIndex, uint16_t descIndex)const {
     for (auto field : mFields) {
         if(field->match(nameIndex, descIndex)) {

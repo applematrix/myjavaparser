@@ -33,7 +33,6 @@ public:
     void printConstantInfo(shared_ptr<ConstantInfo> constant) const;
     void printConstantInfo(uint16_t index) const;
     char* getUtf8ConstantName(uint16_t index) const;
-    shared_ptr<ConstantUtf8> getUtf8Constant(uint16_t index) const;
     weak_ptr<ClassInfo> getSuperClass() const;
     string getClassName() {
         return mClassName;
