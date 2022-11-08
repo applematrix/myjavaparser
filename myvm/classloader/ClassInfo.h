@@ -51,7 +51,8 @@ public:
     shared_ptr<FieldInfo> findField(uint16_t nameIndex, uint16_t descIndex) const;
     shared_ptr<FieldInfo> findField(shared_ptr<ConstantNameAndType>& fieldInfo) const;
     uint32_t classSize() const;
-    shared_ptr<ClassLoader> getClassLoader() const;
+    void setClassLoader(shared_ptr<ClassLoader> &classLoader);
+    weak_ptr<ClassLoader> getClassLoader() const;
 private:
     bool loadFromFileInternal();
     int loadConstants();
@@ -91,7 +92,7 @@ private:
 
     shared_ptr<FileReader> mFileReader;
     weak_ptr<ClassInfo> mSuperClass;
-    shared_ptr<ClassLoader> mClassLoader;
+    weak_ptr<ClassLoader> mClassLoader;
 };
 
 

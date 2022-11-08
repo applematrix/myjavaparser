@@ -14,8 +14,9 @@ namespace myvm {
 
 class BootstrapClassLoader : public ClassLoader {
 public:
-    static BootstrapClassLoader *getInstance();
+    static shared_ptr<BootstrapClassLoader> getInstance();
     virtual ~BootstrapClassLoader();
+    virtual shared_ptr<ClassInfo> loadClass(string& className);
     virtual shared_ptr<ClassInfo> loadClassFromFile(string& classFile);
     virtual shared_ptr<ClassInfo> loadClassFromJar(string& jarFile, string& className, string& fileName);
     shared_ptr<ClassInfo> loadClassFromBootclassPathJar(string& className);
@@ -28,7 +29,7 @@ private:
     bool classLoaded(string& name);
     void covertPath(string& path);
 private:
-    static BootstrapClassLoader *sInstance;
+    static shared_ptr<BootstrapClassLoader> sInstance;
     map<string, shared_ptr<ClassInfo>> mLoadedClasses;
     list<string> mPendingLoadClasses;
     vector<string> mBootClassPathes;

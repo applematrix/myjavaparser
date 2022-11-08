@@ -29,7 +29,7 @@ using namespace std;
 
 namespace myvm {
 
-BootstrapClassLoader * BootstrapClassLoader::sInstance = nullptr;
+shared_ptr<BootstrapClassLoader> BootstrapClassLoader::sInstance;
 
 BootstrapClassLoader::BootstrapClassLoader() {
     mBootClassPathes.push_back(BOOT_CLASS_PATH);
@@ -41,10 +41,10 @@ BootstrapClassLoader::BootstrapClassLoader() {
 BootstrapClassLoader::~BootstrapClassLoader() {
 }
 
-/*static*/ BootstrapClassLoader* BootstrapClassLoader::getInstance() {
+/*static*/ shared_ptr<BootstrapClassLoader> BootstrapClassLoader::getInstance() {
     // TODO: multi-thread access
     if (sInstance == nullptr) {
-        sInstance = new BootstrapClassLoader();
+        sInstance.reset(new BootstrapClassLoader());
     }
     return sInstance;
 }
@@ -68,6 +68,7 @@ void BootstrapClassLoader::addClass(string& name, shared_ptr<ClassInfo> clazz) {
 }
 
 shared_ptr<ClassInfo> BootstrapClassLoader::loadClassFromFile(string& classFile) {
+    LOGI("loadClassFromFile %s", classFile.c_str());
     shared_ptr<ClassInfo> clazz = make_shared<ClassInfo>();
     if (!clazz->loadFromFile(classFile)) {
         return nullptr;
@@ -78,7 +79,13 @@ shared_ptr<ClassInfo> BootstrapClassLoader::loadClassFromFile(string& classFile)
     return clazz;
 }
 
+shared_ptr<ClassInfo> BootstrapClassLoader::loadClass(string& className) {
+    LOGI("loadClass class:%s", className.c_str());
+    return loadClassFromBootclassPathJar(className);
+}
+
 shared_ptr<ClassInfo> BootstrapClassLoader::loadClassFromBootclassPathJar(string& className) {
+    LOGI("loadClassFromBootclassPathJar class:%s", className.c_str());
     string fullName = className;
     const char* suffix = ".class";
     if (fullName.length() > strlen(suffix)) {

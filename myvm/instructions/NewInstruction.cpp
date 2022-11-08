@@ -31,9 +31,12 @@ void NewInstruction::run(Frame *frame) {
 
     // TODO: release the memory
     const char* className = (const char*)constantUtf8->bytes;
-    BootstrapClassLoader *bootstrapClassLoder = BootstrapClassLoader::getInstance();
+    auto classLoader = clazz->getClassLoader().lock();
+    if (classLoader == nullptr) {
+        return;
+    }
     
-    shared_ptr<ClassInfo> instanceClazz = bootstrapClassLoder->getClassByName(className);
+    shared_ptr<ClassInfo> instanceClazz = classLoader->getClassByName(className);
     uint32_t handle = Heap::getInstance()->allocateObject(instanceClazz);
 
     shared_ptr<OperandStack> stack = ThreadLocalStorage::getInstance()->getStack();

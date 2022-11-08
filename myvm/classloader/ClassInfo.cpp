@@ -279,7 +279,6 @@ int ClassInfo::loadAttributes() {
 
 void ClassInfo::loadClassesInConstantPool() {
     // test code
-    mClassLoader.reset(BootstrapClassLoader::getInstance());
     for (auto constant : mConstantPool) {
         if (constant->tag != CONSTANT_CLASS) {
             continue;
@@ -310,7 +309,7 @@ bool ClassInfo::resolve() {
     auto superClassNameUtf8 = getConstant<ConstantUtf8>(superClazz->nameIndex);
     mSuperClassName = std::string((const char*)superClassNameUtf8->bytes);
 
-    BootstrapClassLoader* bootClassLoader = BootstrapClassLoader::getInstance();
+    auto bootClassLoader = BootstrapClassLoader::getInstance();
 
     auto superClass =  bootClassLoader->getClassByName(mSuperClassName);
     if (superClass == nullptr) {
@@ -375,7 +374,11 @@ uint32_t ClassInfo::classSize() const {
     return mClassSize;
 }
 
-shared_ptr<ClassLoader> ClassInfo::getClassLoader() const {
+void ClassInfo::setClassLoader(shared_ptr<ClassLoader> &classLoader) {
+    mClassLoader = classLoader;
+}
+
+weak_ptr<ClassLoader> ClassInfo::getClassLoader() const {
     return mClassLoader;
 }
 

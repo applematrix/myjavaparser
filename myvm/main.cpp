@@ -101,15 +101,16 @@ int main(int argc, const char* args[]) {
 	//testParseObjectClass();
 	//testUnzipObjectClass();
 
-	LOGI("load classes from the configuration");
+	LOGI("load classes");
 
 	string mainClassName;
 	shared_ptr<GlobalProperties> globalProperty = GlobalProperties::getInstance();
-	BootstrapClassLoader *mBootstrapClassLoder = BootstrapClassLoader::getInstance();
+	shared_ptr<ClassLoader> bootClassLoader = BootstrapClassLoader::getInstance();
 	shared_ptr<ClassInfo> mainClass;
 	if (globalProperty->containsProperty("classpath")) {
 		mainClassName = globalProperty->getProperty("classpath");
-		mainClass = mBootstrapClassLoder->loadClassFromFile(mainClassName);
+
+		mainClass = bootClassLoader->loadClassFromFile(mainClassName);
 		if (mainClass == nullptr) {
 			LOGI("load class:%s from .class file failed", mainClassName.c_str());
 			return -1;
@@ -120,7 +121,7 @@ int main(int argc, const char* args[]) {
 		jarArchive->loadFile(jarPath);
 		mainClassName = jarArchive->getMainClass();
 
-		mainClass = mBootstrapClassLoder->loadClassFromBootclassPathJar(mainClassName);
+		mainClass = bootClassLoader->loadClass(mainClassName);
 		if (mainClass == nullptr) {
 			LOGW("load class:%s from jar file failed", mainClassName.c_str());
 			return -1;
@@ -129,6 +130,7 @@ int main(int argc, const char* args[]) {
 		LOGI("no class file specified");
 		return -1;
 	}
+	mainClass->setClassLoader(bootClassLoader);
 
 	LOGI("vm started");
 	shared_ptr<Method> mainMethod = mainClass->findMainMethod();
