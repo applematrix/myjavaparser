@@ -27,7 +27,7 @@ const uint32_t JAVA_MAGIC = 0xCAFEBABE;
 
 class ClassInfo {
 public:
-    ClassInfo();
+    ClassInfo(const shared_ptr<ClassLoader> &classLoader);
     ~ClassInfo();
     bool loadFromFile(string& path);
     bool loadFromJar(string& jar, string& className);
@@ -54,6 +54,9 @@ public:
     void setClassLoader(shared_ptr<ClassLoader> &classLoader);
     weak_ptr<ClassLoader> getClassLoader() const;
 private:
+    void createInstance();
+    void evalClassSize();
+    bool linkClasses();
     bool loadFromFileInternal();
     int loadConstants();
     int loadInterfaces();
@@ -61,10 +64,7 @@ private:
     int loadMethods();
     int loadAttributes();
     void release();
-    void createInstance();
-    void loadClassesInConstantPool();
     
-    // test code
     void invokeMethod();
 private:
     // JVMS properties
@@ -88,7 +88,7 @@ private:
     std::vector<shared_ptr<AttributeInfo>> mAttributes;
     std::string mClassName;
     std::string mSuperClassName;
-    uint32_t mClassSize;
+    uint32_t mClassSize = 0;
 
     shared_ptr<FileReader> mFileReader;
     weak_ptr<ClassInfo> mSuperClass;

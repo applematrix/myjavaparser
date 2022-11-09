@@ -5,6 +5,7 @@
 #include <vector>
 #include <list>
 #include <string>
+#include <memory>
 #include "ClassInfo.h"
 #include "ClassLoader.h"
 using namespace std;

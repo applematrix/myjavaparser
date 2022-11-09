@@ -25,8 +25,9 @@ using namespace myvm;
 
 namespace myvm {
 
-ClassInfo::ClassInfo() {
+ClassInfo::ClassInfo(const shared_ptr<ClassLoader> &classLoader) {
     mClassSize = 0;
+    mClassLoader = classLoader;
 }
 
 ClassInfo::~ClassInfo() {
@@ -130,9 +131,8 @@ bool ClassInfo::loadFromFileInternal() {
     }
     LOGI("----------------------");
     mFileReader->close();
-
-    // resolve the class's runtime data
-    return resolve();
+    resolve();
+    return true;
 }
 
 void ClassInfo::release() {
@@ -277,51 +277,53 @@ int ClassInfo::loadAttributes() {
     return 0;
 }
 
-void ClassInfo::loadClassesInConstantPool() {
-    // test code
+bool ClassInfo::linkClasses() {
+    auto classLoader = mClassLoader.lock();
+    if (classLoader == nullptr) {
+        return false;
+    }
     for (auto constant : mConstantPool) {
         if (constant->tag != CONSTANT_CLASS) {
             continue;
         }
-        // TODO: 2022-11-07
-    }
-}
+        auto clazzInfo = dynamic_pointer_cast<ConstantClass>(constant);
+        auto name = getConstant<ConstantUtf8>(clazzInfo->nameIndex);
+        auto strName  = std::string((const char*)name->bytes);
 
-bool ClassInfo::resolve() {
-    for (auto method : mMethods) {
-        method->resolve(this);
+        LOGI("linkClasses %s", strName.c_str());
+
+        auto clazz =  classLoader->getClassByName(strName);
+        if (clazz == nullptr) {
+            LOGW("linkClasses link to the class :%s", strName.c_str());
+            if (classLoader->loadClass(strName) == nullptr) {
+                LOGW("linkClasses link to the class :%s failed!", strName.c_str());
+                return false;
+            }
+        }
     }
 
-    auto thisClazz = getConstant<ConstantClass>(thisClass);
-    auto classNameUtf8 = getConstant<ConstantUtf8>(thisClazz->nameIndex);
-    mClassName = std::string((const char*)classNameUtf8->bytes);
-    
     if (superClass == 0) {
         // only the Object class' super class is 0
         if (mClassName.compare(OBJECT_CLASS) != 0) {
             LOGW("Error: the class:%s has no parent", mClassName.c_str());
-            return false;
+            return true;
         }
         LOGI("Resolve the class :%s without parent", mClassName.c_str());
-        return true;
+        return false;
     }
     auto superClazz = getConstant<ConstantClass>(superClass);
     auto superClassNameUtf8 = getConstant<ConstantUtf8>(superClazz->nameIndex);
     mSuperClassName = std::string((const char*)superClassNameUtf8->bytes);
 
-    auto bootClassLoader = BootstrapClassLoader::getInstance();
-
-    auto superClass =  bootClassLoader->getClassByName(mSuperClassName);
-    if (superClass == nullptr) {
-        LOGI("Resolve the class :%s \'s super class:", mClassName.c_str(), mSuperClassName.c_str());
-        if (bootClassLoader->loadClassFromBootclassPathJar(mSuperClassName) == nullptr) {
-            LOGW("Resolve the class :%s \'s super class failed!", mClassName.c_str(), mSuperClassName.c_str());
-            return false;
-        }
+    mSuperClass =  classLoader->getClassByName(mSuperClassName);
+    if (mSuperClass.lock() == nullptr) {
+        LOGI("Resolve the class :%s \'s super class:%s failed", mClassName.c_str(), mSuperClassName.c_str());
+        return false;
     }
+    return true;
+}
 
-    // resolve the class size
-    mClassSize = 0;
+void ClassInfo::evalClassSize() {
     uint32_t offset = 0;
     for (auto field : mFields) {
         field->resolve();
@@ -330,10 +332,23 @@ bool ClassInfo::resolve() {
         offset += field->getType()->doubleUnit() ? 2 : 1;
     }
 
-    if (superClass != nullptr) {
-        mClassSize += superClass->classSize();
+    if (mSuperClass.lock() != nullptr) {
+        mClassSize += mSuperClass.lock()->classSize();
     }
-    mSuperClass = superClass;
+}
+
+bool ClassInfo::resolve() {
+    for (auto method : mMethods) {
+        method->resolve(this);
+    }
+    auto thisClazz = getConstant<ConstantClass>(thisClass);
+    auto classNameUtf8 = getConstant<ConstantUtf8>(thisClazz->nameIndex);
+    mClassName = std::string((const char*)classNameUtf8->bytes);
+
+    if(!linkClasses()) {
+        return false;
+    }
+    evalClassSize();
     return true;
 }
 

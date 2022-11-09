@@ -64,7 +64,7 @@ static void parseArgs(int argc, const char* args[]) {
 
 static void testParseObjectClass() {
 	cout << "testParseObjectClass" << endl;
-	ClassInfo *clazz = new ClassInfo();
+	ClassInfo *clazz = new ClassInfo(nullptr);
 	string objectFile = "./test/jdk_classes/java/lang/Object.class";
     if (!clazz->loadFromFile(objectFile)) {
 		cout << "testParseObjectClass failed" << endl;
@@ -106,12 +106,11 @@ int main(int argc, const char* args[]) {
 	string mainClassName;
 	shared_ptr<GlobalProperties> globalProperty = GlobalProperties::getInstance();
 	shared_ptr<ClassLoader> bootClassLoader = BootstrapClassLoader::getInstance();
-	shared_ptr<ClassInfo> mainClass;
+	shared_ptr<ClassInfo> mainClass = make_shared<ClassInfo>(bootClassLoader);
 	if (globalProperty->containsProperty("classpath")) {
 		mainClassName = globalProperty->getProperty("classpath");
 
-		mainClass = bootClassLoader->loadClassFromFile(mainClassName);
-		if (mainClass == nullptr) {
+		if (!mainClass->loadFromFile(mainClassName)) {
 			LOGI("load class:%s from .class file failed", mainClassName.c_str());
 			return -1;
 		}

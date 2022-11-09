@@ -68,15 +68,16 @@ void BootstrapClassLoader::addClass(string& name, shared_ptr<ClassInfo> clazz) {
 }
 
 shared_ptr<ClassInfo> BootstrapClassLoader::loadClassFromFile(string& classFile) {
-    LOGI("loadClassFromFile %s", classFile.c_str());
-    shared_ptr<ClassInfo> clazz = make_shared<ClassInfo>();
-    if (!clazz->loadFromFile(classFile)) {
-        return nullptr;
-    }
+    LOGI("loadClassFromFile %s, TODO:", classFile.c_str());
+    // shared_ptr<ClassInfo> clazz = make_shared<ClassInfo>();
+    // if (!clazz->loadFromFile(classFile)) {
+    //     return nullptr;
+    // }
 
-    std::string className = clazz->getClassName();
-    addClass(className, clazz);
-    return clazz;
+    // std::string className = clazz->getClassName();
+    // addClass(className, clazz);
+    // return clazz;
+    return nullptr;
 }
 
 shared_ptr<ClassInfo> BootstrapClassLoader::loadClass(string& className) {
@@ -106,7 +107,7 @@ shared_ptr<ClassInfo> BootstrapClassLoader::loadClassFromBootclassPathJar(string
 }
 
 shared_ptr<ClassInfo> BootstrapClassLoader::loadClassFromJar(string& jarFile, string& className, string& fileName) {
-    shared_ptr<ClassInfo> clazz = make_shared<ClassInfo>();
+    shared_ptr<ClassInfo> clazz = make_shared<ClassInfo>(shared_from_this());
 	if(!clazz->loadFromJar(jarFile, fileName)) {
         return nullptr;
     }

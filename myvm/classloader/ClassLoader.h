@@ -11,7 +11,7 @@ using namespace myvm;
 namespace myvm {
 class ClassInfo;
 
-class ClassLoader {
+class ClassLoader: public enable_shared_from_this<ClassLoader> {
 public:
     ClassLoader(){}
     virtual ~ClassLoader() {}
