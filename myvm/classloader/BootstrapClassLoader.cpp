@@ -67,17 +67,16 @@ void BootstrapClassLoader::addClass(string& name, shared_ptr<ClassInfo> clazz) {
     mLoadedClasses[name] = clazz;
 }
 
-shared_ptr<ClassInfo> BootstrapClassLoader::loadClassFromFile(string& classFile) {
-    LOGI("loadClassFromFile %s, TODO:", classFile.c_str());
-    // shared_ptr<ClassInfo> clazz = make_shared<ClassInfo>();
-    // if (!clazz->loadFromFile(classFile)) {
-    //     return nullptr;
-    // }
+shared_ptr<ClassInfo> BootstrapClassLoader::loadClassFile(string& classFile) {
+    LOGI("loadClassFromFile file: %s", classFile.c_str());
+    shared_ptr<ClassInfo> clazz = make_shared<ClassInfo>(shared_from_this());
+    if (!clazz->loadFromFile(classFile)) {
+        return nullptr;
+    }
 
-    // std::string className = clazz->getClassName();
-    // addClass(className, clazz);
-    // return clazz;
-    return nullptr;
+    std::string className = clazz->getClassName();
+    addClass(className, clazz);
+    return clazz;
 }
 
 shared_ptr<ClassInfo> BootstrapClassLoader::loadClass(string& className) {
@@ -132,7 +131,7 @@ bool BootstrapClassLoader::loadClassFromClassPath(string& className) {
             cout << fullPath << " not found!" << endl;
         }
 
-        if(loadClassFromFile(fullPath)) {
+        if(loadClassFile(fullPath)) {
             LOGW("Loaded class: %s from %s", className.c_str(), fullPath.c_str());
             return true;
         }

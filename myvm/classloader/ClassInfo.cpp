@@ -282,8 +282,12 @@ bool ClassInfo::linkClasses() {
     if (classLoader == nullptr) {
         return false;
     }
-    for (auto constant : mConstantPool) {
+    for (auto index = 0; index < mConstantPool.size(); index++) {
+        auto constant = mConstantPool.at(index);
         if (constant->tag != CONSTANT_CLASS) {
+            continue;
+        }
+        if (index == thisClass - 1) {
             continue;
         }
         auto clazzInfo = dynamic_pointer_cast<ConstantClass>(constant);
@@ -344,6 +348,7 @@ bool ClassInfo::resolve() {
     auto thisClazz = getConstant<ConstantClass>(thisClass);
     auto classNameUtf8 = getConstant<ConstantUtf8>(thisClazz->nameIndex);
     mClassName = std::string((const char*)classNameUtf8->bytes);
+    LOGI("resolve, this class name is %s", mClassName.c_str());
 
     if(!linkClasses()) {
         return false;

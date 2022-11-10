@@ -106,12 +106,13 @@ int main(int argc, const char* args[]) {
 	string mainClassName;
 	shared_ptr<GlobalProperties> globalProperty = GlobalProperties::getInstance();
 	shared_ptr<ClassLoader> bootClassLoader = BootstrapClassLoader::getInstance();
-	shared_ptr<ClassInfo> mainClass = make_shared<ClassInfo>(bootClassLoader);
+	shared_ptr<ClassInfo> mainClass;
 	if (globalProperty->containsProperty("classpath")) {
-		mainClassName = globalProperty->getProperty("classpath");
+		auto classPath = globalProperty->getProperty("classpath");
+		mainClass = bootClassLoader->loadClassFile(classPath);
 
-		if (!mainClass->loadFromFile(mainClassName)) {
-			LOGI("load class:%s from .class file failed", mainClassName.c_str());
+		if (mainClass == nullptr) {
+			LOGI("load class from %s file failed", classPath.c_str());
 			return -1;
 		}
 	} else if (globalProperty->containsProperty("jar")){
@@ -129,7 +130,6 @@ int main(int argc, const char* args[]) {
 		LOGI("no class file specified");
 		return -1;
 	}
-	mainClass->setClassLoader(bootClassLoader);
 
 	LOGI("vm started");
 	shared_ptr<Method> mainMethod = mainClass->findMainMethod();

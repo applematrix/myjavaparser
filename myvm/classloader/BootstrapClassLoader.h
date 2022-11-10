@@ -18,7 +18,7 @@ public:
     static shared_ptr<BootstrapClassLoader> getInstance();
     virtual ~BootstrapClassLoader();
     virtual shared_ptr<ClassInfo> loadClass(string& className);
-    virtual shared_ptr<ClassInfo> loadClassFromFile(string& classFile);
+    virtual shared_ptr<ClassInfo> loadClassFile(string& classFile);
     virtual shared_ptr<ClassInfo> loadClassFromJar(string& jarFile, string& className, string& fileName);
     shared_ptr<ClassInfo> loadClassFromBootclassPathJar(string& className);
     bool loadClassFromClassPath(string& className);

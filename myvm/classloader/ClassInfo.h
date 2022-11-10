@@ -25,7 +25,7 @@ class ClassLoader;
 
 const uint32_t JAVA_MAGIC = 0xCAFEBABE;
 
-class ClassInfo {
+class ClassInfo : public enable_shared_from_this<ClassInfo> {
 public:
     ClassInfo(const shared_ptr<ClassLoader> &classLoader);
     ~ClassInfo();
