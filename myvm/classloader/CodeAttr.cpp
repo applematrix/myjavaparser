@@ -1,10 +1,10 @@
-#undef LOG_TAG
-#define LOG_TAG "CodeAttr"
-#include "../common/Logger.h"
-
 #include "CodeAttr.h"
 #include "Instructions.h"
 #include <iostream>
+
+#undef LOG_TAG
+#define LOG_TAG "CodeAttr"
+#include "../common/Logger.h"
 
 using namespace myvm;
 using namespace std;
