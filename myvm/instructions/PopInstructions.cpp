@@ -1,11 +1,11 @@
-#undef LOG_TAG
-#define LOG_TAG "PopInstruction"
-#include "../common/Logger.h"
-
 #include "PopInstructions.h"
 #include "../classloader/OperandStack.h"
 #include "../classloader/LocalVariableTable.h"
 #include "../classloader/Method.h"
+
+#undef LOG_TAG
+#define LOG_TAG "PopInstruction"
+#include "../common/Logger.h"
 
 using namespace myvm;
 

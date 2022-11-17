@@ -1,7 +1,3 @@
-#undef LOG_TAG
-#define LOG_TAG "InvokeSpecialInstruction"
-#include "../common/Logger.h"
-
 #include "InvokeInstructions.h"
 #include "../classloader/OperandStack.h"
 #include "../classloader/Heap.h"
@@ -12,6 +8,10 @@
 #include "../classloader/Frame.h"
 #include <iostream>
 #include <memory>
+
+#undef LOG_TAG
+#define LOG_TAG "InvokeSpecialInstruction"
+#include "../common/Logger.h"
 
 using namespace std;
 using namespace myvm;

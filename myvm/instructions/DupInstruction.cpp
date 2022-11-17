@@ -1,11 +1,11 @@
-#undef LOG_TAG
-#define LOG_TAG "DupInstruction"
-#include "../common/Logger.h"
-
 #include "DupInstruction.h"
 #include "../classloader/OperandStack.h"
 #include "../classloader/ThreadLocalStorage.h"
 #include <iostream>
+
+#undef LOG_TAG
+#define LOG_TAG "DupInstruction"
+#include "../common/Logger.h"
 
 using namespace std;
 using namespace myvm;

@@ -1,7 +1,3 @@
-#undef LOG_TAG
-#define LOG_TAG "NewInstruction"
-#include "../common/Logger.h"
-
 #include "NewInstruction.h"
 #include "../classloader/ClassInfo.h"
 #include "../classloader/OperandStack.h"
@@ -9,6 +5,10 @@
 #include "../classloader/Heap.h"
 #include "../classloader/BootstrapClassLoader.h"
 #include <iostream>
+
+#undef LOG_TAG
+#define LOG_TAG "NewInstruction"
+#include "../common/Logger.h"
 
 using namespace std;
 using namespace myvm;

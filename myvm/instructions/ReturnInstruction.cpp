@@ -1,11 +1,11 @@
-#undef LOG_TAG
-#define LOG_TAG "ReturnInstruction"
-#include "../common/Logger.h"
-
 #include "ReturnInstruction.h"
 #include "../classloader/Frame.h"
 #include "../classloader/ThreadLocalStorage.h"
 #include "../classloader/OperandStack.h"
+
+#undef LOG_TAG
+#define LOG_TAG "ReturnInstruction"
+#include "../common/Logger.h"
 
 using namespace myvm;
 

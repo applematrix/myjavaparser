@@ -1,7 +1,3 @@
-#undef LOG_TAG
-#define LOG_TAG "FieldInstruction"
-#include "../common/Logger.h"
-
 #include "FieldInstructions.h"
 #include "../classloader/Method.h"
 #include "../classloader/ClassInfo.h"
@@ -12,6 +8,10 @@
 #include "../classloader/Object.h"
 
 #include <iostream>
+
+#undef LOG_TAG
+#define LOG_TAG "FieldInstruction"
+#include "../common/Logger.h"
 
 using namespace std;
 using namespace myvm;

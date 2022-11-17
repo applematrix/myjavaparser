@@ -4,10 +4,6 @@
  *
  */
 
-#undef LOG_TAG
-#define LOG_TAG "Instructions"
-#include "../common/Logger.h"
-
 #include "Instructions.h"
 #include "LoadInstructions.h"
 #include "NewInstruction.h"
@@ -21,6 +17,10 @@
 #include "AddInstructions.h"
 #include "StaticInstructions.h"
 #include <iostream>
+
+#undef LOG_TAG
+#define LOG_TAG "Instructions"
+#include "../common/Logger.h"
 
 using namespace std;
 

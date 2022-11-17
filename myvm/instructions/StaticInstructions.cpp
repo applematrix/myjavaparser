@@ -1,13 +1,13 @@
-#undef LOG_TAG
-#define LOG_TAG "StaticInstruction"
-#include "../common/Logger.h"
-
 #include "StaticInstructions.h"
 #include "../classloader/OperandStack.h"
 #include "../classloader/LocalVariableTable.h"
 #include "../classloader/Method.h"
 #include "../classloader/Frame.h"
 #include "../classloader/ConstantFieldRef.h"
+
+#undef LOG_TAG
+#define LOG_TAG "StaticInstruction"
+#include "../common/Logger.h"
 
 using namespace myvm;
 

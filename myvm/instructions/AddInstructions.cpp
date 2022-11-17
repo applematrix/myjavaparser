@@ -1,12 +1,13 @@
-#undef LOG_TAG
-#define LOG_TAG "IAddInstruction"
-#include "../common/Logger.h"
-
 #include "AddInstructions.h"
 #include "../classloader/OperandStack.h"
 #include "../classloader/ThreadLocalStorage.h"
 #include "../classloader/Frame.h"
 #include <iostream>
+
+#undef LOG_TAG
+#define LOG_TAG "IAddInstruction"
+#include "../common/Logger.h"
+
 using namespace std;
 using namespace myvm;
 
