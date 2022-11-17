@@ -9,6 +9,10 @@
 #include <stdint.h>
 #include <string>
 
+#undef LOG_TAG
+#define LOG_TAG "ConstantInfo"
+#include "../common/Logger.h"
+
 using namespace std;
 
 namespace myvm {

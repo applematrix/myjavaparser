@@ -142,13 +142,13 @@ Method* Method::loadFromFile(ClassInfo *owner, shared_ptr<FileReader> fileReader
     return new Method(owner, accessFlags, nameIndex, descriptorIndex, attributes);
 }
 
-bool Method::match(shared_ptr<ConstantNameAndType>& nameAndType) {
+bool Method::match(ConstantNameAndType* nameAndType) {
     // TODO: check the same class
     return nameIndex == nameAndType->nameIndex
         && descriptorIndex == nameAndType->descriptorIndex;
 }
 
-bool Method::match(shared_ptr<ConstantUtf8>& methodName, shared_ptr<ConstantUtf8>& methodDesc) {
+bool Method::match(ConstantUtf8* methodName, ConstantUtf8* methodDesc) {
     return methodName->equals(mName) && methodDesc->equals(mDescriptor);
 }
 

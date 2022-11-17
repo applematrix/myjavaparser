@@ -1,5 +1,10 @@
 #include "ClassFileReader.h"
 
+#include "../common/Logger.h"
+
+#undef LOG_TAG
+#define LOG_TAG "ClassFileReader"
+
 using namespace myvm;
 
 namespace myvm {
@@ -34,6 +39,7 @@ size_t ClassFileReader::readFromFile(void *buffer, size_t size) {
 }
 
 void ClassFileReader::skip(uint32_t bytes) {
+    LOGI("skip %d bytes at 0x%x", bytes, mOffset);
     mOffset += bytes;
     int64_t fileSize = fseek(mClassFile, mOffset, SEEK_SET);
 }

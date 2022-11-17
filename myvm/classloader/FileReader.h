@@ -20,7 +20,7 @@ public:
     FileReader(const char* path);
     virtual ~FileReader();
     virtual size_t readFromFile(void *buffer, size_t size) {return 0;};
-    virtual uint64_t getOffset() { return 0;}
+    virtual uint64_t getOffset() { return mOffset;}
     virtual uint64_t getSize() {return 0;}
     virtual void skip(uint32_t bytes) {};
     virtual void close() {};
@@ -62,7 +62,7 @@ public:
             tmpVal >>= 8;
         }
         //cout << "Offset: " << mOffset << ", value:" << (int64_t)val << ", dataSize:" << sizeof(val) << endl;
-        mOffset += sizeof(val);
+        //mOffset += sizeof(val);
         return 0;
     }
     

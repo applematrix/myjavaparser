@@ -80,6 +80,9 @@ shared_ptr<ClassInfo> BootstrapClassLoader::loadClassFile(string& classFile) {
 }
 
 shared_ptr<ClassInfo> BootstrapClassLoader::loadClass(string& className) {
+    if (mLoadedClasses.find(className) != mLoadedClasses.end()) {
+        return mLoadedClasses[className];
+    }
     LOGI("loadClass class:%s", className.c_str());
     return loadClassFromBootclassPathJar(className);
 }

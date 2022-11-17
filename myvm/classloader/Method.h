@@ -57,8 +57,8 @@ public:
     bool isPrivate();
     bool isProtected();
     bool isMainEntry();
-    bool match(shared_ptr<ConstantNameAndType>& nameAndType);
-    bool match(shared_ptr<ConstantUtf8>& methodName, shared_ptr<ConstantUtf8>& methodDesc);
+    bool match(ConstantNameAndType* nameAndType);
+    bool match(ConstantUtf8* methodName, ConstantUtf8* methodDesc);
     void resolve(ClassInfo *clazz);
     const string& getName() const;
     const string& getDesc() const;

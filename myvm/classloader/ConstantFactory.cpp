@@ -10,6 +10,11 @@
 #include "ConstantMethodRef.h"
 #include <cstring>
 
+
+#undef LOG_TAG
+#define LOG_TAG "ConstantFactory"
+#include "../common/Logger.h"
+
 using namespace std;
 
 namespace myvm {
@@ -22,9 +27,14 @@ static ConstantInfo* createConstantUtf8(shared_ptr<FileReader> fileReader) {
     }
     uint8_t* bytes = new uint8_t[length + 1];
     memset(bytes, 0, length + 1);
-    status = fileReader->read(bytes, length);
-    if (status != 0) {
-        return nullptr;
+    if (length > 0) {
+        status = fileReader->read(bytes, length);
+        if (status != 0) {
+            delete[] bytes;
+            return nullptr;
+        }
+    } else {
+        LOGW("createConstantUtf8 with length:%d", length);
     }
     return new ConstantUtf8(length, bytes);
 }
@@ -164,8 +174,6 @@ static ConstantInfo* createNameAndType(shared_ptr<FileReader> fileReader) {
     return new ConstantNameAndType(nameIndex, descIndex);
 }
 
-
-
 ConstantInfo* ConstantFactory::loadFromFile(shared_ptr<FileReader> fileReader) {
     uint8_t tag = 0;
     int status = fileReader->readUint8(tag);
@@ -195,7 +203,9 @@ ConstantInfo* ConstantFactory::loadFromFile(shared_ptr<FileReader> fileReader) {
             return createClass(tag, fileReader);
         case CONSTANT_NAMEANDTYPE:
             return createNameAndType(fileReader);
-        default:break;
+        default:
+            LOGW("Unknown tag:%d", tag);
+            break;
     }
     return nullptr;
 }

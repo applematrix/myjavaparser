@@ -107,6 +107,12 @@ int main(int argc, const char* args[]) {
 	shared_ptr<GlobalProperties> globalProperty = GlobalProperties::getInstance();
 	shared_ptr<ClassLoader> bootClassLoader = BootstrapClassLoader::getInstance();
 	shared_ptr<ClassInfo> mainClass;
+
+	// test code
+	string classPath = "/home/lenovo/code/myjavaparser/myvm/test/jdk_classes/java/lang/Class.class";
+	//bootClassLoader->loadClassFile(classPath);
+
+
 	if (globalProperty->containsProperty("classpath")) {
 		auto classPath = globalProperty->getProperty("classpath");
 		mainClass = bootClassLoader->loadClassFile(classPath);

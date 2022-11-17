@@ -4,9 +4,6 @@
  *
  */
 
-#undef LOG_TAG
-#define LOG_TAG "ClassInfo"
-
 #include "ClassInfo.h"
 #include "FileReader.h"
 #include "ConstantFactory.h"
@@ -19,6 +16,9 @@
 #include "../common/Logger.h"
 #include "Method.h"
 #include <iostream>
+
+#undef LOG_TAG
+#define LOG_TAG "ClassInfo"
 
 using namespace std;
 using namespace myvm;
@@ -138,20 +138,18 @@ bool ClassInfo::loadFromFileInternal() {
 void ClassInfo::release() {
 }
 
-shared_ptr<ConstantInfo> ClassInfo::getConstantAt(uint16_t index) const {
-    // jvms: the index begin from 1; so decrement it
-    index--;
-    if (index >= mConstantPool.size() || index < 0) {
+ConstantInfo* ClassInfo::getConstantAt(uint16_t index) const {
+    if (index >= mConstantPoolSize || index <= 0) {
         return nullptr;
     }
-    return mConstantPool.at(index);
+    return mConstantPool[index];
 }
 
-void ClassInfo::printConstantInfo(shared_ptr<ConstantInfo> constant) const {
-    if (constant == nullptr || constant->tag != CONSTANT_UTF8) {
+void ClassInfo::printConstantInfo(ConstantInfo *constant) const {
+    if (constant == nullptr || constant->tag != ConstantTag::CONSTANT_UTF8) {
         return;
     }
-    auto utf8Info = dynamic_pointer_cast<ConstantUtf8>(constant);
+    auto utf8Info = dynamic_cast<ConstantUtf8*>(constant);
     LOGD("Constant info:%s", utf8Info->bytes);
 }
 
@@ -160,11 +158,11 @@ void ClassInfo::printConstantInfo(uint16_t index) const {
 }
 
 char* ClassInfo::getUtf8ConstantName(uint16_t index) const {
-    shared_ptr<ConstantInfo> constant = getConstantAt(index);
-    if (constant == nullptr || constant->tag != CONSTANT_UTF8) {
+    auto constant = getConstantAt(index);
+    if (constant == nullptr || constant->tag != ConstantTag::CONSTANT_UTF8) {
         return nullptr;
     }
-    auto utf8 = dynamic_pointer_cast<ConstantUtf8>(constant);
+    auto utf8 = dynamic_cast<ConstantUtf8*>(constant);
     return (char*)utf8->bytes;
 }
 
@@ -198,15 +196,30 @@ int ClassInfo::loadConstants() {
     if (constantPoolSize <= 0) {
         return -1;
     }
-    mConstantPool.reserve(constantPoolSize - 1);
-    for (int i = 0; i < constantPoolSize - 1; i++) {
+    //mConstantPool.reserve(constantPoolSize - 1);
+    mConstantPool = new ConstantInfo*[constantPoolSize];
+    LOGI("Total %d constants", constantPoolSize);
+    mConstantPool[0] = nullptr;
+    mConstantPoolSize = constantPoolSize;
+    for (int i = 1; i < constantPoolSize; i++) {
+        auto offset = mFileReader->getOffset();
         ConstantInfo* constant = ConstantFactory::loadFromFile(mFileReader);
         if (constant == nullptr) {
+            LOGW("Load constant #%d failed", i);
             return -1;
         }
-        LOGI("Load constant #%d: %s", i, constant->typeString());
+        if (constant->tag == CONSTANT_UTF8) {
+            LOGD("Load constant #%d: offset:0x%x %s('%s')", i, offset, constant->typeString(), ((ConstantUtf8*)constant)->bytes);
+        } else {
+            LOGD("Load constant #%d: offset:0x%x %s", i, offset, constant->typeString());
+        }
         constant->dump(this);
-        mConstantPool.push_back(shared_ptr<ConstantInfo>(constant));
+        //mConstantPool.push_back(shared_ptr<ConstantInfo>(constant));
+        mConstantPool[i] = constant;
+        if (constant->tag == CONSTANT_DOUBLE 
+                || constant->tag == CONSTANT_LONG) {
+            i++;
+        }
     }
     LOGI("Load constants complete!");
     return 0;
@@ -282,15 +295,15 @@ bool ClassInfo::linkClasses() {
     if (classLoader == nullptr) {
         return false;
     }
-    for (auto index = 0; index < mConstantPool.size(); index++) {
-        auto constant = mConstantPool.at(index);
-        if (constant->tag != CONSTANT_CLASS) {
+    for (auto index = 1; index < mConstantPoolSize; index++) {
+        auto constant = mConstantPool[index];
+        if (constant->tag != ConstantTag::CONSTANT_CLASS) {
             continue;
         }
-        if (index == thisClass - 1) {
+        if (index == thisClass) {
             continue;
         }
-        auto clazzInfo = dynamic_pointer_cast<ConstantClass>(constant);
+        auto clazzInfo = dynamic_cast<ConstantClass*>(constant);
         auto name = getConstant<ConstantUtf8>(clazzInfo->nameIndex);
         auto strName  = std::string((const char*)name->bytes);
 
@@ -298,10 +311,10 @@ bool ClassInfo::linkClasses() {
 
         auto clazz =  classLoader->getClassByName(strName);
         if (clazz == nullptr) {
-            LOGW("linkClasses link to the class :%s", strName.c_str());
+            LOGW("linkClasses current class:%s link class :%s", mClassName.c_str(), strName.c_str());
             if (classLoader->loadClass(strName) == nullptr) {
-                LOGW("linkClasses link to the class :%s failed!", strName.c_str());
-                return false;
+                LOGW("linkClasses current class:%s link class :%s failed!", mClassName.c_str(), strName.c_str());
+                continue;
             }
         }
     }
@@ -319,7 +332,7 @@ bool ClassInfo::linkClasses() {
     auto superClassNameUtf8 = getConstant<ConstantUtf8>(superClazz->nameIndex);
     mSuperClassName = std::string((const char*)superClassNameUtf8->bytes);
 
-    mSuperClass =  classLoader->getClassByName(mSuperClassName);
+    mSuperClass =  classLoader->loadClass(mSuperClassName);
     if (mSuperClass.lock() == nullptr) {
         LOGI("Resolve the class :%s \'s super class:%s failed", mClassName.c_str(), mSuperClassName.c_str());
         return false;
@@ -348,7 +361,7 @@ bool ClassInfo::resolve() {
     auto thisClazz = getConstant<ConstantClass>(thisClass);
     auto classNameUtf8 = getConstant<ConstantUtf8>(thisClazz->nameIndex);
     mClassName = std::string((const char*)classNameUtf8->bytes);
-    LOGI("resolve, this class name is %s", mClassName.c_str());
+    LOGI("resolve, current class: %s", mClassName.c_str());
 
     if(!linkClasses()) {
         return false;
@@ -372,7 +385,7 @@ shared_ptr<Method> ClassInfo::findMainMethod() {
     return nullptr;
 }
 
-shared_ptr<Method> ClassInfo::findMethod(shared_ptr<ConstantNameAndType>& nameAndType) {
+shared_ptr<Method> ClassInfo::findMethod(ConstantNameAndType* nameAndType) {
     for (auto method : mMethods) {
         if (method->match(nameAndType)) {
             return method;
@@ -381,7 +394,7 @@ shared_ptr<Method> ClassInfo::findMethod(shared_ptr<ConstantNameAndType>& nameAn
     return nullptr;
 }
 
-shared_ptr<Method> ClassInfo::findMethod(shared_ptr<ConstantUtf8>& methodName, shared_ptr<ConstantUtf8>& methodDesc) {
+shared_ptr<Method> ClassInfo::findMethod(ConstantUtf8* methodName, ConstantUtf8* methodDesc) {
     for (auto method : mMethods) {
         if (method->match(methodName, methodDesc)) {
             return method;

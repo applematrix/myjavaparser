@@ -130,7 +130,7 @@ void JarArchive::loadFile(string& path) {
 		const char* fileName = zip_get_name(mOpenedJar, i, ZIP_FL_ENC_RAW);
 
         if (fileName != nullptr && fileName[strlen(fileName)-1] == '/') {
-            LOGW("%s is a directory", fileName);
+            //LOGW("%s is a directory", fileName);
             continue;
         }
         mFileList.push_back(fileName);

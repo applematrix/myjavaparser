@@ -35,7 +35,7 @@ public:
     }
     //virtual const char* getDesc() = 0;
     static shared_ptr<TypeInfo> parseFrom(const string& desc, uint16_t offset);
-    static shared_ptr<TypeInfo> parseFrom(shared_ptr<ConstantUtf8> utf8);
+    static shared_ptr<TypeInfo> parseFrom(ConstantUtf8 *utf8);
 public:
     Type type;
 };

@@ -56,6 +56,7 @@ void JarClassFileReader::close() {
 
 size_t JarClassFileReader::readFromFile(void *buffer, size_t size) {
     size_t readBytes = zip_fread(mClassFileInJar, buffer, size);
+    mOffset += readBytes;
     return readBytes;
 }
 

@@ -28,7 +28,7 @@ void GetStaticInstruction::run(Frame* frame) {
         LOGW("GetStaticInstruction run: invalid index reference a non-field");
         return;
     }
-    shared_ptr<ConstantFieldRef> fieldRef = dynamic_pointer_cast<ConstantFieldRef>(constantInfo);
+    auto fieldRef = dynamic_cast<ConstantFieldRef*>(constantInfo);
 
     auto fieldClass = clazz->getConstant<ConstantClass>(fieldRef->classIndex);
     auto fieldName = clazz->getConstant<ConstantNameAndType>(fieldRef->nameAndTypeIndex);

@@ -26,7 +26,7 @@ struct AttributeMap{
 };
 
 static uint8_t getAttributeType(ClassInfo* classInfo, uint16_t nameIndex) {
-    shared_ptr<ConstantInfo> constantInfo = classInfo->getConstantAt(nameIndex);
+    auto constantInfo = classInfo->getConstantAt(nameIndex);
     if (constantInfo == nullptr) {
         return -1;
     }
@@ -35,7 +35,7 @@ static uint8_t getAttributeType(ClassInfo* classInfo, uint16_t nameIndex) {
     if (tag != CONSTANT_UTF8) {
         return -1;
     }
-    auto utf8Info = dynamic_pointer_cast<ConstantUtf8>(constantInfo);
+    auto utf8Info = dynamic_cast<ConstantUtf8*>(constantInfo);
     return getAttributeType(utf8Info->bytes, utf8Info->length);
 }
 
