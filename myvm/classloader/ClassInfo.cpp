@@ -143,7 +143,7 @@ ConstantInfo* ClassInfo::getConstantAt(uint16_t index) const {
     if (index >= mConstantPoolSize || index <= 0) {
         return nullptr;
     }
-    return mConstantPool[index];
+    return mConstantPool[index].get();
 }
 
 void ClassInfo::printConstantInfo(ConstantInfo *constant) const {
@@ -197,10 +197,10 @@ int ClassInfo::loadConstants() {
     if (constantPoolSize <= 0) {
         return -1;
     }
-    //mConstantPool.reserve(constantPoolSize - 1);
-    mConstantPool = new ConstantInfo*[constantPoolSize];
+    mConstantPool.reserve(constantPoolSize);
     LOGI("Total %d constants", constantPoolSize);
-    mConstantPool[0] = nullptr;
+    //mConstantPool[0] = nullptr;
+    mConstantPool.push_back(nullptr);
     mConstantPoolSize = constantPoolSize;
     for (int i = 1; i < constantPoolSize; i++) {
         auto offset = mFileReader->getOffset();
@@ -215,11 +215,12 @@ int ClassInfo::loadConstants() {
             LOGD("Load constant #%d: offset:0x%x %s", i, offset, constant->typeString());
         }
         constant->dump(this);
-        //mConstantPool.push_back(shared_ptr<ConstantInfo>(constant));
-        mConstantPool[i] = constant;
+        mConstantPool.push_back(unique_ptr<ConstantInfo>(constant));
         if (constant->tag == CONSTANT_DOUBLE 
                 || constant->tag == CONSTANT_LONG) {
             i++;
+            //mConstantPool[i] = nullptr;
+            mConstantPool.push_back(nullptr);
         }
     }
     LOGI("Load constants complete!");
@@ -297,7 +298,7 @@ bool ClassInfo::linkClasses() {
         return false;
     }
     for (auto index = 1; index < mConstantPoolSize; index++) {
-        auto constant = mConstantPool[index];
+        auto constant = mConstantPool.at(index).get();
         if (constant == nullptr) {
             LOGW("constant at %d is null", index);
             continue;

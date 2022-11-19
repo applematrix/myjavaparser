@@ -2,6 +2,8 @@
 #include <thread>
 #include <memory>
 
+#define LOG_STD_OUT
+
 using namespace myvm;
 using namespace std;
 
@@ -104,6 +106,9 @@ std::mutex sSingletonMutex;
 }
 
 Logger::Logger() {
+#ifdef LOG_STD_OUT
+    mFileWriter = make_shared<FileWriter>();
+#else
     auto now = chrono::system_clock::now();
     std::time_t t = std::chrono::system_clock::to_time_t(now);
 	struct tm* localTime = localtime(&t);
@@ -116,6 +121,7 @@ Logger::Logger() {
 
     snprintf(buffer, 1024, "%d-%02d-%02d-%02d-%02d.log", year, month, day, hour, min);
     mFileWriter = make_shared<FileWriter>(buffer);
+#endif
     mLastFlushTime = chrono::system_clock::now();
 }
 

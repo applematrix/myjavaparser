@@ -83,7 +83,8 @@ private:
     // runtime properties
     uint16_t *mInterfaces;
     //std::vector<shared_ptr<ConstantInfo>> mConstantPool;
-    ConstantInfo** mConstantPool = nullptr;
+    vector<unique_ptr<ConstantInfo>> mConstantPool;
+    //ConstantInfo** mConstantPool = nullptr;
     uint16_t mConstantPoolSize = 0;
     std::vector<shared_ptr<FieldInfo>> mFields;
     std::vector<shared_ptr<Method>> mMethods;

@@ -8,12 +8,13 @@ namespace myvm {
 
 class FileWriter {
 public:
+    FileWriter();
     FileWriter(const char* path);
     virtual ~FileWriter();
     void writeMessage(const string& message);
 private:
     ofstream mOut;
-
+    bool useStdOut = false;
 };
 
 }
