@@ -20,6 +20,8 @@ public:
     virtual shared_ptr<ClassInfo> loadClassFromJar(string& jarFile, string& className, string& fileName) = 0;
     virtual shared_ptr<ClassInfo> getClassByName(const string& name) = 0;
     virtual shared_ptr<ClassInfo> getClassByName(const char* name) = 0;
+    virtual void addPendingLoadClass(string& className) = 0;
+    virtual void drainPendingLoadClasses() = 0;
 };
 
 }

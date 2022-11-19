@@ -15,6 +15,7 @@
 #include "../common/JarClassFileReader.h"
 #include "../common/Logger.h"
 #include "Method.h"
+#include <algorithm>
 #include <iostream>
 
 #undef LOG_TAG
@@ -297,6 +298,10 @@ bool ClassInfo::linkClasses() {
     }
     for (auto index = 1; index < mConstantPoolSize; index++) {
         auto constant = mConstantPool[index];
+        if (constant == nullptr) {
+            LOGW("constant at %d is null", index);
+            continue;
+        }
         if (constant->tag != ConstantTag::CONSTANT_CLASS) {
             continue;
         }
@@ -307,35 +312,16 @@ bool ClassInfo::linkClasses() {
         auto name = getConstant<ConstantUtf8>(clazzInfo->nameIndex);
         auto strName  = std::string((const char*)name->bytes);
 
-        LOGI("linkClasses %s", strName.c_str());
+        if (name->bytes[0] == '[') {
+            LOGW("linkClasses current class:%s link class at %d is an array, name:%s ", mClassName.c_str(), index, strName.c_str());
+            continue;
+        }
 
         auto clazz =  classLoader->getClassByName(strName);
         if (clazz == nullptr) {
-            LOGW("linkClasses current class:%s link class :%s", mClassName.c_str(), strName.c_str());
-            if (classLoader->loadClass(strName) == nullptr) {
-                LOGW("linkClasses current class:%s link class :%s failed!", mClassName.c_str(), strName.c_str());
-                continue;
-            }
+            LOGW("linkClasses current class:%s link class at %d, add to pending list name:%s ", mClassName.c_str(), index, strName.c_str());
+            classLoader->addPendingLoadClass(strName);
         }
-    }
-
-    if (superClass == 0) {
-        // only the Object class' super class is 0
-        if (mClassName.compare(OBJECT_CLASS) != 0) {
-            LOGW("Error: the class:%s has no parent", mClassName.c_str());
-            return true;
-        }
-        LOGI("Resolve the class :%s without parent", mClassName.c_str());
-        return false;
-    }
-    auto superClazz = getConstant<ConstantClass>(superClass);
-    auto superClassNameUtf8 = getConstant<ConstantUtf8>(superClazz->nameIndex);
-    mSuperClassName = std::string((const char*)superClassNameUtf8->bytes);
-
-    mSuperClass =  classLoader->loadClass(mSuperClassName);
-    if (mSuperClass.lock() == nullptr) {
-        LOGI("Resolve the class :%s \'s super class:%s failed", mClassName.c_str(), mSuperClassName.c_str());
-        return false;
     }
     return true;
 }
@@ -365,6 +351,30 @@ bool ClassInfo::resolve() {
 
     if(!linkClasses()) {
         return false;
+    }
+
+    auto classLoader = mClassLoader.lock();
+    if (classLoader == nullptr) {
+        return false;
+    }
+
+    if (superClass == 0) {
+        // only the Object class' super class is 0
+        if (mClassName.compare(OBJECT_CLASS) != 0) {
+            LOGW("Error: the class:%s has no parent", mClassName.c_str());
+            return true;
+        }
+        LOGI("Resolve the class :%s without parent", mClassName.c_str());
+        return false;
+    }
+    auto superClazz = getConstant<ConstantClass>(superClass);
+    auto superClassNameUtf8 = getConstant<ConstantUtf8>(superClazz->nameIndex);
+    mSuperClassName = std::string((const char*)superClassNameUtf8->bytes);
+
+    mSuperClass =  classLoader->getClassByName(mSuperClassName);
+    if (mSuperClass.lock() == nullptr) {
+        LOGI("Resolve the class :%s \'s super class:%s failed", mClassName.c_str(), mSuperClassName.c_str());
+        //return false;
     }
     evalClassSize();
     return true;

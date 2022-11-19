@@ -4,15 +4,16 @@
  *
  */
 
-#undef LOG_TAG
-#define LOG_TAG "AttributeFactory"
-
 #include <iostream>
 
+#include "Annotation.h"
 #include "AttributeFactory.h"
 #include "AttributeInfo.h"
 #include "CodeAttr.h"
 #include "LocalVariableTable.h"
+
+#undef LOG_TAG
+#define LOG_TAG "AttributeFactory"
 #include "../common/Logger.h"
 
 using namespace myvm;
@@ -85,7 +86,7 @@ AttributeInfo* AttributeFactory::loadFromFile(ClassInfo* classInfo, shared_ptr<F
         case ATTR_DEPRECATED:
             //return new DeprecatedAttr(nameIndex, attrLength, fileReader);
         case ATTR_RUNTIME_VISIBLE_ANNOTATIONS:
-            //return new RuntimeVisibleAnnotationsAttr(nameIndex, attrLength, fileReader);
+            return new RuntimeVisibleAnnotationsAttr(nameIndex, attrLength, fileReader);
         case ATTR_RUNTIME_INVISIBLE_ANNOTATIONS:
             //return new RuntimeVisibleAnnotations(nameIndex, attrLength, fileReader);
         case ATTR_ANNOTATION_DEFAULT:

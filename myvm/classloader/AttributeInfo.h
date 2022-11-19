@@ -273,12 +273,6 @@ struct LocalVariableTypeTableAttr: public AttributeInfo {
 
 typedef AttributeInfo DeprecatedAttr;
 
-struct RuntimeVisibleAnnotationsAttr: public AttributeInfo {
-    uint16_t annotationNums;
-    // TODO:
-    // annotation annotations[0];
-};
-
 struct BootstrapMethodsAttr: public AttributeInfo {
     uint16_t bootstrapMethodNum;
     struct BootstrapMethod {

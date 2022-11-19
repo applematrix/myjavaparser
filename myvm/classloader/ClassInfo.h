@@ -95,6 +95,7 @@ private:
     shared_ptr<FileReader> mFileReader;
     weak_ptr<ClassInfo> mSuperClass;
     weak_ptr<ClassLoader> mClassLoader;
+    list<string> mPendingLinkClasses;
 };
 
 

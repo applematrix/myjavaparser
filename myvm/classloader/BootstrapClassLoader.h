@@ -5,6 +5,7 @@
 #include <vector>
 #include <list>
 #include <string>
+#include <set>
 #include <memory>
 #include "ClassInfo.h"
 #include "ClassLoader.h"
@@ -25,6 +26,8 @@ public:
     virtual shared_ptr<ClassInfo> getClassByName(const string& name);
     virtual shared_ptr<ClassInfo> getClassByName(const char* name);
     void addClass(string& name, shared_ptr<ClassInfo> clazz);
+    void addPendingLoadClass(string& className);
+    void drainPendingLoadClasses();
 private:
     BootstrapClassLoader();
     bool classLoaded(string& name);

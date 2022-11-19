@@ -1,12 +1,9 @@
-#undef LOG_TAG
-#define LOG_TAG "BootstrapClassLoader"
-
 #include "BootstrapClassLoader.h"
 #include "ClassInfo.h"
 #include "utils.h"
 #include "../common/ClassFileReader.h"
 #include "../common/JarArchive.h"
-#include "../common/Logger.h"
+#include <algorithm>
 #include <iostream>
 #include <cstring>
 #include <stdio.h>
@@ -17,6 +14,10 @@
 #else
 #include <unistd.h>
 #endif
+
+#undef LOG_TAG
+#define LOG_TAG "BootstrapClassLoader"
+#include "../common/Logger.h"
 
 using namespace std;
 
@@ -65,6 +66,7 @@ void BootstrapClassLoader::addClass(string& name, shared_ptr<ClassInfo> clazz) {
     }
     LOGI("Add class: %s into bootstrap classloader", name.c_str());
     mLoadedClasses[name] = clazz;
+    drainPendingLoadClasses();
 }
 
 shared_ptr<ClassInfo> BootstrapClassLoader::loadClassFile(string& classFile) {
@@ -84,7 +86,8 @@ shared_ptr<ClassInfo> BootstrapClassLoader::loadClass(string& className) {
         return mLoadedClasses[className];
     }
     LOGI("loadClass class:%s", className.c_str());
-    return loadClassFromBootclassPathJar(className);
+    auto clazz = loadClassFromBootclassPathJar(className);
+    return clazz;
 }
 
 shared_ptr<ClassInfo> BootstrapClassLoader::loadClassFromBootclassPathJar(string& className) {
@@ -156,6 +159,25 @@ void BootstrapClassLoader::covertPath(string& path) {
 #endif
     path.append(CLASS_SUFFIX);
     return;
+}
+
+void BootstrapClassLoader::addPendingLoadClass(string& className) {
+    if (classLoaded(className)) {
+        return;
+    }
+    if (find(mPendingLoadClasses.begin(), mPendingLoadClasses.end(), className) != mPendingLoadClasses.end()) {
+        return;
+    }
+    mPendingLoadClasses.push_back(className);
+}
+
+void BootstrapClassLoader::drainPendingLoadClasses() {
+    while (mPendingLoadClasses.size() > 0) {
+        auto className = mPendingLoadClasses.front();
+        mPendingLoadClasses.pop_front();
+        LOGI("drainPendingLoadClasses load the class :%s ", className.c_str());
+        loadClass(className);
+    }
 }
 
 }

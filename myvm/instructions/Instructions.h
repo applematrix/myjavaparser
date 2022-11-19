@@ -240,6 +240,7 @@ enum OpCode {
 class Method;
 class ClassFileInfo;
 class Frame;
+
 class Instruction {
 public:
     Instruction() {};
@@ -252,10 +253,9 @@ public:
 };
 
 class NopInstruction : public Instruction {
-    public:
+public:
     NopInstruction() {}
     virtual ~NopInstruction() {}
-    virtual void run(ClassFileInfo* clazz, Method *context, OperandStack *stack) {}
     virtual void run(Frame* frame) {}
     virtual uint8_t codeLen() { return 1;}
 };
