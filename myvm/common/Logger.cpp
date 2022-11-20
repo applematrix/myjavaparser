@@ -18,7 +18,7 @@ const char* logLevelString(uint8_t level) {
     case VERBOSE:
         return "V";
     case DEBUG:
-        return "V";
+        return "D";
     case INFO:
         return "I";
     case WARNING:

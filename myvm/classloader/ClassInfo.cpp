@@ -350,9 +350,9 @@ bool ClassInfo::resolve() {
     mClassName = std::string((const char*)classNameUtf8->bytes);
     LOGI("resolve, current class: %s", mClassName.c_str());
 
-    if(!linkClasses()) {
-        return false;
-    }
+    //if(!linkClasses()) {
+    //    return false;
+    //}
 
     auto classLoader = mClassLoader.lock();
     if (classLoader == nullptr) {
@@ -375,7 +375,10 @@ bool ClassInfo::resolve() {
     mSuperClass =  classLoader->getClassByName(mSuperClassName);
     if (mSuperClass.lock() == nullptr) {
         LOGI("Resolve the class :%s \'s super class:%s failed", mClassName.c_str(), mSuperClassName.c_str());
-        //return false;
+        mSuperClass = classLoader->loadClass(mSuperClassName);
+        if (mSuperClass.lock() == nullptr) {
+            return false;
+        }
     }
     evalClassSize();
     return true;
