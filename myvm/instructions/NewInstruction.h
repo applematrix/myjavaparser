@@ -21,7 +21,7 @@ public:
     NewInstruction() {};
     NewInstruction(uint8_t *code);
     virtual ~NewInstruction() {};
-    virtual uint8_t codeLen() { return 3;}
+    virtual uint8_t length() { return 3;}
     virtual void run(Frame *frame);
 private:
     uint16_t mIndex;

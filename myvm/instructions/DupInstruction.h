@@ -10,7 +10,7 @@ class DupInstruction : public Instruction {
 public:
     DupInstruction() {};
     virtual ~DupInstruction() {};
-    virtual uint8_t codeLen() { return 1;}
+    virtual uint8_t length() { return 1;}
     virtual void run(Frame *frame);
 };
 

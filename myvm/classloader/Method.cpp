@@ -4,10 +4,6 @@
  *
  */
 
-#undef LOG_TAG
-#define LOG_TAG "Method"
-#include "../common/Logger.h"
-
 #include "Method.h"
 #include "ClassInfo.h"
 #include "FileReader.h"
@@ -26,6 +22,10 @@
 #include <cstring>
 #include <iostream>
 #include <memory>
+
+#undef LOG_TAG
+#define LOG_TAG "Method"
+#include "../common/Logger.h"
 
 using namespace std;
 using namespace myvm;
@@ -70,33 +70,41 @@ void Method::invoke(shared_ptr<Frame> frame) {
     uint8_t *codeEnd = code + mCodeAttr->codeLength;
     while (code < codeEnd) {
         LOGI("%sinterprete code: %d", indent(depth), (int32_t)*code);
-        auto instruction = Instruction::interpreteCode(code);
+        unique_ptr<Instruction> instruction(Instruction::interpreteCode(code));
         if (instruction == nullptr) {
             LOGW("Invalid instruction!");
         }
         instruction->run(frame.get());
-        code += instruction->codeLen();
+        code += instruction->length();
     }
 }
 
-bool Method::isAbstract() {
+bool Method::isAbstract() const {
     return (accessFlags & METHOD_ACC_ABSTRACT) != 0;
 }
 
-bool Method::isStatic() {
+bool Method::isStatic() const {
     return (accessFlags & METHOD_ACC_STATIC) != 0;
 }
 
-bool Method::isPublic() {
+bool Method::isPublic() const {
     return (accessFlags & METHOD_ACC_PUBLIC) != 0;
 }
 
-bool Method::isPrivate() {
+bool Method::isPrivate() const {
     return (accessFlags & METHOD_ACC_PRIVATE) != 0;
 }
 
-bool Method::isProtected() {
+bool Method::isProtected() const {
     return (accessFlags & METHOD_ACC_PROTECTED) != 0;
+}
+
+bool Method::isConstructor() const {
+    return mConstructor;
+}
+
+bool Method::isClassConstructor() const {
+    return mClassConstructor;
 }
 
 Method* Method::loadFromFile(ClassInfo *owner, shared_ptr<FileReader> fileReader) {
@@ -152,7 +160,7 @@ bool Method::match(ConstantUtf8* methodName, ConstantUtf8* methodDesc) {
     return methodName->equals(mName) && methodDesc->equals(mDescriptor);
 }
 
-bool Method::isMainEntry() {
+bool Method::isMainEntry() const {
     return mMainMethod;
 }
 
@@ -167,9 +175,10 @@ void Method::resolve(ClassInfo *clazz) {
         const char* mainMethodArgs = "([Ljava/lang/String;)V";
         mMainMethod = isPublic() && isStatic()
             && strncmp(desc, mainMethodArgs, strlen(mainMethodArgs)) == 0;
-    }
-    else if (strncmp(name, "<init>", 6) == 0) {
+    } else if (strncmp(name, "<init>", 6) == 0) {
         mConstructor = true;
+    } else if (strncmp(name, "<clinit>", 8) == 0) {
+        mClassConstructor = true;
     }
 
     for (auto attr : mAttributes) {

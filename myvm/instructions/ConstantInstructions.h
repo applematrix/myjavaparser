@@ -9,7 +9,6 @@ public:
     IConstantInstruction() {};
     IConstantInstruction(uint8_t *code, int32_t value);
     virtual ~IConstantInstruction() {};
-    virtual uint8_t codeLen() { return 1;}
     virtual void run(Frame* frame);
 private:
     int32_t mValue;

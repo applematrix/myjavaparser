@@ -9,7 +9,7 @@ class GetFieldInstruction : public Instruction {
 public:
     GetFieldInstruction(uint8_t *code);
     virtual ~GetFieldInstruction() {};
-    virtual uint8_t codeLen() { return 3;}
+    virtual uint8_t length() { return Instruction::length() + sizeof(mIndex);}
     virtual void run(Frame *frame);
 private:
     uint16_t mIndex;
@@ -19,7 +19,7 @@ class PutFieldInstruction : public Instruction {
 public:
     PutFieldInstruction(uint8_t *code);
     virtual ~PutFieldInstruction() {};
-    virtual uint8_t codeLen() { return 3;}
+    virtual uint8_t length() { return Instruction::length() + sizeof(mIndex);}
     virtual void run(Frame *frame);
 private:
     uint16_t mIndex;

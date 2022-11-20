@@ -53,6 +53,7 @@ public:
     uint32_t classSize() const;
     void setClassLoader(shared_ptr<ClassLoader> &classLoader);
     weak_ptr<ClassLoader> getClassLoader() const;
+    void invokeClassInitMethod();
 private:
     void createInstance();
     void evalClassSize();

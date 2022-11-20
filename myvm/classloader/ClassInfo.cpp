@@ -429,4 +429,12 @@ weak_ptr<ClassLoader> ClassInfo::getClassLoader() const {
     return mClassLoader;
 }
 
+void ClassInfo::invokeClassInitMethod() {
+    for (auto method : mMethods) {
+        if (method->isClassConstructor()) {
+            method->invoke(nullptr); // TODO
+        }
+    }
+}
+
 }

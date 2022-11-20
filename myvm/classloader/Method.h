@@ -51,12 +51,14 @@ public:
     Method(ClassInfo* owner, uint16_t flags, uint16_t name, uint16_t desc, vector<shared_ptr<AttributeInfo>> *attrs);
     ~Method();
     void invoke(shared_ptr<Frame> frame);
-    bool isAbstract();
-    bool isStatic();
-    bool isPublic();
-    bool isPrivate();
-    bool isProtected();
-    bool isMainEntry();
+    bool isAbstract() const;
+    bool isStatic() const;
+    bool isPublic() const;
+    bool isPrivate() const;
+    bool isProtected() const;
+    bool isMainEntry() const;
+    bool isConstructor() const;
+    bool isClassConstructor() const;
     bool match(ConstantNameAndType* nameAndType);
     bool match(ConstantUtf8* methodName, ConstantUtf8* methodDesc);
     void resolve(ClassInfo *clazz);
@@ -81,8 +83,9 @@ private:
     // resolved info
     std::string mName;
     std::string mDescriptor;
-    bool mMainMethod;
-    bool mConstructor;
+    bool mMainMethod = false;
+    bool mConstructor = false;
+    bool mClassConstructor = false;
     shared_ptr<CodeAttr> mCodeAttr;
     uint16_t mStackSize;
 };

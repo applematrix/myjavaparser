@@ -19,7 +19,7 @@ class IloadInstruction : public Instruction {
 public:
     IloadInstruction() {};
     virtual ~IloadInstruction() {};
-    virtual uint8_t codeLen() { return 2;}
+    virtual uint8_t length() { return 2;}
     virtual void run(Frame* frame);
 private:
     uint8_t mIndex;
@@ -29,7 +29,6 @@ class Iload0Instruction : public Instruction {
 public:
     Iload0Instruction() {};
     virtual ~Iload0Instruction() {};
-    virtual uint8_t codeLen() { return 1;}
     virtual void run(Frame* frame);
 };
 
@@ -37,7 +36,6 @@ class Iload1Instruction : public Instruction {
 public:
     Iload1Instruction() {};
     virtual ~Iload1Instruction() {};
-    virtual uint8_t codeLen() { return 1;}
     virtual void run(Frame* frame);
 };
 
@@ -47,11 +45,23 @@ public:
     AloadInstruction(uint8_t *code);
     AloadInstruction(uint8_t *code, uint8_t index);
     virtual ~AloadInstruction() {};
-    virtual uint8_t codeLen() { return mOpCode == ALOAD ? 2 : 1;}
+    virtual uint8_t length() { return mOpCode == ALOAD ? 2 : 1;}
     virtual void run(Frame* frame);
 private:
     uint8_t mOpCode;
     uint8_t mLocalVariableTableIndex;
+};
+
+class LdcInstruction : public Instruction {
+    public:
+    LdcInstruction() {};
+    LdcInstruction(uint8_t *code);
+    virtual ~LdcInstruction() {};
+    virtual uint8_t length() { return 2;}
+    virtual void run(Frame* frame);
+private:
+    uint8_t mOpCode;
+    uint8_t mIndex;
 };
 
 }

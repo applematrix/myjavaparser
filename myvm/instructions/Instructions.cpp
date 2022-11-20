@@ -296,9 +296,17 @@ Instruction* Instruction::interpreteCode(uint8_t *code) {
         case GETSTATIC:
             return new GetStaticInstruction(code);
         default:
-            LOGW("Unknown op code : %d", (int32_t)opCode);
+            LOGW("Unknown op code : %d(0x%x)", (int32_t)opCode, (int32_t)opCode);
     }
     return nullptr;
+}
+
+InstructionWithIndex::InstructionWithIndex(uint8_t *code) {
+
+}
+
+uint16_t InstructionWithIndex::getIndex() {
+    return mIndex;
 }
 
 }

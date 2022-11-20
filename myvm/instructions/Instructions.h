@@ -246,7 +246,7 @@ public:
     Instruction() {};
     virtual ~Instruction(){};
     virtual void run(Frame* frame) = 0;
-    virtual uint8_t codeLen() = 0;
+    virtual uint8_t length() { return sizeof(uint8_t);}
 
     static const char* getOpCodeDesc(uint8_t opCode);
     static Instruction* interpreteCode(uint8_t *code);
@@ -257,7 +257,17 @@ public:
     NopInstruction() {}
     virtual ~NopInstruction() {}
     virtual void run(Frame* frame) {}
-    virtual uint8_t codeLen() { return 1;}
+};
+
+class InstructionWithIndex : public Instruction {
+    InstructionWithIndex();
+    InstructionWithIndex(uint8_t *code);
+    virtual ~InstructionWithIndex(){};
+    virtual void run(Frame* frame) = 0;
+    virtual uint8_t length() = 0;
+    uint16_t getIndex();
+protected:
+    uint16_t mIndex;
 };
 
 }
