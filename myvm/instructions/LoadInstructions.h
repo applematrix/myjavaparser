@@ -41,7 +41,6 @@ public:
 
 class AloadInstruction : public Instruction {
 public:
-    AloadInstruction() {};
     AloadInstruction(uint8_t *code);
     AloadInstruction(uint8_t *code, uint8_t index);
     virtual ~AloadInstruction() {};

@@ -10,7 +10,6 @@ public:
     ReturnInstruction() {}
     ReturnInstruction(uint8_t *code) {};
     virtual ~ReturnInstruction() {};
-    virtual uint8_t length() { return 1;}
     virtual void run(Frame* frame);
 private:
     bool mPop2 = false;
@@ -21,7 +20,6 @@ public:
     IReturnInstruction() {}
     IReturnInstruction(uint8_t *code) {};
     virtual ~IReturnInstruction() {};
-    virtual uint8_t length() { return 1;}
     virtual void run(Frame* frame);
 };
 

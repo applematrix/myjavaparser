@@ -7,7 +7,6 @@ namespace myvm {
 
 class AStoreInstruction : public Instruction {
 public:
-    AStoreInstruction() {};
     AStoreInstruction(uint8_t *code);
     AStoreInstruction(uint8_t *code, uint8_t index);
     virtual ~AStoreInstruction() {};

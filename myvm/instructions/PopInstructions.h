@@ -10,7 +10,6 @@ class PopInstruction : public Instruction {
 public:
     PopInstruction(bool isPop2 = false) { mPop2 = isPop2; }
     virtual ~PopInstruction() {};
-    virtual uint8_t length() { return 1;}
     virtual void run(Frame* frame);
 private:
     bool mPop2 = false;

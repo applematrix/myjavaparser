@@ -6,7 +6,6 @@ namespace myvm {
 
 class IConstantInstruction : public Instruction {
 public:
-    IConstantInstruction() {};
     IConstantInstruction(uint8_t *code, int32_t value);
     virtual ~IConstantInstruction() {};
     virtual void run(Frame* frame);
